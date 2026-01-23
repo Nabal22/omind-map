@@ -1,4 +1,4 @@
-import { BufferGeometry, Float32BufferAttribute } from 'three';
+import { BufferGeometry, Float32BufferAttribute, type Vector3 } from 'three';
 import { latLngToVector3 } from '$lib/data/artists';
 
 interface GeoJsonGeometry {
@@ -16,24 +16,27 @@ interface GeoJsonFeatureCollection {
 	features: GeoJsonFeature[];
 }
 
-function ringToGeometry(ring: number[][], radius: number): BufferGeometry {
-	const points: number[] = [];
+function ringToSegments(ring: number[][], radius: number, output: number[]): void {
+	const verts: Vector3[] = [];
 	for (const coord of ring) {
-		const lng = coord[0];
-		const lat = coord[1];
-		const v = latLngToVector3(lat, lng, radius);
-		points.push(v.x, v.y, v.z);
+		verts.push(latLngToVector3(coord[1], coord[0], radius));
 	}
-	const geometry = new BufferGeometry();
-	geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
-	return geometry;
+	for (let i = 0; i < verts.length - 1; i++) {
+		const a = verts[i];
+		const b = verts[i + 1];
+		output.push(a.x, a.y, a.z, b.x, b.y, b.z);
+	}
+	// Close the loop
+	const last = verts[verts.length - 1];
+	const first = verts[0];
+	output.push(last.x, last.y, last.z, first.x, first.y, first.z);
 }
 
-export function buildCountryGeometries(
+export function buildCountryGeometry(
 	geojson: GeoJsonFeatureCollection,
 	radius = 2.01
-): BufferGeometry[] {
-	const geometries: BufferGeometry[] = [];
+): BufferGeometry {
+	const segments: number[] = [];
 
 	for (const feature of geojson.features) {
 		const { geometry } = feature;
@@ -41,14 +44,15 @@ export function buildCountryGeometries(
 
 		if (geometry.type === 'Polygon') {
 			const outerRing = (geometry.coordinates as number[][][])[0];
-			geometries.push(ringToGeometry(outerRing, radius));
+			ringToSegments(outerRing, radius, segments);
 		} else if (geometry.type === 'MultiPolygon') {
 			for (const polygon of geometry.coordinates as number[][][][]) {
-				const outerRing = polygon[0];
-				geometries.push(ringToGeometry(outerRing, radius));
+				ringToSegments(polygon[0], radius, segments);
 			}
 		}
 	}
 
-	return geometries;
+	const geo = new BufferGeometry();
+	geo.setAttribute('position', new Float32BufferAttribute(segments, 3));
+	return geo;
 }

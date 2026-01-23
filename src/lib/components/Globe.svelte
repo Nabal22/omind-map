@@ -2,7 +2,7 @@
 	import { T, useTask } from '@threlte/core';
 	import { interactivity } from '@threlte/extras';
 	import { SphereGeometry, BufferGeometry, type Group } from 'three';
-	import { buildCountryGeometries } from '$lib/data/geo';
+	import { buildCountryGeometry } from '$lib/data/geo';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -14,7 +14,7 @@
 	let { children, paused = false, oncreate }: Props = $props();
 
 	let groupRef = $state<Group | undefined>(undefined);
-	let countryGeometries = $state<BufferGeometry[]>([]);
+	let countryGeometry = $state<BufferGeometry | undefined>(undefined);
 
 	$effect(() => {
 		if (groupRef && oncreate) {
@@ -27,7 +27,7 @@
 		fetch('/data/world-110m.geojson')
 			.then((res) => res.json())
 			.then((geojson) => {
-				countryGeometries = buildCountryGeometries(geojson);
+				countryGeometry = buildCountryGeometry(geojson);
 			});
 	});
 
@@ -54,11 +54,11 @@
 	</T.LineSegments>
 
 	<!-- Country outlines -->
-	{#each countryGeometries as geometry, i (i)}
-		<T.LineLoop {geometry}>
+	{#if countryGeometry}
+		<T.LineSegments geometry={countryGeometry}>
 			<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.7} />
-		</T.LineLoop>
-	{/each}
+		</T.LineSegments>
+	{/if}
 
 	<!-- Markers (children) -->
 	{@render children?.()}
