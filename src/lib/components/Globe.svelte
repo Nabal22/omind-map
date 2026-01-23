@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
 	import { interactivity } from '@threlte/extras';
-	import { SphereGeometry, BufferGeometry, Float32BufferAttribute, type Group } from 'three';
-	import { continentOutlines } from '$lib/data/continents';
-	import { latLngToVector3 } from '$lib/data/artists';
+	import { SphereGeometry, BufferGeometry, type Group } from 'three';
+	import { buildCountryGeometries } from '$lib/data/geo';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -15,11 +14,21 @@
 	let { children, paused = false, oncreate }: Props = $props();
 
 	let groupRef = $state<Group | undefined>(undefined);
+	let countryGeometries = $state<BufferGeometry[]>([]);
 
 	$effect(() => {
 		if (groupRef && oncreate) {
 			oncreate(groupRef);
 		}
+	});
+
+	$effect(() => {
+		// Based on https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_admin_0_countries.geojson
+		fetch('/data/world-110m.geojson')
+			.then((res) => res.json())
+			.then((geojson) => {
+				countryGeometries = buildCountryGeometries(geojson);
+			});
 	});
 
 	interactivity();
@@ -29,19 +38,6 @@
 			groupRef.rotation.y += delta * 0.05;
 		}
 	});
-
-	function createContinentGeometry(coords: [number, number][]): BufferGeometry {
-		const points: number[] = [];
-		for (const [lat, lng] of coords) {
-			const v = latLngToVector3(lat, lng, 2.01);
-			points.push(v.x, v.y, v.z);
-		}
-		const geometry = new BufferGeometry();
-		geometry.setAttribute('position', new Float32BufferAttribute(points, 3));
-		return geometry;
-	}
-
-	const continentGeometries = continentOutlines.map(createContinentGeometry);
 </script>
 
 <T.Group bind:ref={groupRef}>
@@ -57,11 +53,11 @@
 		<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.1} />
 	</T.LineSegments>
 
-	<!-- Continent outlines -->
-	{#each continentGeometries as geometry, i (i)}
-		<T.Line {geometry}>
+	<!-- Country outlines -->
+	{#each countryGeometries as geometry, i (i)}
+		<T.LineLoop {geometry}>
 			<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.7} />
-		</T.Line>
+		</T.LineLoop>
 	{/each}
 
 	<!-- Markers (children) -->
