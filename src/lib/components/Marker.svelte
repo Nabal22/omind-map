@@ -24,6 +24,8 @@
 	position={[position.x, position.y, position.z]}
 	scale={[scale, scale, scale]}
 	onclick={() => onselect(artist)}
+	onpointerenter={() => (document.body.style.cursor = 'pointer')}
+	onpointerleave={() => (document.body.style.cursor = '')}
 >
 	<T.SphereGeometry args={[0.06, 16, 16]} />
 	<T.MeshBasicMaterial color="#FFAEF6" />

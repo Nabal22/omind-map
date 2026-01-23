@@ -9,174 +9,45 @@
 	let { artist, onclose }: Props = $props();
 </script>
 
-<div class="popup-overlay" role="dialog" aria-modal="true">
-	<div class="popup">
-		<button class="close-btn" onclick={onclose}>[X]</button>
-		<p class="popup-subtitle">WHERE THE FUCK IS</p>
-		<h2 class="popup-title">{artist.name}</h2>
-		<div class="popup-info">
-			<p><span class="label">COUNTRY:</span> {artist.country}</p>
-			<p><span class="label">BIO:</span> {artist.description}</p>
+<div
+	class="fixed inset-0 flex items-end justify-center z-100 pointer-events-none pb-14
+		sm:items-center sm:p-4 sm:pb-4"
+	role="dialog"
+	aria-modal="true"
+>
+	<div
+		class="pointer-events-auto bg-black border-0 border-t-2 border-pink p-6 w-full font-mono text-pink relative
+			animate-slide-up shadow-[0_0_20px_rgba(255,174,246,0.3),inset_0_0_20px_rgba(255,174,246,0.05)]
+			sm:border-2 sm:p-8 sm:max-w-100 sm:animate-glitch-in
+			sm:before:content-[''] sm:before:absolute sm:before:-inset-1 sm:before:border sm:before:border-pink sm:before:opacity-40 sm:before:pointer-events-none"
+	>
+		<button
+			class="absolute top-4 right-4 bg-transparent border-none text-pink font-mono text-base cursor-pointer p-2 z-10
+				hover:[text-shadow:0_0_8px_#ffaef6]"
+			onclick={onclose}
+		>
+			[X]
+		</button>
+		<p class="text-[0.7rem] tracking-[0.2em] mb-1 opacity-70">WHERE THE FUCK IS</p>
+		<h2
+			class="text-[1.4rem] mb-4 uppercase [text-shadow:0_0_10px_#ffaef6]
+				sm:text-[1.8rem] sm:mb-6"
+		>
+			{artist.name}
+		</h2>
+		<div class="mb-6 space-y-2 text-[0.8rem] leading-snug sm:text-[0.85rem]">
+			<p><span class="opacity-60">COUNTRY:</span> {artist.country}</p>
+			<p><span class="opacity-60">BIO:</span> {artist.description}</p>
 		</div>
 		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
-		<a class="music-link" href={artist.musicUrl} target="_blank" rel="noopener noreferrer">
+		<a
+			class="inline-block text-pink no-underline text-[0.9rem] border border-pink py-2 px-4 transition-all duration-200
+				hover:bg-pink hover:text-black hover:shadow-[0_0_15px_#ffaef6]"
+			href={artist.musicUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+		>
 			[ LISTEN → ]
 		</a>
 	</div>
 </div>
-
-<style>
-	.popup-overlay {
-		position: fixed;
-		inset: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 100;
-		pointer-events: none;
-		padding: 1rem;
-	}
-
-	.popup {
-		pointer-events: all;
-		background: #000;
-		border: 2px solid #ffaef6;
-		padding: 2rem;
-		max-width: 400px;
-		width: 100%;
-		font-family: monospace;
-		color: #ffaef6;
-		position: relative;
-		box-shadow:
-			0 0 20px rgba(255, 174, 246, 0.3),
-			inset 0 0 20px rgba(255, 174, 246, 0.05);
-		animation: glitch-in 0.3s ease-out;
-	}
-
-	.popup::before {
-		content: '';
-		position: absolute;
-		inset: -4px;
-		border: 1px solid #ffaef6;
-		opacity: 0.4;
-		pointer-events: none;
-	}
-
-	.close-btn {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
-		background: none;
-		border: none;
-		color: #ffaef6;
-		font-family: monospace;
-		font-size: 1rem;
-		cursor: pointer;
-		padding: 0.5rem;
-		z-index: 10;
-	}
-
-	.close-btn:hover {
-		text-shadow: 0 0 8px #ffaef6;
-	}
-
-	.popup-subtitle {
-		font-size: 0.7rem;
-		letter-spacing: 0.2em;
-		margin: 0 0 0.25rem;
-		opacity: 0.7;
-	}
-
-	.popup-title {
-		font-size: 1.8rem;
-		margin: 0 0 1.5rem;
-		text-transform: uppercase;
-		text-shadow: 0 0 10px #ffaef6;
-	}
-
-	.popup-info {
-		margin-bottom: 1.5rem;
-	}
-
-	.popup-info p {
-		margin: 0.5rem 0;
-		font-size: 0.85rem;
-		line-height: 1.4;
-	}
-
-	.label {
-		opacity: 0.6;
-	}
-
-	.music-link {
-		display: inline-block;
-		color: #ffaef6;
-		text-decoration: none;
-		font-size: 0.9rem;
-		border: 1px solid #ffaef6;
-		padding: 0.5rem 1rem;
-		transition: all 0.2s;
-	}
-
-	.music-link:hover {
-		background: #ffaef6;
-		color: #000;
-		box-shadow: 0 0 15px #ffaef6;
-	}
-
-	@media (max-width: 640px) {
-		.popup-overlay {
-			align-items: flex-end;
-			padding: 0;
-			padding-bottom: 3.5rem;
-		}
-
-		.popup {
-			padding: 1.5rem;
-			border-bottom: none;
-			border-left: none;
-			border-right: none;
-			max-width: none;
-			width: 100%;
-			animation: slide-up 0.25s ease-out;
-		}
-
-		.popup::before {
-			display: none;
-		}
-
-		.popup-title {
-			font-size: 1.4rem;
-			margin-bottom: 1rem;
-		}
-
-		.popup-info p {
-			font-size: 0.8rem;
-		}
-	}
-
-	@keyframes glitch-in {
-		0% {
-			opacity: 0;
-			transform: translateX(-5px) skewX(-2deg);
-		}
-		50% {
-			transform: translateX(3px) skewX(1deg);
-		}
-		100% {
-			opacity: 1;
-			transform: translateX(0) skewX(0);
-		}
-	}
-
-	@keyframes slide-up {
-		from {
-			opacity: 0;
-			transform: translateY(1rem);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-</style>

@@ -15,8 +15,8 @@
 	}
 </script>
 
-<div class="app">
-	<div class="scene-container">
+<div class="w-screen h-dvh overflow-hidden relative bg-black">
+	<div class="w-full h-full">
 		<Scene onselect={selectArtist} targetArtist={selectedArtist} />
 	</div>
 
@@ -26,18 +26,3 @@
 		<ArtistPopup artist={selectedArtist} onclose={closePopup} />
 	{/if}
 </div>
-
-<style>
-	.app {
-		width: 100vw;
-		height: 100dvh;
-		overflow: hidden;
-		position: relative;
-		background: #000;
-	}
-
-	.scene-container {
-		width: 100%;
-		height: 100%;
-	}
-</style>
