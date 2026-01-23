@@ -18,7 +18,7 @@
 	<div
 		class="pointer-events-auto bg-black border-0 border-t-2 border-pink p-6 w-full font-mono text-pink relative
 			animate-slide-up shadow-[0_0_20px_rgba(255,174,246,0.3),inset_0_0_20px_rgba(255,174,246,0.05)]
-			sm:border-2 sm:p-8 sm:max-w-[400px] sm:animate-glitch-in
+			sm:border-2 sm:p-8 sm:max-w-100 sm:animate-glitch-in
 			sm:before:content-[''] sm:before:absolute sm:before:-inset-1 sm:before:border sm:before:border-pink sm:before:opacity-40 sm:before:pointer-events-none"
 	>
 		<button
