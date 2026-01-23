@@ -73,6 +73,7 @@
 		font-size: 1rem;
 		cursor: pointer;
 		padding: 0.5rem;
+		z-index: 10;
 	}
 
 	.close-btn:hover {
