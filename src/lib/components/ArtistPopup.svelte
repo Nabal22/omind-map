@@ -34,6 +34,7 @@
 		justify-content: center;
 		z-index: 100;
 		pointer-events: none;
+		padding: 1rem;
 	}
 
 	.popup {
@@ -42,7 +43,7 @@
 		border: 2px solid #ffaef6;
 		padding: 2rem;
 		max-width: 400px;
-		width: 90%;
+		width: 100%;
 		font-family: monospace;
 		color: #ffaef6;
 		position: relative;
@@ -71,6 +72,7 @@
 		font-family: monospace;
 		font-size: 1rem;
 		cursor: pointer;
+		padding: 0.5rem;
 	}
 
 	.close-btn:hover {
@@ -121,6 +123,37 @@
 		box-shadow: 0 0 15px #ffaef6;
 	}
 
+	@media (max-width: 640px) {
+		.popup-overlay {
+			align-items: flex-end;
+			padding: 0;
+			padding-bottom: 3.5rem;
+		}
+
+		.popup {
+			padding: 1.5rem;
+			border-bottom: none;
+			border-left: none;
+			border-right: none;
+			max-width: none;
+			width: 100%;
+			animation: slide-up 0.25s ease-out;
+		}
+
+		.popup::before {
+			display: none;
+		}
+
+		.popup-title {
+			font-size: 1.4rem;
+			margin-bottom: 1rem;
+		}
+
+		.popup-info p {
+			font-size: 0.8rem;
+		}
+	}
+
 	@keyframes glitch-in {
 		0% {
 			opacity: 0;
@@ -132,6 +165,17 @@
 		100% {
 			opacity: 1;
 			transform: translateX(0) skewX(0);
+		}
+	}
+
+	@keyframes slide-up {
+		from {
+			opacity: 0;
+			transform: translateY(1rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 </style>

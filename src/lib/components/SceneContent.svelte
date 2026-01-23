@@ -5,7 +5,7 @@
 	import Marker from './Marker.svelte';
 	import { artists, type Artist, latLngToVector3 } from '$lib/data/artists';
 	import { Vector3, type PerspectiveCamera, type Group } from 'three';
-	import type { OrbitControls as OrbitControlsType } from 'three/examples/jsm/controls/OrbitControls.js';
+	import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 	interface Props {
 		onselect: (artist: Artist) => void;
@@ -16,7 +16,10 @@
 
 	let cameraRef = $state<PerspectiveCamera | undefined>(undefined);
 	let globeGroupRef = $state<Group | undefined>(undefined);
-	let controlsRef = $state<OrbitControlsType | undefined>(undefined);
+	let controlsInstance: ThreeOrbitControls | null = null;
+
+	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+	const defaultCameraZ = isMobile ? 7 : 5;
 
 	let animating = $state(false);
 	let paused = $state(false);
@@ -53,8 +56,8 @@
 
 		// Store current positions
 		startPos.copy(cameraRef.position);
-		if (controlsRef) {
-			startTarget.copy(controlsRef.target);
+		if (controlsInstance) {
+			startTarget.copy(controlsInstance.target);
 		} else {
 			startTarget.set(0, 0, 0);
 		}
@@ -67,10 +70,10 @@
 		animProgress = 0;
 
 		startPos.copy(cameraRef.position);
-		targetPos.set(0, 0, 5);
+		targetPos.set(0, 0, defaultCameraZ);
 
-		if (controlsRef) {
-			startTarget.copy(controlsRef.target);
+		if (controlsInstance) {
+			startTarget.copy(controlsInstance.target);
 		}
 		endTarget.set(0, 0, 0);
 	}
@@ -101,9 +104,15 @@
 
 		cameraRef.position.lerpVectors(startPos, targetPos, t);
 
-		if (controlsRef) {
-			controlsRef.target.lerpVectors(startTarget, endTarget, t);
-			controlsRef.update();
+		if (controlsInstance) {
+			controlsInstance.target.lerpVectors(startTarget, endTarget, t);
+			controlsInstance.update();
+		}
+	});
+
+	$effect(() => {
+		if (controlsInstance) {
+			controlsInstance.enabled = !animating;
 		}
 	});
 
@@ -112,13 +121,13 @@
 	}
 </script>
 
-<T.PerspectiveCamera bind:ref={cameraRef} makeDefault position={[0, 0, 5]} fov={50}>
+<T.PerspectiveCamera bind:ref={cameraRef} makeDefault position={[0, 0, defaultCameraZ]} fov={60}>
 	<OrbitControls
-		bind:ref={controlsRef}
-		enableZoom={!animating}
-		enableRotate={!animating}
-		minDistance={3}
-		maxDistance={8}
+		oncreate={(ref) => {
+			controlsInstance = ref;
+		}}
+		minDistance={3.5}
+		maxDistance={isMobile ? 10 : 8}
 		enableDamping={true}
 		dampingFactor={0.05}
 		enablePan={false}
@@ -129,7 +138,7 @@
 <T.DirectionalLight position={[5, 3, 5]} intensity={1} />
 <T.DirectionalLight position={[-3, -1, -3]} intensity={0.3} />
 
-<Globe {paused} bind:groupRef={globeGroupRef}>
+<Globe {paused} oncreate={(group) => (globeGroupRef = group)}>
 	{#each artists as artist (artist.id)}
 		<Marker {artist} onselect={handleSelect} />
 	{/each}

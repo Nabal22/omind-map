@@ -9,10 +9,18 @@
 	interface Props {
 		children?: Snippet;
 		paused?: boolean;
-		groupRef?: Group | undefined;
+		oncreate?: (group: Group) => void;
 	}
 
-	let { children, paused = false, groupRef = $bindable() }: Props = $props();
+	let { children, paused = false, oncreate }: Props = $props();
+
+	let groupRef = $state<Group | undefined>(undefined);
+
+	$effect(() => {
+		if (groupRef && oncreate) {
+			oncreate(groupRef);
+		}
+	});
 
 	interactivity();
 

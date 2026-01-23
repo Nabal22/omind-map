@@ -24,14 +24,14 @@
 <style>
 	.nav-menu {
 		position: fixed;
-		top: 2rem;
-		left: 2rem;
+		top: 1.5rem;
+		left: 1.5rem;
 		z-index: 50;
 		font-family: monospace;
 	}
 
 	.nav-title {
-		font-size: 0.7rem;
+		font-size: 0.65rem;
 		letter-spacing: 0.2em;
 		color: #ffaef6;
 		opacity: 0.7;
@@ -45,7 +45,7 @@
 		margin: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
+		gap: 0.2rem;
 	}
 
 	.nav-item {
@@ -60,11 +60,54 @@
 		text-align: left;
 		transition: all 0.15s;
 		border-left: 2px solid transparent;
+		white-space: nowrap;
 	}
 
 	.nav-item:hover {
 		border-left-color: #ffaef6;
 		text-shadow: 0 0 8px #ffaef6;
 		padding-left: 1rem;
+	}
+
+	@media (max-width: 640px) {
+		.nav-menu {
+			top: auto;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 0.75rem 1rem;
+			background: rgba(0, 0, 0, 0.85);
+			backdrop-filter: blur(8px);
+			border-top: 1px solid rgba(255, 174, 246, 0.2);
+		}
+
+		.nav-title {
+			display: none;
+		}
+
+		.nav-list {
+			flex-direction: row;
+			gap: 0;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+		}
+
+		.nav-list::-webkit-scrollbar {
+			display: none;
+		}
+
+		.nav-item {
+			font-size: 0.75rem;
+			padding: 0.4rem 0.75rem;
+			border-left: none;
+			border-bottom: 2px solid transparent;
+		}
+
+		.nav-item:hover {
+			padding-left: 0.75rem;
+			border-left: none;
+			border-bottom-color: #ffaef6;
+		}
 	}
 </style>
