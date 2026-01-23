@@ -1,6 +1,23 @@
 @import 'tailwindcss';
 
-/* Color Palette */
-
 :root {
+	--pink: #ffaef6;
+	--black: #000000;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--black);
+	color: var(--pink);
+	font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+	overflow: hidden;
+}
+
+::-webkit-scrollbar {
+	display: none;
 }

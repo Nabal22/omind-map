@@ -5,8 +5,8 @@
 			"url": "https://mcp.svelte.dev/mcp"
 		},
 		"threlte": {
-      "command": "npx",
-      "args": ["threlte-mcp"]
-    }
+			"command": "npx",
+			"args": ["threlte-mcp"]
+		}
 	}
 }

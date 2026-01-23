@@ -40,7 +40,7 @@ You have access to a Svelte MCP server. Use these tools when working on Svelte/S
 
 You have access to a Threlte MCP server. Use these tools when working on Threlte/3D code:
 
-To install it  : 
+To install it :
 Add the component to your Threlte app
 Requires Svelte 5 for the MCPBridge component.
 
