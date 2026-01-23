@@ -129,12 +129,15 @@
 		minDistance={3.5}
 		maxDistance={isMobile ? 10 : 8}
 		enableDamping={true}
-		dampingFactor={0.05}
+		rotateSpeed={1.5}
+		dampingFactor={0.15}
 		enablePan={false}
+		minPolarAngle={0.6}
+		maxPolarAngle={2.54}
 	/>
 </T.PerspectiveCamera>
 
-<T.AmbientLight intensity={0.6} />
+<T.AmbientLight intensity={0.7} />
 <T.DirectionalLight position={[5, 3, 5]} intensity={1} />
 <T.DirectionalLight position={[-3, -1, -3]} intensity={0.3} />
 
