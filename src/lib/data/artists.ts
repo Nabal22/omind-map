@@ -8,7 +8,7 @@ export interface Artist {
 	lng: number;
 	description: string;
 	musicUrl: string;
-	soundcloudUrl?: string;
+	soundcloudUrl?: string[];
 }
 
 export const artists: Artist[] = [
@@ -19,8 +19,11 @@ export const artists: Artist[] = [
 		lat: 34.05,
 		lng: -118.24,
 		description: 'Rage music pioneer. Twizzy rich aesthetic.',
-		musicUrl: 'https://open.spotify.com/artist/3qiHUAX7zY4Qnjx8TNUzfx',
-		soundcloudUrl: 'https://soundcloud.com/lilyeat/breathe'
+		musicUrl: 'https://soundcloud.com/lilyeat',
+		soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'bladee',
@@ -29,7 +32,11 @@ export const artists: Artist[] = [
 		lat: 59.33,
 		lng: 18.07,
 		description: 'Drain Gang. Cloud rap transcendence.',
-		musicUrl: 'https://open.spotify.com/artist/2O4GNCFVIzmPkKisgRuEfl'
+		musicUrl: 'https://soundcloud.com/bladee1000',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'arca',
@@ -38,7 +45,11 @@ export const artists: Artist[] = [
 		lat: 10.5,
 		lng: -66.92,
 		description: 'Experimental electronic. Genre destruction.',
-		musicUrl: 'https://open.spotify.com/artist/2Ls1qeh5WY2d1Rs0TG2mWC'
+		musicUrl: 'https://soundcloud.com/abortedbygod',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'death-grips',
@@ -47,7 +58,11 @@ export const artists: Artist[] = [
 		lat: 38.58,
 		lng: -121.49,
 		description: 'Experimental hip-hop. Pure noise aggression.',
-		musicUrl: 'https://open.spotify.com/artist/5RADpgYLOuS2ZxDq7ggYYH'
+		musicUrl: 'https://soundcloud.com/deathgrips',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'sophie',
@@ -56,7 +71,11 @@ export const artists: Artist[] = [
 		lat: 51.51,
 		lng: -0.13,
 		description: 'Hyperpop architect. Synthetic reality.',
-		musicUrl: 'https://open.spotify.com/artist/5a2w2tgpLwv26BYJf2qYwu'
+		musicUrl: 'https://soundcloud.com/sophiemsmsmsm',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'crystal-castles',
@@ -65,7 +84,11 @@ export const artists: Artist[] = [
 		lat: 43.65,
 		lng: -79.38,
 		description: 'Glitch electronics. Digital punk chaos.',
-		musicUrl: 'https://open.spotify.com/artist/6IRouO5mvvfcyxtPDKMYFN'
+		musicUrl: 'https://soundcloud.com/crystal-castles',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'burial',
@@ -74,7 +97,11 @@ export const artists: Artist[] = [
 		lat: 51.45,
 		lng: -0.02,
 		description: 'Ghost of UK garage. Nocturnal frequencies.',
-		musicUrl: 'https://open.spotify.com/artist/0DnRJAMSbPOeTOHiAaC5fw'
+		musicUrl: 'https://soundcloud.com/burial-official',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	},
 	{
 		id: 'gesaffelstein',
@@ -83,7 +110,11 @@ export const artists: Artist[] = [
 		lat: 48.86,
 		lng: 2.35,
 		description: 'Dark techno. Industrial precision.',
-		musicUrl: 'https://open.spotify.com/artist/4bL2B6hmLlMWnUEZnorEtG'
+		musicUrl: 'https://soundcloud.com/gesaffelstein',
+			soundcloudUrl: [
+			'https://soundcloud.com/lilyeat/breathe',
+			'https://soundcloud.com/lilyeat/psycho-ceo'
+		]
 	}
 ];
 
