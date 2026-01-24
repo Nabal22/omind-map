@@ -52,20 +52,3 @@ You have access to a Svelte MCP server. Use these tools when working on Svelte/S
 2. **get-documentation** — Fetch full documentation for relevant sections found via list-sections.
 3. **svelte-autofixer** — MUST be used whenever writing Svelte code. Keep calling until no issues remain.
 4. **playground-link** — Generates a Svelte Playground link. Only offer after code is complete, and NEVER if code was written to project files.
-
-You have access to a Threlte MCP server. Use these tools when working on Threlte/3D code:
-
-To install it :
-Add the component to your Threlte app
-Requires Svelte 5 for the MCPBridge component.
-
-<script>
-  import { MCPBridgeComponent } from 'threlte-mcp/client';
-</script>
-
-<!-- Add inside your <Canvas> -->
-<MCPBridgeComponent />
-That's it! The AI can now inspect and manipulate your scene.
-
-Check the repo for more details:
-https://github.com/SerifeusStudio/threlte-mcp?tab=readme-ov-file
