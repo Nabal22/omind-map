@@ -12,6 +12,6 @@
 	
 	<link rel="manifest" href="/site.webmanifest" />
 	
-	<meta name="theme-color" content="#ffaef6" />
+	<meta name="theme-color" content="#ffffff" />
 </svelte:head>
 {@render children()}
