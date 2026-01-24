@@ -7,6 +7,12 @@
 	}
 
 	let { artist, onclose }: Props = $props();
+	
+	let loadedIframes = $state<Set<string>>(new Set());
+	
+	function handleIframeLoad(url: string) {
+		loadedIframes = new Set([...loadedIframes, url]);
+	}
 </script>
 
 <div
@@ -42,7 +48,7 @@
 		<div class="mb-2 py-2">
 			<p><span class="opacity-60">TOP3:</span></p>
 			{#each artist.soundcloudUrl ?? [] as url}
-				<div class="py-1">
+				<div class="py-1 bg-black relative min-h-5">
 					<iframe
 						title="{artist.name} on SoundCloud"
 						scrolling="no"
@@ -50,6 +56,8 @@
 						width="100%"
 						height="20"
 						src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ffaef6&auto_play=false&show_user=false&show_artwork=false`}
+						class="transition-opacity duration-300 {loadedIframes.has(url) ? 'opacity-100' : 'opacity-0'}"
+						onload={() => handleIframeLoad(url)}
 					></iframe>
 				</div>
 			{/each}
