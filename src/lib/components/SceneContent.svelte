@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
-	import { OrbitControls } from '@threlte/extras';
+	import { OrbitControls, Stars } from '@threlte/extras';
 	import Globe from './Globe.svelte';
 	import Marker from './Marker.svelte';
 	import { artists, type Artist, latLngToVector3 } from '$lib/data/artists';
@@ -146,3 +146,5 @@
 		<Marker {artist} onselect={handleSelect} />
 	{/each}
 </Globe>
+
+<Stars count={1000} depth={50} factor={4} saturation={0} fade={true} />

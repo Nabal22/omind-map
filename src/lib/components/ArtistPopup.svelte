@@ -39,6 +39,11 @@
 			<p><span class="opacity-60">COUNTRY:</span> {artist.country}</p>
 			<p><span class="opacity-60">BIO:</span> {artist.description}</p>
 		</div>
+		{#if artist.soundcloudEmbedIframe}
+			<div class="mb-6">
+				{@html artist.soundcloudEmbedIframe}
+			</div>
+		{/if}
 		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
 		<a
 			class="inline-block text-pink no-underline text-[0.9rem] border border-pink py-2 px-4 transition-all duration-200
