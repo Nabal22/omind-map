@@ -7,6 +7,12 @@
 	}
 
 	let { artist, onclose }: Props = $props();
+
+	let soundcloudSrc = $derived(
+		artist.soundcloudUrl
+			? `https://w.soundcloud.com/player/?url=${encodeURIComponent(artist.soundcloudUrl)}&color=%23ffaef6&auto_play=false&show_user=true&show_artwork=true`
+			: null
+	);
 </script>
 
 <div
@@ -39,10 +45,17 @@
 			<p><span class="opacity-60">COUNTRY:</span> {artist.country}</p>
 			<p><span class="opacity-60">BIO:</span> {artist.description}</p>
 		</div>
-		{#if artist.soundcloudEmbedIframe}
-			<div class="mb-6">
-				{@html artist.soundcloudEmbedIframe}
-			</div>
+		{#if soundcloudSrc}
+		<div class="py-2">
+			<iframe
+				title="{artist.name} on SoundCloud"
+				scrolling="no"
+				allow="autoplay"
+				width="100%"
+				height="20"
+				src={soundcloudSrc}
+			></iframe>
+		</div>
 		{/if}
 		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
 		<a

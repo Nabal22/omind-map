@@ -8,7 +8,7 @@ export interface Artist {
 	lng: number;
 	description: string;
 	musicUrl: string;
-	soundcloudEmbedIframe?: string;
+	soundcloudUrl?: string;
 }
 
 export const artists: Artist[] = [
@@ -20,7 +20,7 @@ export const artists: Artist[] = [
 		lng: -118.24,
 		description: 'Rage music pioneer. Twizzy rich aesthetic.',
 		musicUrl: 'https://open.spotify.com/artist/3qiHUAX7zY4Qnjx8TNUzfx',
-		soundcloudEmbedIframe: '<iframe width="100%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A1748464410&color=%23ffaef6&inverse=false&auto_play=false&show_user=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/lilyeat" title="Yeat" target="_blank" style="color: #cccccc; text-decoration: none;">Yeat</a> · <a href="https://soundcloud.com/lilyeat/psycho-ceo" title="Psycho CEO" target="_blank" style="color: #cccccc; text-decoration: none;">Psycho CEO</a></div>'
+		soundcloudUrl: 'https://soundcloud.com/lilyeat/breathe'
 	},
 	{
 		id: 'bladee',
