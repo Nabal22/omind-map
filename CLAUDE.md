@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A mind-mapping application built with SvelteKit 2, Svelte 5, TypeScript, and Tailwind CSS v4. Uses Bun as the package manager.
+A 3D globe application showing artist locations worldwide, built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
 
 ## Commands
 
@@ -19,13 +19,28 @@ A mind-mapping application built with SvelteKit 2, Svelte 5, TypeScript, and Tai
 
 - **Routing**: SvelteKit file-based routing in `src/routes/`
 - **Components/utilities**: `src/lib/` (aliased as `$lib`)
-- **Styling**: Tailwind CSS v4 via Vite plugin (no tailwind.config — uses CSS-based config in `src/routes/layout.css`)
-- **Adapter**: `adapter-auto` for environment-agnostic deployment
+- **3D rendering**: Threlte (`@threlte/core`, `@threlte/extras`) wrapping Three.js
+- **Globe**: Country borders rendered from Natural Earth 110m GeoJSON (`static/data/world-110m.geojson`), parsed by `src/lib/data/geo.ts` into a single `LineSegments` BufferGeometry for performance
+- **Styling**: Tailwind CSS v4 via `@tailwindcss/vite` plugin — config uses `@theme` directive in `src/routes/layout.css` (no `tailwind.config` file)
+- **Adapter**: `adapter-cloudflare` for Cloudflare Pages deployment
+- **Static assets**: Icons, GeoJSON data, and web manifest in `static/`
+
+## Key Files
+
+- `src/lib/components/Globe.svelte` — 3D globe with country outlines and wireframe
+- `src/lib/components/SceneContent.svelte` — Camera, lights, OrbitControls, markers
+- `src/lib/components/Marker.svelte` — Clickable artist marker on the globe
+- `src/lib/components/ArtistPopup.svelte` — Artist info popup dialog
+- `src/lib/components/NavMenu.svelte` — Artist navigation menu
+- `src/lib/data/geo.ts` — GeoJSON to BufferGeometry conversion
+- `src/lib/data/artists.ts` — Artist data and `latLngToVector3` helper
 
 ## Code Conventions
 
 - **Svelte 5 runes**: Use `$props()`, `$state()`, `$derived()`, `$effect()` — not legacy Svelte 4 syntax
 - **Snippets over slots**: Use `{@render children()}` pattern, not `<slot />`
+- **Tailwind utility-first**: Use Tailwind classes directly in markup — no `<style>` blocks with custom CSS classes
+- **Tailwind theme**: Custom values defined via `@theme` in `layout.css` (colors: `pink`, `black`; animations: `glitch-in`, `slide-up`)
 - **Formatting**: Tabs, single quotes, no trailing commas, printWidth 100
 - **TypeScript**: Strict mode enabled
 
