@@ -8,9 +8,19 @@
 
 	let { artist, onclose }: Props = $props();
 	
-	let loadedIframes = $state<Set<string>>(new Set());
+	// Cache global - persiste entre les changements d'artiste
+	const globalLoadedCache = new Set<string>();
+	
+	let loadedIframes = $state<Set<string>>(new Set(globalLoadedCache));
+	
+	// Sync avec le cache global quand l'artiste change
+	$effect(() => {
+		artist.id; // track artist change
+		loadedIframes = new Set(globalLoadedCache);
+	});
 	
 	function handleIframeLoad(url: string) {
+		globalLoadedCache.add(url);
 		loadedIframes = new Set([...loadedIframes, url]);
 	}
 </script>
