@@ -34,8 +34,8 @@ export const artists: Artist[] = [
 		description: 'Drain Gang. Cloud rap transcendence.',
 		musicUrl: 'https://soundcloud.com/bladee1000',
 			soundcloudUrl: [
-			'https://soundcloud.com/lilyeat/breathe',
-			'https://soundcloud.com/lilyeat/psycho-ceo'
+			'https://soundcloud.com/bladee1000/3-star-reunite',
+			'https://soundcloud.com/bladee1000/the-kingdom'
 		]
 	},
 	{
