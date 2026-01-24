@@ -49,6 +49,11 @@
 			<p><span class="opacity-60">TOP3:</span></p>
 			{#each artist.soundcloudUrl ?? [] as url}
 				<div class="py-1 bg-black relative min-h-5">
+					{#if !loadedIframes.has(url)}
+						<div class="glitch-loader absolute inset-0 flex items-center">
+							<span class="glitch-text text-[0.65rem] tracking-[0.15em] opacity-70">LOADING_</span>
+						</div>
+					{/if}
 					<iframe
 						title="{artist.name} on SoundCloud"
 						scrolling="no"
@@ -74,3 +79,70 @@
 		</a>
 	</div>
 </div>
+
+<style>
+	.glitch-loader {
+		animation: flicker 0.15s infinite;
+	}
+	
+	.glitch-text {
+		position: relative;
+		color: #ffaef6;
+		animation: glitch-skew 1s infinite linear alternate-reverse;
+	}
+	
+	.glitch-text::before,
+	.glitch-text::after {
+		content: 'LOADING_';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+	
+	.glitch-text::before {
+		color: #0ff;
+		animation: glitch-anim 0.3s infinite linear alternate-reverse;
+		clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+	}
+	
+	.glitch-text::after {
+		color: #f0f;
+		animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+		clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+	}
+	
+	@keyframes flicker {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.8; }
+		75% { opacity: 0.9; }
+	}
+	
+	@keyframes glitch-anim {
+		0% { transform: translate(0); }
+		20% { transform: translate(-2px, 1px); }
+		40% { transform: translate(-2px, -1px); }
+		60% { transform: translate(2px, 1px); }
+		80% { transform: translate(2px, -1px); }
+		100% { transform: translate(0); }
+	}
+	
+	@keyframes glitch-anim-2 {
+		0% { transform: translate(0); }
+		20% { transform: translate(2px, -1px); }
+		40% { transform: translate(2px, 1px); }
+		60% { transform: translate(-2px, -1px); }
+		80% { transform: translate(-2px, 1px); }
+		100% { transform: translate(0); }
+	}
+	
+	@keyframes glitch-skew {
+		0% { transform: skew(0deg); }
+		20% { transform: skew(-1deg); }
+		40% { transform: skew(1deg); }
+		60% { transform: skew(0deg); }
+		80% { transform: skew(-1deg); }
+		100% { transform: skew(0deg); }
+	}
+</style>
