@@ -11,7 +11,7 @@
 <nav
 	class="fixed bottom-0 left-0 right-0 z-50 font-mono px-4 py-3 bg-black/85 backdrop-blur-sm border-t border-pink/20
 		sm:top-6 sm:left-6 sm:right-auto sm:bottom-auto sm:p-0 sm:bg-transparent sm:backdrop-blur-none sm:border-t-0"
->
+> 
 	<h2
 		class="hidden sm:block text-[0.65rem] tracking-[0.2em] text-pink opacity-70 mb-3 uppercase"
 	>
