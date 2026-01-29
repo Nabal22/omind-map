@@ -53,19 +53,8 @@
 		<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.1} />
 	</T.LineSegments>
 
-	<!-- Country outlines with glitch effect -->
+	<!-- Country outlines -->
 	{#if countryGeometry}
-		<!-- Cyan Layer -->
-		<T.LineSegments geometry={countryGeometry} position={[0.01, 0.005, 0]}>
-				<T.LineBasicMaterial color="#00FFFF" transparent opacity={0.3} />
-		</T.LineSegments>
-
-		<!-- Magenta Layer -->
-		<T.LineSegments geometry={countryGeometry} position={[-0.01, -0.005, 0]}>
-				<T.LineBasicMaterial color="#FF00FF" transparent opacity={0.3} />
-		</T.LineSegments>
-
-		<!-- Main Layer -->
 		<T.LineSegments geometry={countryGeometry}>
 				<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.7} />
 		</T.LineSegments>
