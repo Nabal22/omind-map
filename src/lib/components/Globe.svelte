@@ -4,7 +4,6 @@
 	import { SphereGeometry, BufferGeometry, type Group } from 'three';
 	import { buildCountryGeometry } from '$lib/data/geo';
 	import type { Snippet } from 'svelte';
-	import type { FeatureCollection } from 'geojson';
 
 	interface Props {
 		children?: Snippet;
@@ -26,7 +25,7 @@
 	$effect(() => {
 		// Based on https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_admin_0_countries.geojson
 		fetch('/data/world-110m.geojson')
-			.then((res) => res.json() as Promise<FeatureCollection>)
+			.then((res) => res.json())
 			.then((geojson) => {
 				countryGeometry = buildCountryGeometry(geojson);
 			});

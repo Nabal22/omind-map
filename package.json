@@ -38,7 +38,6 @@
 	"dependencies": {
 		"@threlte/core": "^8.3.1",
 		"@threlte/extras": "^9.7.1",
-		"@types/geojson": "^7946.0.16",
 		"@types/three": "^0.182.0",
 		"three": "^0.182.0",
 		"threlte-mcp": "^1.4.0"
