@@ -243,7 +243,24 @@
 		}
 	});
 
-	function handleClick(name: string) {
+	interface PointerEventLike {
+		face?: { normal: THREE.Vector3 };
+		object?: THREE.Object3D;
+		point?: THREE.Vector3;
+	}
+
+	function isFrontFace(event: PointerEventLike): boolean {
+		if (!event?.face || !event?.object || !$camera) return false;
+		const normal = event.face.normal.clone().transformDirection(event.object.matrixWorld);
+		const toCamera = (event.point as THREE.Vector3)
+			.clone()
+			.sub(($camera as THREE.PerspectiveCamera).position)
+			.normalize();
+		return normal.dot(toCamera) < 0;
+	}
+
+	function handleClick(name: string, event: PointerEventLike) {
+		if (!isFrontFace(event)) return;
 		if (countriesWithArtists.has(name)) onCountryClick(name);
 	}
 
@@ -293,7 +310,7 @@
 {#each countries as country (country.name)}
 	{@const opacity = getOpacity(country.name, country.hasArtists)}
 	<T.Group
-		onclick={() => handleClick(country.name)}
+		onclick={(event : PointerEventLike) => handleClick(country.name, event)}
 		onpointerenter={() => handleHover(country.name)}
 		onpointerleave={() => handleHover(null)}
 	>
