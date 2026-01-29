@@ -28,7 +28,7 @@
 		class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.7rem] text-pink opacity-70 transition-all hover:opacity-100 hover:[text-shadow:0_0_8px_#ffaef6]"
 		onclick={onBack}
 	>
-		[← BACK]
+		[BACK]
 	</button>
 
 	<h2 class="mb-3 text-lg font-bold uppercase">

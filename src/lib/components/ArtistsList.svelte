@@ -82,9 +82,4 @@
 			</li>
 		{/each}
 	</ul>
-
-	<!-- Count - mobile only -->
-	<p class="mt-2 text-[0.5rem] uppercase tracking-[0.15em] text-pink opacity-40 sm:hidden">
-		{filteredArtists.length} ARTIST{filteredArtists.length !== 1 ? 'S' : ''}
-	</p>
 </div>
