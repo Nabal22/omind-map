@@ -136,18 +136,24 @@ export function processGeoData(
 				? feature.geometry.coordinates
 				: [feature.geometry.coordinates];
 
+		// Only create meshes for countries with artists (huge performance boost)
 		const polygons: { vertices: Float32Array; indices: number[] }[] = [];
 
 		for (const polygon of rawPolygons) {
 			const ring = (polygon as number[][][])[0];
 			if (!ring || ring.length < 3) continue;
 
-			const triangulated = triangulatePolygon(ring, fillRadius);
-			if (triangulated) polygons.push(triangulated);
+			// Only triangulate countries with artists
+			if (hasArtists) {
+				const triangulated = triangulatePolygon(ring, fillRadius);
+				if (triangulated) polygons.push(triangulated);
+			}
 
+			// Borders for all countries
 			borders.push(...buildBorderLines(ring, borderRadius));
 		}
 
+		// Only add to countries array if it has polygons (i.e., has artists)
 		if (polygons.length > 0) {
 			countries.push({ name, hasArtists, polygons });
 		}

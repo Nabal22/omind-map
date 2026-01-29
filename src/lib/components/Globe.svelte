@@ -64,6 +64,21 @@
 		}
 	});
 
+	// Zoom out when deselecting country
+	let prevSelectedCountry: string | null = null;
+	$effect(() => {
+		if (prevSelectedCountry && !selectedCountry && $camera) {
+			// Zoom out along current camera direction
+			const cam = $camera as THREE.PerspectiveCamera;
+			const direction = cam.position.clone().normalize();
+			cameraTarget = {
+				position: direction.multiplyScalar(CAMERA_DISTANCE),
+				lookAt: new THREE.Vector3(0, 0, 0)
+			};
+		}
+		prevSelectedCountry = selectedCountry;
+	});
+
 	// Animate camera
 	useTask((delta) => {
 		if (!cameraTarget || !$camera) return;
