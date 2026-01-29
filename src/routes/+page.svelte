@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Canvas } from '@threlte/core';
-	import Globe from '$lib/components/Globe.svelte';
+	import Scene from '$lib/components/Scene.svelte';
+	import SceneContent from '$lib/components/SceneContent.svelte';
 	import CountryPanel from '$lib/components/CountryPanel.svelte';
 	import ArtistPopup from '$lib/components/ArtistPopup.svelte';
 	import { artists, type Artist } from '$lib/data/artists';
@@ -48,11 +48,11 @@
 		</p>
 	</header>
 
-	<!-- 3D Globe -->
+	<!-- 3D Scene -->
 	<div class="absolute inset-0">
-		<Canvas>
-			<Globe onCountryClick={selectCountry} {selectedCountry} />
-		</Canvas>
+		<Scene>
+			<SceneContent onCountryClick={selectCountry} {selectedCountry} />
+		</Scene>
 	</div>
 
 	<!-- Footer -->

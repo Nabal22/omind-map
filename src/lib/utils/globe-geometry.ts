@@ -95,7 +95,7 @@ function triangulatePolygon(
 			subdivideTriangle(
 				[coords[originalIndices[i]], coords[originalIndices[i + 1]], coords[originalIndices[i + 2]]],
 				radius,
-				1,
+				3,
 				vertices,
 				indices
 			);
