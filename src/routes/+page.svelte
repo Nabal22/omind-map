@@ -1,34 +1,38 @@
 <script lang="ts">
 	import Scene from '$lib/components/Scene.svelte';
 	import SceneContent from '$lib/components/SceneContent.svelte';
-	import CountryPanel from '$lib/components/CountryPanel.svelte';
+	import ArtistsPanel from '$lib/components/ArtistsPanel.svelte';
 	import ArtistPopup from '$lib/components/ArtistPopup.svelte';
-	import { artists, type Artist } from '$lib/data/artists';
+	import type { Artist } from '$lib/data/artists';
 
 	let selectedCountry = $state<string | null>(null);
 	let selectedArtist = $state<Artist | null>(null);
-
-	const artistsByCountry = $derived.by(() => {
-		if (!selectedCountry) return [];
-		return artists.filter((a) => a.country === selectedCountry);
-	});
+	let isPanelOpen = $state(false);
 
 	function selectCountry(name: string) {
 		selectedCountry = name;
-		selectedArtist = null;
+		isPanelOpen = true;
+	}
+
+	function handleCountrySelect(country: string | null) {
+		selectedCountry = country;
 	}
 
 	function selectArtist(artist: Artist) {
 		selectedArtist = artist;
 	}
 
-	function closeCountryPanel() {
+	function closePanel() {
+		isPanelOpen = false;
 		selectedCountry = null;
-		selectedArtist = null;
 	}
 
 	function closeArtistPopup() {
 		selectedArtist = null;
+	}
+
+	function openPanel() {
+		isPanelOpen = true;
 	}
 </script>
 
@@ -48,6 +52,16 @@
 		</p>
 	</header>
 
+	<!-- Open Panel Button -->
+	{#if !isPanelOpen}
+		<button
+			class="absolute right-4 top-4 z-40 cursor-pointer border-2 border-pink bg-black/80 px-4 py-2 font-mono text-xs uppercase tracking-wider text-pink transition-all hover:bg-pink hover:text-black sm:right-6 sm:top-6"
+			onclick={openPanel}
+		>
+			Explore Artists
+		</button>
+	{/if}
+
 	<!-- 3D Scene -->
 	<div class="absolute inset-0">
 		<Scene>
@@ -60,16 +74,17 @@
 		<p class="text-[0.5rem] tracking-[0.2em] uppercase opacity-40">UNDERGROUND MUSIC · WORLDWIDE</p>
 	</footer>
 
-	<!-- Panels -->
-	{#if selectedCountry}
-		<CountryPanel
-			countryName={selectedCountry}
-			artists={artistsByCountry}
+	<!-- Artists Panel -->
+	{#if isPanelOpen}
+		<ArtistsPanel
+			{selectedCountry}
+			onCountrySelect={handleCountrySelect}
 			onArtistClick={selectArtist}
-			onClose={closeCountryPanel}
+			onClose={closePanel}
 		/>
 	{/if}
 
+	<!-- Artist Popup -->
 	{#if selectedArtist}
 		<ArtistPopup artist={selectedArtist} onclose={closeArtistPopup} />
 	{/if}
