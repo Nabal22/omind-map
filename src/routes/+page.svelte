@@ -25,8 +25,7 @@
 </script>
 
 <div class="relative h-dvh w-screen overflow-hidden bg-black">
-	<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-	<div class="absolute inset-0" onclick={clearCountry}>
+	<div class="absolute inset-0" onclick={clearCountry} onkeydown={(e) => e.key === 'Escape' && clearCountry()} role="button" tabindex="-1">
 		<Scene>
 			<SceneContent onCountryClick={selectCountry} {selectedCountry} />
 		</Scene>
