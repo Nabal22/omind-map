@@ -1,10 +1,14 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core';
-	import { OrbitControls, interactivity } from '@threlte/extras';
+	import { OrbitControls } from '@threlte/extras';
 	import * as THREE from 'three';
-	import { loadGeoJSON, getCountryCentroid, latLngToVector3, type GeoJSONData } from '$lib/data/geo';
-	import { processGeoData, findCountryFeature, type CountryData } from '$lib/utils/globe-geometry';
+	import type ThreeGlobe from 'three-globe';
+
 	import { artists } from '$lib/data/artists';
+	import { GLOBE_RADIUS, CAMERA_DISTANCE, ZOOM_DISTANCE, COLORS } from '$lib/utils/globe-constants';
+	import { loadGeoJSON, getCountryCentroid, type GeoFeature } from '$lib/utils/geo-utils';
+	import { createGlobe, setGlobePolygons, updatePolygonColors } from '$lib/utils/globe-factory';
+	import { createGlobeInteractions } from '$lib/utils/globe-interactions';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -13,55 +17,110 @@
 
 	let { onCountryClick, selectedCountry }: Props = $props();
 
-	const { camera } = useThrelte();
-	interactivity();
-
-	// Constants
-	const RADIUS = 1;
-	const FILL_RADIUS = RADIUS * 1.01;
-	const BORDER_RADIUS = RADIUS * 1.011;
-	const CAMERA_DISTANCE = 2.5;
-	const ZOOM_DISTANCE = 1.8;
+	const { camera, renderer, invalidate } = useThrelte();
 
 	// State
-	let geoData: GeoJSONData | null = $state(null);
-	let countries: CountryData[] = $state([]);
-	let borderPositions: Float32Array | null = $state(null);
-	let hoveredCountry: string | null = $state(null);
+	let globe = $state<ThreeGlobe | null>(null);
 	let cameraTarget = $state<{ position: THREE.Vector3; lookAt: THREE.Vector3 } | null>(null);
+	let hoveredCountry = $state<string | null>(null);
+	let geoFeatures = $state<GeoFeature[]>([]);
 
 	// Derived
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
 
-	function getOpacity(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return 0.8;
-		if (name === hoveredCountry && hasArtists) return 0.7;
-		if (hasArtists) return 0.5;
-		return 0;
+	// Polygon color based on state
+	function getPolygonColor(d: GeoFeature): string {
+		const name = d.properties?.NAME;
+		if (name === selectedCountry) return COLORS.selected;
+		if (name === hoveredCountry && countriesWithArtists.has(name)) return COLORS.hovered;
+		if (countriesWithArtists.has(name)) return COLORS.hasArtists;
+		return COLORS.transparent;
 	}
 
-	// Load and process GeoJSON
+	// Camera animations
+	function animateCameraToCountry(feature: GeoFeature) {
+		if (!globe) return;
+
+		const centroid = getCountryCentroid(feature);
+		const altitude = (ZOOM_DISTANCE - GLOBE_RADIUS) / GLOBE_RADIUS;
+		const pos = globe.getCoords(centroid.lat, centroid.lng, altitude);
+
+		cameraTarget = {
+			position: new THREE.Vector3(pos.x, pos.y, pos.z),
+			lookAt: new THREE.Vector3(0, 0, 0)
+		};
+	}
+
+	function animateCameraZoomOut() {
+		if (!$camera) return;
+		const cam = $camera as THREE.PerspectiveCamera;
+		const direction = cam.position.clone().normalize();
+
+		cameraTarget = {
+			position: direction.multiplyScalar(CAMERA_DISTANCE),
+			lookAt: new THREE.Vector3(0, 0, 0)
+		};
+	}
+
+	// Event handlers
+	function handleCountryClick(feature: GeoFeature) {
+		const name = feature.properties?.NAME;
+		if (name && countriesWithArtists.has(name)) {
+			onCountryClick(name);
+			animateCameraToCountry(feature);
+		}
+	}
+
+	function handleCountryHover(feature: GeoFeature | null) {
+		const newHovered = feature?.properties?.NAME || null;
+		if (newHovered !== hoveredCountry) {
+			hoveredCountry = newHovered;
+			invalidate();
+		}
+	}
+
+	// Initialize globe
 	$effect(() => {
-		loadGeoJSON('/data/ne_110m_countries.geojson').then((data) => {
-			geoData = data;
-			const processed = processGeoData(data, countriesWithArtists, FILL_RADIUS, BORDER_RADIUS);
-			countries = processed.countries;
-			borderPositions = processed.borderPositions;
+		const g = createGlobe({ polygonColorFn: getPolygonColor });
+
+		loadGeoJSON('/data/ne_110m_countries.geojson').then((features) => {
+			geoFeatures = features;
+			setGlobePolygons(g, features);
+			globe = g;
 		});
 	});
 
-	// Set camera target on country select
+	// Update colors when selection/hover changes
 	$effect(() => {
-		if (selectedCountry && geoData) {
-			const feature = findCountryFeature(geoData, selectedCountry);
-			if (feature) {
-				const centroid = getCountryCentroid(feature);
-				cameraTarget = {
-					position: latLngToVector3(centroid.lat, centroid.lng, ZOOM_DISTANCE),
-					lookAt: latLngToVector3(centroid.lat, centroid.lng, 0)
-				};
-			}
+		if (!globe) return;
+		updatePolygonColors(globe, getPolygonColor);
+	});
+
+	// Handle deselection - zoom out
+	let prevSelectedCountry: string | null = null;
+	$effect(() => {
+		if (prevSelectedCountry && !selectedCountry) {
+			animateCameraZoomOut();
 		}
+		prevSelectedCountry = selectedCountry;
+	});
+
+	// Setup interactions
+	$effect(() => {
+		if (!globe || !renderer || !$camera) return;
+
+		return createGlobeInteractions(
+			{
+				globe,
+				camera: $camera as THREE.Camera,
+				canvas: renderer.domElement,
+				features: geoFeatures
+			},
+			{
+				onHover: handleCountryHover,
+				onClick: handleCountryClick
+			}
+		);
 	});
 
 	// Animate camera
@@ -70,90 +129,26 @@
 		const cam = $camera as THREE.PerspectiveCamera;
 		cam.position.lerp(cameraTarget.position, delta * 5);
 		cam.lookAt(cameraTarget.lookAt);
-		if (cam.position.distanceTo(cameraTarget.position) < 0.01) cameraTarget = null;
+		if (cam.position.distanceTo(cameraTarget.position) < 1) cameraTarget = null;
 	});
-
-	interface GlobePointerEvent {
-		face?: { normal: THREE.Vector3 };
-		object?: THREE.Object3D;
-		point?: THREE.Vector3;
-	}
-
-	function isFrontFace(event: GlobePointerEvent): boolean {
-		if (!event?.face || !event?.object || !event?.point || !$camera) return false;
-		const normal = event.face.normal.clone().transformDirection(event.object.matrixWorld);
-		const toCamera = event.point.clone().sub(($camera as THREE.PerspectiveCamera).position).normalize();
-		return normal.dot(toCamera) < 0;
-	}
-
-	function handleClick(name: string, event: GlobePointerEvent) {
-		if (isFrontFace(event) && countriesWithArtists.has(name)) {
-			onCountryClick(name);
-		}
-	}
 </script>
 
-<!-- Camera -->
 <T.PerspectiveCamera makeDefault position={[0, 0, CAMERA_DISTANCE]} fov={45}>
 	<OrbitControls
 		enableDamping
 		dampingFactor={0.05}
 		enableZoom
-		minDistance={1.5}
-		maxDistance={5}
+		minDistance={120}
+		maxDistance={400}
 		enablePan={false}
 		autoRotate={!selectedCountry && !cameraTarget}
 		autoRotateSpeed={0.3}
 	/>
 </T.PerspectiveCamera>
 
-<!-- Lighting -->
-<T.AmbientLight intensity={0.5} />
-<T.DirectionalLight position={[5, 3, 5]} intensity={1} />
+<T.AmbientLight intensity={0.8} />
+<T.DirectionalLight position={[500, 300, 500]} intensity={1} />
 
-<!-- Globe -->
-<T.Mesh renderOrder={0}>
-	<T.SphereGeometry args={[RADIUS, 64, 64]} />
-	<T.MeshStandardMaterial color="#1a1a2e" roughness={0.7} metalness={0.8} />
-</T.Mesh>
-
-<!-- Borders -->
-{#if borderPositions}
-	{@const positions = borderPositions}
-	<T.LineSegments>
-		<T.BufferGeometry
-			oncreate={(geo) => {
-				geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-			}}
-		/>
-		<T.LineBasicMaterial color={0xffaef6} transparent opacity={0.6} />
-	</T.LineSegments>
+{#if globe}
+	<T is={globe} />
 {/if}
-
-<!-- Country fills -->
-{#each countries as country (country.name)}
-	{@const opacity = getOpacity(country.name, country.hasArtists)}
-	<T.Group
-		onclick={(event: GlobePointerEvent) => handleClick(country.name, event)}
-		onpointerenter={() => (hoveredCountry = country.name)}
-		onpointerleave={() => (hoveredCountry = null)}
-	>
-		{#each country.polygons as polygon, i (i)}
-			<T.Mesh renderOrder={2}>
-				<T.BufferGeometry
-					oncreate={(geo) => {
-						geo.setAttribute('position', new THREE.BufferAttribute(polygon.vertices, 3));
-						geo.setIndex(polygon.indices);
-						geo.computeVertexNormals();
-					}}
-				/>
-				<T.MeshBasicMaterial
-					color={0xffaef6}
-					transparent
-					{opacity}
-					side={THREE.DoubleSide}
-				/>
-			</T.Mesh>
-		{/each}
-	</T.Group>
-{/each}
