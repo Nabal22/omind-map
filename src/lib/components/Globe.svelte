@@ -83,7 +83,6 @@
 
 			const processedCountries: CountryData[] = [];
 			const borderPositions: number[] = [];
-			const processedMarkers: MarkerData[] = [];
 
 			for (const feature of data.features) {
 				const countryName = feature.properties.NAME;
