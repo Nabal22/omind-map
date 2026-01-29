@@ -39,8 +39,10 @@
 		"@threlte/core": "^8.3.1",
 		"@threlte/extras": "^9.7.1",
 		"@types/d3-geo": "^3.1.0",
+		"@types/earcut": "^3.0.0",
 		"@types/three": "^0.182.0",
 		"d3-geo": "^3.1.1",
+		"earcut": "^3.0.2",
 		"three": "^0.182.0",
 		"threlte-mcp": "^1.4.0"
 	}
