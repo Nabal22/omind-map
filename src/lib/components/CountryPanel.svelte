@@ -12,41 +12,31 @@
 </script>
 
 <div
-	class="pointer-events-none fixed inset-0 z-50 flex items-start justify-end p-4 pt-20
-		sm:items-center sm:justify-end sm:p-6 sm:pt-6"
+	class="pointer-events-none fixed inset-0 z-50 flex items-start justify-end p-4 pt-20 sm:items-center sm:p-6"
 >
 	<div
-		class="pointer-events-auto relative w-full max-w-xs animate-glitch-in border-2 border-pink bg-black/95 p-4 font-mono
-			text-pink shadow-[0_0_30px_rgba(255,174,246,0.2),inset_0_0_30px_rgba(255,174,246,0.03)]
-			backdrop-blur-sm
-			before:pointer-events-none before:absolute before:-inset-1 before:border before:border-pink before:opacity-30 before:content-['']"
+		class="pointer-events-auto relative w-full max-w-xs animate-slide-up border-2 border-pink bg-black/95 p-4 font-mono text-pink shadow-[0_0_30px_rgba(255,174,246,0.2)]"
 	>
 		<button
-			class="absolute top-3 right-3 z-10 cursor-pointer border-none bg-transparent p-1 font-mono text-sm text-pink
-				transition-all hover:[text-shadow:0_0_8px_#ffaef6]"
+			class="absolute top-3 right-3 cursor-pointer bg-transparent p-1 font-mono text-sm text-pink transition-all hover:[text-shadow:0_0_8px_#ffaef6]"
 			onclick={onClose}
 		>
 			[X]
 		</button>
 
-		<p class="mb-1 text-[0.6rem] uppercase tracking-[0.25em] opacity-50">WHO THE FUCK IS FROM</p>
-		<h2
-			class="mb-4 text-xl font-bold uppercase tracking-wide [text-shadow:0_0_10px_#ffaef6]"
-		>
+		<p class="mb-1 text-[0.6rem] tracking-[0.25em] uppercase opacity-50">WHO THE FUCK IS FROM</p>
+		<h2 class="mb-4 text-xl font-bold tracking-wide uppercase [text-shadow:0_0_10px_#ffaef6]">
 			{countryName}
 		</h2>
 
 		<div class="space-y-2">
 			{#each artists as artist (artist.id)}
 				<button
-					class="group flex w-full cursor-pointer items-center gap-3 border border-pink/40 bg-transparent p-3
-						text-left font-mono text-pink transition-all duration-200
-						hover:border-pink hover:bg-pink/10 hover:shadow-[0_0_15px_rgba(255,174,246,0.3)]"
+					class="group flex w-full cursor-pointer items-center gap-3 border border-pink/40 bg-transparent p-3 text-left font-mono text-pink transition-all hover:border-pink hover:bg-pink/10"
 					onclick={() => onArtistClick(artist)}
 				>
 					<span
-						class="flex h-8 w-8 shrink-0 items-center justify-center border border-pink/60 text-[0.6rem]
-							transition-all group-hover:border-pink group-hover:bg-pink group-hover:text-black"
+						class="flex h-8 w-8 shrink-0 items-center justify-center border border-pink/60 text-[0.6rem] transition-all group-hover:bg-pink group-hover:text-black"
 					>
 						►
 					</span>
@@ -59,7 +49,7 @@
 		</div>
 
 		<div class="mt-4 border-t border-pink/20 pt-3">
-			<p class="text-[0.55rem] uppercase tracking-[0.2em] opacity-40">
+			<p class="text-[0.55rem] tracking-[0.2em] uppercase opacity-40">
 				{artists.length} ARTIST{artists.length > 1 ? 'S' : ''} FOUND
 			</p>
 		</div>

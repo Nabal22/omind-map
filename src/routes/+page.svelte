@@ -13,69 +13,64 @@
 		return artists.filter((a) => a.country === selectedCountry);
 	});
 
-	function handleCountryClick(countryName: string) {
-		selectedCountry = countryName;
+	function selectCountry(name: string) {
+		selectedCountry = name;
 		selectedArtist = null;
 	}
 
-	function handleArtistClick(artist: Artist) {
+	function selectArtist(artist: Artist) {
 		selectedArtist = artist;
 	}
 
-	function handleCloseCountryPanel() {
+	function closeCountryPanel() {
 		selectedCountry = null;
 		selectedArtist = null;
 	}
 
-	function handleCloseArtistPopup() {
+	function closeArtistPopup() {
 		selectedArtist = null;
 	}
 </script>
 
 <div class="relative h-dvh w-screen overflow-hidden bg-black">
-	<header
-		class="pointer-events-none absolute top-0 left-0 z-40 p-4 font-mono text-pink
-			sm:p-6"
-	>
-		<p class="mb-1 text-[0.5rem] uppercase tracking-[0.3em] opacity-50 sm:text-[0.6rem]">
+	<!-- Header -->
+	<header class="pointer-events-none absolute top-0 left-0 z-40 p-4 font-mono text-pink sm:p-6">
+		<p class="mb-1 text-[0.5rem] tracking-[0.3em] uppercase opacity-50 sm:text-[0.6rem]">
 			0MIND PRESENTS
 		</p>
 		<h1
-			class="text-lg font-bold uppercase tracking-tight [text-shadow:0_0_20px_#ffaef6,0_0_40px_#ffaef640]
-				sm:text-2xl"
+			class="text-lg font-bold tracking-tight uppercase [text-shadow:0_0_20px_#ffaef6] sm:text-2xl"
 		>
 			WHERE THE FUCK IS
 		</h1>
-		<p class="mt-1 text-[0.55rem] uppercase tracking-[0.2em] opacity-40 sm:text-[0.65rem]">
+		<p class="mt-1 text-[0.55rem] tracking-[0.2em] uppercase opacity-40 sm:text-[0.65rem]">
 			CLICK A COUNTRY TO EXPLORE
 		</p>
 	</header>
 
+	<!-- 3D Globe -->
 	<div class="absolute inset-0">
 		<Canvas>
-			<Globe onCountryClick={handleCountryClick} {selectedCountry} />
+			<Globe onCountryClick={selectCountry} {selectedCountry} />
 		</Canvas>
 	</div>
 
-	<footer
-		class="pointer-events-none absolute bottom-0 left-0 z-40 p-4 font-mono text-pink
-			sm:p-6"
-	>
-		<p class="text-[0.5rem] uppercase tracking-[0.2em] opacity-40">
-			UNDERGROUND MUSIC · WORLDWIDE
-		</p>
+	<!-- Footer -->
+	<footer class="pointer-events-none absolute bottom-0 left-0 z-40 p-4 font-mono text-pink sm:p-6">
+		<p class="text-[0.5rem] tracking-[0.2em] uppercase opacity-40">UNDERGROUND MUSIC · WORLDWIDE</p>
 	</footer>
 
+	<!-- Panels -->
 	{#if selectedCountry}
 		<CountryPanel
 			countryName={selectedCountry}
 			artists={artistsByCountry}
-			onArtistClick={handleArtistClick}
-			onClose={handleCloseCountryPanel}
+			onArtistClick={selectArtist}
+			onClose={closeCountryPanel}
 		/>
 	{/if}
 
 	{#if selectedArtist}
-		<ArtistPopup artist={selectedArtist} onclose={handleCloseArtistPopup} />
+		<ArtistPopup artist={selectedArtist} onclose={closeArtistPopup} />
 	{/if}
 </div>

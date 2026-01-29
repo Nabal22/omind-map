@@ -7,11 +7,11 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} type="image/png" />
-	
+
 	<link rel="apple-touch-icon" href={favicon} />
-	
+
 	<link rel="manifest" href="/site.webmanifest" />
-	
+
 	<meta name="theme-color" content="#ffffff" />
 </svelte:head>
 {@render children()}
