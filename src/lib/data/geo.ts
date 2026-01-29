@@ -1,22 +1,8 @@
 import { BufferGeometry, Float32BufferAttribute, type Vector3 } from 'three';
 import { latLngToVector3 } from '$lib/data/artists';
+import type { FeatureCollection, Geometry, Position } from 'geojson';
 
-interface GeoJsonGeometry {
-	type: 'Polygon' | 'MultiPolygon';
-	coordinates: number[][][] | number[][][][];
-}
-
-interface GeoJsonFeature {
-	type: 'Feature';
-	geometry: GeoJsonGeometry;
-}
-
-interface GeoJsonFeatureCollection {
-	type: 'FeatureCollection';
-	features: GeoJsonFeature[];
-}
-
-function ringToSegments(ring: number[][], radius: number, output: number[]): void {
+function ringToSegments(ring: Position[], radius: number, output: number[]): void {
 	const verts: Vector3[] = [];
 	for (const coord of ring) {
 		verts.push(latLngToVector3(coord[1], coord[0], radius));
@@ -33,7 +19,7 @@ function ringToSegments(ring: number[][], radius: number, output: number[]): voi
 }
 
 export function buildCountryGeometry(
-	geojson: GeoJsonFeatureCollection,
+	geojson: FeatureCollection<Geometry>,
 	radius = 2.01
 ): BufferGeometry {
 	const segments: number[] = [];
@@ -43,10 +29,10 @@ export function buildCountryGeometry(
 		if (!geometry) continue;
 
 		if (geometry.type === 'Polygon') {
-			const outerRing = (geometry.coordinates as number[][][])[0];
+			const outerRing = geometry.coordinates[0];
 			ringToSegments(outerRing, radius, segments);
 		} else if (geometry.type === 'MultiPolygon') {
-			for (const polygon of geometry.coordinates as number[][][][]) {
+			for (const polygon of geometry.coordinates) {
 				ringToSegments(polygon[0], radius, segments);
 			}
 		}
