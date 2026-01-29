@@ -4,22 +4,7 @@
 	--color-pink: #ffaef6;
 	--color-black: #000000;
 	--font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-	--animate-glitch-in: glitch-in 0.3s ease-out;
 	--animate-slide-up: slide-up 0.25s ease-out;
-}
-
-@keyframes glitch-in {
-	0% {
-		opacity: 0;
-		transform: translateX(-5px) skewX(-2deg);
-	}
-	50% {
-		transform: translateX(3px) skewX(1deg);
-	}
-	100% {
-		opacity: 1;
-		transform: translateX(0) skewX(0);
-	}
 }
 
 @keyframes slide-up {

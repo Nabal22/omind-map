@@ -1,11 +1,28 @@
-import { BufferGeometry, Float32BufferAttribute, Vector3 } from 'three';
+import * as THREE from 'three';
 import earcut from 'earcut';
-import type { FeatureCollection, Geometry, Position } from 'geojson';
 
-/**
- * Convert lat/lng to 3D coordinates on a sphere
- */
-function latLngToVector3(lat: number, lng: number, radius: number): Vector3 {
+export interface CountryFeature {
+	type: 'Feature';
+	properties: {
+		NAME: string;
+		ADMIN: string;
+		ISO_A3: string;
+		[key: string]: unknown;
+	};
+	geometry: {
+		type: 'Polygon' | 'MultiPolygon';
+		coordinates: number[][][] | number[][][][];
+	};
+}
+
+export interface GeoJSONData {
+	type: 'FeatureCollection';
+	features: CountryFeature[];
+}
+
+const EARTH_RADIUS = 1;
+
+export function latLngToVector3(lat: number, lng: number, radius: number = EARTH_RADIUS): THREE.Vector3 {
 	const phi = (90 - lat) * (Math.PI / 180);
 	const theta = (lng + 180) * (Math.PI / 180);
 
@@ -13,204 +30,183 @@ function latLngToVector3(lat: number, lng: number, radius: number): Vector3 {
 	const y = radius * Math.cos(phi);
 	const z = radius * Math.sin(phi) * Math.sin(theta);
 
-	return new Vector3(x, y, z);
+	return new THREE.Vector3(x, y, z);
 }
 
-/**
- * Flatten polygon coordinates for earcut triangulation
- */
-function flattenPolygon(rings: Position[][]): { vertices: number[]; holes: number[] } {
+export function getCountryCentroid(feature: CountryFeature): { lat: number; lng: number } {
+	const coords = feature.geometry.type === 'MultiPolygon'
+		? feature.geometry.coordinates.flat(2)
+		: feature.geometry.coordinates.flat();
+
+	let sumLng = 0;
+	let sumLat = 0;
+	let count = 0;
+
+	for (const coord of coords as number[][]) {
+		sumLng += coord[0];
+		sumLat += coord[1];
+		count++;
+	}
+
+	return {
+		lng: sumLng / count,
+		lat: sumLat / count
+	};
+}
+
+export function createCountryMesh(
+	feature: CountryFeature,
+	radius: number = EARTH_RADIUS
+): THREE.Mesh | THREE.Group {
+	const geometry = feature.geometry;
+	const polygons = geometry.type === 'MultiPolygon'
+		? geometry.coordinates
+		: [geometry.coordinates];
+
+	const group = new THREE.Group();
+	group.name = feature.properties.NAME;
+	group.userData = {
+		countryName: feature.properties.NAME,
+		admin: feature.properties.ADMIN,
+		iso: feature.properties.ISO_A3
+	};
+
+	for (const polygon of polygons) {
+		const mesh = createPolygonMesh(polygon as number[][][], radius);
+		if (mesh) {
+			group.add(mesh);
+		}
+	}
+
+	return group;
+}
+
+function createPolygonMesh(
+	polygon: number[][][],
+	radius: number
+): THREE.Mesh | null {
+	const outerRing = polygon[0];
+	if (!outerRing || outerRing.length < 3) return null;
+
 	const vertices: number[] = [];
-	const holes: number[] = [];
+	const flatVertices: number[] = [];
 
-	for (let i = 0; i < rings.length; i++) {
-		const ring = rings[i];
-		if (i > 0) {
-			holes.push(vertices.length / 2);
-		}
-		for (const coord of ring) {
-			vertices.push(coord[0], coord[1]); // lng, lat
-		}
+	for (const coord of outerRing) {
+		const [lng, lat] = coord;
+		flatVertices.push(lng, lat);
+
+		const vec = latLngToVector3(lat, lng, radius * 1.001);
+		vertices.push(vec.x, vec.y, vec.z);
 	}
 
-	return { vertices, holes };
-}
+	try {
+		const indices = earcut(flatVertices, undefined, 2);
+		if (indices.length === 0) return null;
 
-/**
- * Subdivide a triangle on a sphere for smoother curvature
- */
-function subdivideTriangle(
-	v1: Vector3,
-	v2: Vector3,
-	v3: Vector3,
-	radius: number,
-	depth: number
-): Vector3[][] {
-	if (depth === 0) {
-		return [[v1, v2, v3]];
+		const geometry = new THREE.BufferGeometry();
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+		geometry.setIndex(indices);
+		geometry.computeVertexNormals();
+
+		const material = new THREE.MeshBasicMaterial({
+			color: 0x000000,
+			transparent: true,
+			opacity: 0,
+			side: THREE.DoubleSide
+		});
+
+		return new THREE.Mesh(geometry, material);
+	} catch {
+		return null;
 	}
-
-	// Midpoints, normalized to sphere surface
-	const mid12 = new Vector3().addVectors(v1, v2).normalize().multiplyScalar(radius);
-	const mid23 = new Vector3().addVectors(v2, v3).normalize().multiplyScalar(radius);
-	const mid31 = new Vector3().addVectors(v3, v1).normalize().multiplyScalar(radius);
-
-	return [
-		...subdivideTriangle(v1, mid12, mid31, radius, depth - 1),
-		...subdivideTriangle(mid12, v2, mid23, radius, depth - 1),
-		...subdivideTriangle(mid31, mid23, v3, radius, depth - 1),
-		...subdivideTriangle(mid12, mid23, mid31, radius, depth - 1)
-	];
 }
 
-/**
- * Triangulate a polygon and project onto a sphere
- */
-function triangulatePolygon(
-	rings: Position[][],
-	radius: number,
-	subdivisions: number = 1
-): { positions: number[]; normals: number[] } {
-	const { vertices, holes } = flattenPolygon(rings);
-	const indices = earcut(vertices, holes, 2);
-
+export function createCountryBorders(
+	features: CountryFeature[],
+	radius: number = EARTH_RADIUS
+): THREE.LineSegments {
 	const positions: number[] = [];
-	const normals: number[] = [];
 
-	for (let i = 0; i < indices.length; i += 3) {
-		const i1 = indices[i];
-		const i2 = indices[i + 1];
-		const i3 = indices[i + 2];
+	for (const feature of features) {
+		const geometry = feature.geometry;
+		const polygons = geometry.type === 'MultiPolygon'
+			? geometry.coordinates
+			: [geometry.coordinates];
 
-		const lng1 = vertices[i1 * 2];
-		const lat1 = vertices[i1 * 2 + 1];
-		const lng2 = vertices[i2 * 2];
-		const lat2 = vertices[i2 * 2 + 1];
-		const lng3 = vertices[i3 * 2];
-		const lat3 = vertices[i3 * 2 + 1];
+		for (const polygon of polygons) {
+			for (const ring of polygon as number[][][]) {
+				for (let i = 0; i < ring.length - 1; i++) {
+					const [lng1, lat1] = ring[i];
+					const [lng2, lat2] = ring[i + 1];
 
-		const v1 = latLngToVector3(lat1, lng1, radius);
-		const v2 = latLngToVector3(lat2, lng2, radius);
-		const v3 = latLngToVector3(lat3, lng3, radius);
+					const v1 = latLngToVector3(lat1, lng1, radius * 1.002);
+					const v2 = latLngToVector3(lat2, lng2, radius * 1.002);
 
-		// Subdivide for smoother sphere projection
-		const triangles = subdivideTriangle(v1, v2, v3, radius, subdivisions);
-
-		for (const [tv1, tv2, tv3] of triangles) {
-			// Positions
-			positions.push(tv1.x, tv1.y, tv1.z);
-			positions.push(tv2.x, tv2.y, tv2.z);
-			positions.push(tv3.x, tv3.y, tv3.z);
-
-			// Normals (pointing outward from sphere center)
-			const n1 = tv1.clone().normalize();
-			const n2 = tv2.clone().normalize();
-			const n3 = tv3.clone().normalize();
-			normals.push(n1.x, n1.y, n1.z);
-			normals.push(n2.x, n2.y, n2.z);
-			normals.push(n3.x, n3.y, n3.z);
-		}
-	}
-
-	return { positions, normals };
-}
-
-/**
- * Process a GeoJSON geometry into triangulated mesh data
- */
-function processGeometry(
-	geometry: Geometry,
-	radius: number,
-	subdivisions: number
-): { positions: number[]; normals: number[] } {
-	const positions: number[] = [];
-	const normals: number[] = [];
-
-	if (geometry.type === 'Polygon') {
-		const result = triangulatePolygon(geometry.coordinates, radius, subdivisions);
-		positions.push(...result.positions);
-		normals.push(...result.normals);
-	} else if (geometry.type === 'MultiPolygon') {
-		for (const polygon of geometry.coordinates) {
-			const result = triangulatePolygon(polygon, radius, subdivisions);
-			positions.push(...result.positions);
-			normals.push(...result.normals);
-		}
-	}
-
-	return { positions, normals };
-}
-
-/**
- * Build Three.js BufferGeometry meshes from GeoJSON FeatureCollection
- */
-export function buildCountryMeshGeometry(
-	geojson: FeatureCollection<Geometry>,
-	radius = 2.01,
-	subdivisions = 1
-): BufferGeometry {
-	const allPositions: number[] = [];
-	const allNormals: number[] = [];
-
-	for (const feature of geojson.features) {
-		if (!feature.geometry) continue;
-
-		const { positions, normals } = processGeometry(feature.geometry, radius, subdivisions);
-		allPositions.push(...positions);
-		allNormals.push(...normals);
-	}
-
-	const geometry = new BufferGeometry();
-	geometry.setAttribute('position', new Float32BufferAttribute(allPositions, 3));
-	geometry.setAttribute('normal', new Float32BufferAttribute(allNormals, 3));
-
-	return geometry;
-}
-
-/**
- * Build country border outlines as line geometry
- */
-export function buildCountryOutlineGeometry(
-	geojson: FeatureCollection<Geometry>,
-	radius = 2.02
-): BufferGeometry {
-	const segments: number[] = [];
-
-	function processRing(ring: Position[]): void {
-		if (ring.length < 2) return;
-
-		const verts = ring.map((coord) => latLngToVector3(coord[1], coord[0], radius));
-
-		for (let i = 0; i < verts.length - 1; i++) {
-			const a = verts[i];
-			const b = verts[i + 1];
-			segments.push(a.x, a.y, a.z, b.x, b.y, b.z);
-		}
-	}
-
-	function processGeometryOutline(geometry: Geometry): void {
-		if (geometry.type === 'Polygon') {
-			for (const ring of geometry.coordinates) {
-				processRing(ring);
-			}
-		} else if (geometry.type === 'MultiPolygon') {
-			for (const polygon of geometry.coordinates) {
-				for (const ring of polygon) {
-					processRing(ring);
+					positions.push(v1.x, v1.y, v1.z);
+					positions.push(v2.x, v2.y, v2.z);
 				}
 			}
 		}
 	}
 
-	for (const feature of geojson.features) {
-		if (!feature.geometry) continue;
-		processGeometryOutline(feature.geometry);
-	}
+	const geometry = new THREE.BufferGeometry();
+	geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 
-	const geo = new BufferGeometry();
-	geo.setAttribute('position', new Float32BufferAttribute(segments, 3));
-	return geo;
+	const material = new THREE.LineBasicMaterial({
+		color: 0xffaef6,
+		transparent: true,
+		opacity: 0.6
+	});
+
+	return new THREE.LineSegments(geometry, material);
 }
 
-// Keep backward compatibility
-export const buildCountryGeometry = buildCountryOutlineGeometry;
+export function createGlobe(radius: number = EARTH_RADIUS): THREE.Mesh {
+	const geometry = new THREE.SphereGeometry(radius, 64, 64);
+	const material = new THREE.MeshBasicMaterial({
+		color: 0x0a0a0a,
+		transparent: true,
+		opacity: 0.95
+	});
+
+	return new THREE.Mesh(geometry, material);
+}
+
+export function createGlobeGrid(radius: number = EARTH_RADIUS): THREE.LineSegments {
+	const positions: number[] = [];
+	const gridOpacity = 0.15;
+
+	for (let lat = -80; lat <= 80; lat += 20) {
+		for (let lng = -180; lng < 180; lng += 2) {
+			const v1 = latLngToVector3(lat, lng, radius * 1.001);
+			const v2 = latLngToVector3(lat, lng + 2, radius * 1.001);
+			positions.push(v1.x, v1.y, v1.z);
+			positions.push(v2.x, v2.y, v2.z);
+		}
+	}
+
+	for (let lng = -180; lng < 180; lng += 20) {
+		for (let lat = -90; lat < 90; lat += 2) {
+			const v1 = latLngToVector3(lat, lng, radius * 1.001);
+			const v2 = latLngToVector3(lat + 2, lng, radius * 1.001);
+			positions.push(v1.x, v1.y, v1.z);
+			positions.push(v2.x, v2.y, v2.z);
+		}
+	}
+
+	const geometry = new THREE.BufferGeometry();
+	geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+	const material = new THREE.LineBasicMaterial({
+		color: 0xffaef6,
+		transparent: true,
+		opacity: gridOpacity
+	});
+
+	return new THREE.LineSegments(geometry, material);
+}
+
+export async function loadGeoJSON(url: string): Promise<GeoJSONData> {
+	const response = await fetch(url);
+	return response.json();
+}
