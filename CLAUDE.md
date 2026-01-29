@@ -20,20 +20,11 @@ A 3D globe application showing artist locations worldwide, built with SvelteKit 
 - **Routing**: SvelteKit file-based routing in `src/routes/`
 - **Components/utilities**: `src/lib/` (aliased as `$lib`)
 - **3D rendering**: Threlte (`@threlte/core`, `@threlte/extras`) wrapping Three.js
-- **Globe**: Country borders rendered from Natural Earth 110m GeoJSON (`static/data/world-110m.geojson`), parsed by `src/lib/data/geo.ts` into a single `LineSegments` BufferGeometry for performance
+- **Globe**: Country borders rendered from Natural Earth 110m GeoJSON (`static/data/ne_110m_countries.geojson`)
+- **Country geometries**: Use geojson and earcut
 - **Styling**: Tailwind CSS v4 via `@tailwindcss/vite` plugin — config uses `@theme` directive in `src/routes/layout.css` (no `tailwind.config` file)
 - **Adapter**: `adapter-cloudflare` for Cloudflare Pages deployment
 - **Static assets**: Icons, GeoJSON data, and web manifest in `static/`
-
-## Key Files
-
-- `src/lib/components/Globe.svelte` — 3D globe with country outlines and wireframe
-- `src/lib/components/SceneContent.svelte` — Camera, lights, OrbitControls, markers
-- `src/lib/components/Marker.svelte` — Clickable artist marker on the globe
-- `src/lib/components/ArtistPopup.svelte` — Artist info popup dialog
-- `src/lib/components/NavMenu.svelte` — Artist navigation menu
-- `src/lib/data/geo.ts` — GeoJSON to BufferGeometry conversion
-- `src/lib/data/artists.ts` — Artist data and `latLngToVector3` helper
 
 ## Code Conventions
 
