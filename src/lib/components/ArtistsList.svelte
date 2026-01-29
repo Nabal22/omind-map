@@ -11,6 +11,9 @@
 	let { selectedCountry, onCountrySelect, onArtistSelect, countryTagRefs = $bindable({}) }: Props =
 		$props();
 
+	// Toggle for country filter on desktop
+	let showCountryFilter = $state(false);
+
 	// Get unique countries from artists
 	const countries = [...new Set(artists.map((a) => a.country))].sort();
 
@@ -25,6 +28,12 @@
 		} else {
 			onCountrySelect(country);
 		}
+		showCountryFilter = false;
+	}
+
+	function clearFilter() {
+		onCountrySelect(null);
+		showCountryFilter = false;
 	}
 </script>
 
@@ -36,19 +45,42 @@
 	role="menu"
 	tabindex="-1"
 >
-	<!-- Title - desktop only -->
-	<h2 class="mb-3 hidden text-[0.65rem] uppercase tracking-[0.2em] text-pink opacity-70 sm:block">
-		WHERE THE FUCK IS :
-	</h2>
+	<!-- Header with title and filter toggle - desktop -->
+	<div class="mb-3 hidden items-center gap-3 sm:flex">
+		<h2 class="text-[0.65rem] uppercase tracking-[0.2em] text-pink opacity-70">
+			WHERE THE FUCK IS :
+		</h2>
+		<button
+			class="cursor-pointer border-none bg-transparent font-mono text-[0.55rem] uppercase text-pink transition-all duration-150
+				{showCountryFilter || selectedCountry ? 'opacity-100' : 'opacity-50 hover:opacity-80'}"
+			onclick={() => (showCountryFilter = !showCountryFilter)}
+		>
+			[{showCountryFilter ? '−' : '+'}]
+		</button>
+	</div>
 
-	<!-- Country Tags -->
+	<!-- Selected country indicator - desktop -->
+	{#if selectedCountry && !showCountryFilter}
+		<div class="mb-2 hidden items-center gap-2 sm:flex">
+			<span class="text-[0.6rem] uppercase text-pink opacity-50">FILTER:</span>
+			<button
+				class="cursor-pointer border-none bg-transparent font-mono text-[0.65rem] uppercase text-pink opacity-100 transition-all [text-shadow:0_0_8px_#ffaef6] hover:opacity-80"
+				onclick={clearFilter}
+			>
+				{selectedCountry} [×]
+			</button>
+		</div>
+	{/if}
+
+	<!-- Country Tags - mobile: always visible, desktop: collapsible -->
 	<div
-		class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:mb-3 sm:flex-wrap sm:gap-1.5 sm:overflow-x-visible"
+		class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:mb-3 sm:max-h-32 sm:flex-wrap sm:gap-1.5 sm:overflow-y-auto
+			{showCountryFilter ? 'sm:flex' : 'sm:hidden'}"
 	>
 		<button
 			class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-150
 				{!selectedCountry ? 'opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'opacity-50 hover:opacity-80'}"
-			onclick={() => onCountrySelect(null)}
+			onclick={clearFilter}
 		>
 			[ALL]
 		</button>
@@ -65,10 +97,10 @@
 		{/each}
 	</div>
 
-	<!-- Artists List -->
+	<!-- Artists List - desktop: limited height with scroll -->
 	<ul
 		class="flex flex-row gap-0 overflow-x-auto [scrollbar-width:none]
-			sm:flex-col sm:gap-[0.2rem] sm:overflow-x-visible"
+			sm:max-h-[50vh] sm:flex-col sm:gap-[0.2rem] sm:overflow-x-visible sm:overflow-y-auto"
 	>
 		{#each filteredArtists as artist (artist.id)}
 			<li>
