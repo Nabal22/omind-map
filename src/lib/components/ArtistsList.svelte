@@ -50,13 +50,6 @@
 	role="menu"
 	tabindex="-1"
 >
-	<!-- Header - desktop only -->
-	<div class="mb-3 hidden sm:block">
-		<h2 class="text-[0.65rem] uppercase tracking-[0.2em] text-pink opacity-70">
-			WHERE THE FUCK IS :
-		</h2>
-	</div>
-
 	<!-- Country Tags - mobile only -->
 	<div class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:hidden">
 		<button

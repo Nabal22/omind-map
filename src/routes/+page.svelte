@@ -51,8 +51,8 @@
 
 	<!-- Footer -->
 	<footer
-		class="pointer-events-none absolute bottom-0 right-0 z-40 p-4 font-mono text-pink sm:bottom-0 sm:left-0 sm:right-auto sm:p-6"
+		class="pointer-events-none absolute bottom-0 right-0 z-40 p-4 font-mono text-pink sm:bottom-0 sm:left-0 sm:right-auto sm:p-6 flex items-center gap-2 opacity-70 transition-opacity hover:opacity-100"
 	>
-		<p class="text-[0.5rem] uppercase tracking-[0.2em] opacity-40">UNDERGROUND MUSIC · WORLDWIDE</p>
+		<img src="/assets/icon-512.png" alt="0mind logo" class="mb-1 h-12 w-12" />
 	</footer>
 </div>
