@@ -2,6 +2,7 @@
 	import Scene from '$lib/components/Scene.svelte';
 	import SceneContent from '$lib/components/SceneContent.svelte';
 	import ArtistsPanel from '$lib/components/ArtistsPanel.svelte';
+	import CountryFilter from '$lib/components/CountryFilter.svelte';
 
 	// Filter state (controls artist list filtering)
 	let selectedCountry = $state<string | null>(null);
@@ -41,6 +42,9 @@
 			<SceneContent onCountryClick={selectCountry} {selectedCountry} {focusCountry} />
 		</Scene>
 	</div>
+
+	<!-- Country Filter - desktop top center -->
+	<CountryFilter {selectedCountry} onCountrySelect={handleCountrySelect} />
 
 	<!-- Artists Panel / Nav Menu -->
 	<ArtistsPanel {selectedCountry} onCountrySelect={handleCountrySelect} onFocusCountry={handleFocusCountry} />

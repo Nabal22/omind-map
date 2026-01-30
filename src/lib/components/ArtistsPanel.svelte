@@ -19,24 +19,14 @@
 	// Flag to prevent resetting artist when we're selecting one
 	let isSelectingArtist = false;
 
-	// Country tag button refs for scrolling into view
-	let countryTagRefs: Record<string, HTMLButtonElement> = $state({});
-
-	// Reset to list view and scroll tag into view when country changes (unless selecting artist)
+	// Reset to list view when country changes (unless selecting artist)
 	$effect(() => {
-		const country = selectedCountry;
+		selectedCountry;
 		untrack(() => {
 			if (!isSelectingArtist) {
 				selectedArtist = null;
 			}
 			isSelectingArtist = false;
-			if (country && countryTagRefs[country]) {
-				countryTagRefs[country].scrollIntoView({
-					behavior: 'smooth',
-					block: 'nearest',
-					inline: 'center'
-				});
-			}
 		});
 	});
 
@@ -53,7 +43,7 @@
 
 {#if selectedArtist}
 	<div
-		in:fly={{ x: 20, duration: 250, delay: 100 }}
+		in:fly={{ x: 20, duration: 250 }}
 		out:fade={{ duration: 150 }}
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.stopPropagation()}
@@ -63,7 +53,7 @@
 	</div>
 {:else}
 	<div
-		in:fade={{ duration: 200, delay: 100 }}
+		in:fade={{ duration: 200, delay: 50 }}
 		out:fade={{ duration: 100 }}
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.stopPropagation()}
@@ -73,7 +63,6 @@
 			{selectedCountry}
 			{onCountrySelect}
 			onArtistSelect={selectArtist}
-			bind:countryTagRefs
 		/>
 	</div>
 {/if}

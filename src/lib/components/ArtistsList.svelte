@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { fly, scale } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
 
 	interface Props {
 		selectedCountry: string | null;
 		onCountrySelect: (country: string | null) => void;
 		onArtistSelect: (artist: Artist) => void;
-		countryTagRefs: Record<string, HTMLButtonElement>;
 	}
 
-	let { selectedCountry, onCountrySelect, onArtistSelect, countryTagRefs = $bindable({}) }: Props =
-		$props();
+	let { selectedCountry, onCountrySelect, onArtistSelect }: Props = $props();
 
 	// Track previous country to trigger list animation
 	let prevCountry: string | null = null;
@@ -23,10 +21,7 @@
 		}
 	});
 
-	// Toggle for country filter on desktop
-	let showCountryFilter = $state(false);
-
-	// Get unique countries from artists
+	// Get unique countries from artists (for mobile)
 	const countries = [...new Set(artists.map((a) => a.country))].sort();
 
 	// Filter artists based on selected country
@@ -40,12 +35,10 @@
 		} else {
 			onCountrySelect(country);
 		}
-		showCountryFilter = false;
 	}
 
 	function clearFilter() {
 		onCountrySelect(null);
-		showCountryFilter = false;
 	}
 </script>
 
@@ -57,42 +50,15 @@
 	role="menu"
 	tabindex="-1"
 >
-	<!-- Header with title and filter toggle - desktop -->
-	<div class="mb-3 hidden items-center gap-3 sm:flex">
+	<!-- Header - desktop only -->
+	<div class="mb-3 hidden sm:block">
 		<h2 class="text-[0.65rem] uppercase tracking-[0.2em] text-pink opacity-70">
 			WHERE THE FUCK IS :
 		</h2>
-		<button
-			class="cursor-pointer border-none bg-transparent font-mono text-[0.55rem] uppercase text-pink transition-all duration-150
-				{showCountryFilter || selectedCountry ? 'opacity-100' : 'opacity-50 hover:opacity-80'}"
-			onclick={() => (showCountryFilter = !showCountryFilter)}
-		>
-			[{showCountryFilter ? '−' : '+'}]
-		</button>
 	</div>
 
-	<!-- Selected country indicator - desktop -->
-	{#if selectedCountry && !showCountryFilter}
-		<div
-			class="mb-2 hidden items-center gap-2 sm:flex"
-			in:fly={{ y: -10, duration: 200 }}
-			out:scale={{ duration: 150 }}
-		>
-			<span class="text-[0.6rem] uppercase text-pink opacity-50">FILTER:</span>
-			<button
-				class="cursor-pointer border-none bg-transparent font-mono text-[0.65rem] uppercase text-pink opacity-100 transition-all [text-shadow:0_0_8px_#ffaef6] hover:opacity-80"
-				onclick={clearFilter}
-			>
-				{selectedCountry} [×]
-			</button>
-		</div>
-	{/if}
-
-	<!-- Country Tags - mobile: always visible, desktop: collapsible -->
-	<div
-		class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:mb-3 sm:max-h-32 sm:flex-wrap sm:gap-1.5 sm:overflow-y-auto
-			{showCountryFilter ? 'sm:flex' : 'sm:hidden'}"
-	>
+	<!-- Country Tags - mobile only -->
+	<div class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:hidden">
 		<button
 			class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
 				{!selectedCountry ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
@@ -103,7 +69,6 @@
 		{#each countries as country (country)}
 			{@const isActive = selectedCountry === country}
 			<button
-				bind:this={countryTagRefs[country]}
 				class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
 					{isActive ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
 				onclick={() => handleTagClick(country)}
