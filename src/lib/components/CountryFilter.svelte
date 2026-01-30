@@ -25,7 +25,7 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- Desktop only: top center filter bar -->
 <nav
 	class="pointer-events-auto fixed left-1/2 top-6 z-50 hidden -translate-x-1/2 sm:block"

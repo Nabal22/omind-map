@@ -21,69 +21,26 @@
 		}
 	});
 
-	// Get unique countries from artists (for mobile)
-	const countries = [...new Set(artists.map((a) => a.country))].sort();
-
 	// Filter artists based on selected country
 	const filteredArtists = $derived(
 		selectedCountry ? artists.filter((a) => a.country === selectedCountry) : artists
 	);
-
-	function handleTagClick(country: string) {
-		if (selectedCountry === country) {
-			onCountrySelect(null);
-		} else {
-			onCountrySelect(country);
-		}
-	}
-
-	function clearFilter() {
-		onCountrySelect(null);
-	}
 </script>
 
+<!-- Desktop only: Artists list on left side -->
 <div
-	class="fixed bottom-0 left-0 right-0 z-50 border-t border-pink/20 bg-black/85 px-4 py-3 font-mono backdrop-blur-sm
-		sm:bottom-auto sm:right-auto sm:top-6 sm:left-6 sm:border-t-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
+	class="fixed left-6 top-6 z-50 font-mono"
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={(e) => e.stopPropagation()}
 	role="menu"
 	tabindex="-1"
 >
-	<!-- Country Tags - mobile only -->
-	<div class="mb-2 flex flex-row gap-1 overflow-x-auto [scrollbar-width:none] sm:hidden">
-		<button
-			class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
-				{!selectedCountry ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
-			onclick={clearFilter}
-		>
-			[ALL]
-		</button>
-		{#each countries as country (country)}
-			{@const isActive = selectedCountry === country}
-			<button
-				class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
-					{isActive ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
-				onclick={() => handleTagClick(country)}
-			>
-				[{country.length > 8 ? country.slice(0, 6) + '..' : country}]
-			</button>
-		{/each}
-	</div>
-
-	<!-- Artists List - desktop: limited height with scroll -->
-	<ul
-		class="flex flex-row gap-0 overflow-x-auto [scrollbar-width:none]
-			sm:max-h-[50vh] sm:flex-col sm:gap-[0.2rem] sm:overflow-x-visible sm:overflow-y-auto"
-	>
+	<ul class="max-h-[50vh] flex-col gap-[0.2rem] overflow-y-auto">
 		{#key listKey}
 			{#each filteredArtists as artist, i (artist.id)}
-				<li
-					in:fly={{ x: -15, duration: 200, delay: Math.min(i * 30, 300) }}
-				>
+				<li in:fly={{ x: -15, duration: 200, delay: Math.min(i * 30, 300) }}>
 					<button
-						class="cursor-pointer whitespace-nowrap border-b-2 border-b-transparent border-none bg-transparent px-3 py-[0.4rem] text-left font-mono text-[0.75rem] uppercase text-pink transition-all duration-150 hover:border-b-pink
-							sm:border-b-0 sm:border-l-2 sm:border-l-transparent sm:px-2 sm:py-[0.3rem] sm:text-[0.85rem] sm:hover:border-b-0 sm:hover:border-l-pink sm:hover:pl-4 sm:hover:[text-shadow:0_0_8px_#ffaef6]"
+						class="cursor-pointer whitespace-nowrap border-l-2 border-l-transparent border-none bg-transparent px-2 py-[0.3rem] text-left font-mono text-[0.85rem] uppercase text-pink transition-all duration-150 hover:border-l-pink hover:pl-4 hover:[text-shadow:0_0_8px_#ffaef6]"
 						onclick={() => onArtistSelect(artist)}
 					>
 						{artist.name}
