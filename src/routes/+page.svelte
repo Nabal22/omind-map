@@ -53,6 +53,6 @@
 	<footer
 		class="pointer-events-none absolute bottom-0 right-0 z-40 p-4 font-mono text-pink sm:bottom-0 sm:left-0 sm:right-auto sm:p-6 flex items-center gap-2 opacity-70 transition-opacity hover:opacity-100"
 	>
-		<img src="/assets/icon-512.png" alt="0mind logo" class="mb-1 h-12 w-12" />
+		<img src="/assets/icon-512.png" alt="0mind logo" class="mb-1 h-12 w-12 hidden sm:block" />
 	</footer>
 </div>
