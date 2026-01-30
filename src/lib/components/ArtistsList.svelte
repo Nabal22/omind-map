@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly, scale } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
 
 	interface Props {
@@ -10,6 +11,17 @@
 
 	let { selectedCountry, onCountrySelect, onArtistSelect, countryTagRefs = $bindable({}) }: Props =
 		$props();
+
+	// Track previous country to trigger list animation
+	let prevCountry: string | null = null;
+	let listKey = $state(0);
+
+	$effect(() => {
+		if (selectedCountry !== prevCountry) {
+			listKey++;
+			prevCountry = selectedCountry;
+		}
+	});
 
 	// Toggle for country filter on desktop
 	let showCountryFilter = $state(false);
@@ -61,7 +73,11 @@
 
 	<!-- Selected country indicator - desktop -->
 	{#if selectedCountry && !showCountryFilter}
-		<div class="mb-2 hidden items-center gap-2 sm:flex">
+		<div
+			class="mb-2 hidden items-center gap-2 sm:flex"
+			in:fly={{ y: -10, duration: 200 }}
+			out:scale={{ duration: 150 }}
+		>
 			<span class="text-[0.6rem] uppercase text-pink opacity-50">FILTER:</span>
 			<button
 				class="cursor-pointer border-none bg-transparent font-mono text-[0.65rem] uppercase text-pink opacity-100 transition-all [text-shadow:0_0_8px_#ffaef6] hover:opacity-80"
@@ -78,8 +94,8 @@
 			{showCountryFilter ? 'sm:flex' : 'sm:hidden'}"
 	>
 		<button
-			class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-150
-				{!selectedCountry ? 'opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'opacity-50 hover:opacity-80'}"
+			class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
+				{!selectedCountry ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
 			onclick={clearFilter}
 		>
 			[ALL]
@@ -88,8 +104,8 @@
 			{@const isActive = selectedCountry === country}
 			<button
 				bind:this={countryTagRefs[country]}
-				class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-150
-					{isActive ? 'opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'opacity-50 hover:opacity-80'}"
+				class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-1 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
+					{isActive ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
 				onclick={() => handleTagClick(country)}
 			>
 				[{country.length > 8 ? country.slice(0, 6) + '..' : country}]
@@ -102,16 +118,20 @@
 		class="flex flex-row gap-0 overflow-x-auto [scrollbar-width:none]
 			sm:max-h-[50vh] sm:flex-col sm:gap-[0.2rem] sm:overflow-x-visible sm:overflow-y-auto"
 	>
-		{#each filteredArtists as artist (artist.id)}
-			<li>
-				<button
-					class="cursor-pointer whitespace-nowrap border-b-2 border-b-transparent border-none bg-transparent px-3 py-[0.4rem] text-left font-mono text-[0.75rem] uppercase text-pink transition-all duration-150 hover:border-b-pink
-						sm:border-b-0 sm:border-l-2 sm:border-l-transparent sm:px-2 sm:py-[0.3rem] sm:text-[0.85rem] sm:hover:border-b-0 sm:hover:border-l-pink sm:hover:pl-4 sm:hover:[text-shadow:0_0_8px_#ffaef6]"
-					onclick={() => onArtistSelect(artist)}
+		{#key listKey}
+			{#each filteredArtists as artist, i (artist.id)}
+				<li
+					in:fly={{ x: -15, duration: 200, delay: Math.min(i * 30, 300) }}
 				>
-					{artist.name}
-				</button>
-			</li>
-		{/each}
+					<button
+						class="cursor-pointer whitespace-nowrap border-b-2 border-b-transparent border-none bg-transparent px-3 py-[0.4rem] text-left font-mono text-[0.75rem] uppercase text-pink transition-all duration-150 hover:border-b-pink
+							sm:border-b-0 sm:border-l-2 sm:border-l-transparent sm:px-2 sm:py-[0.3rem] sm:text-[0.85rem] sm:hover:border-b-0 sm:hover:border-l-pink sm:hover:pl-4 sm:hover:[text-shadow:0_0_8px_#ffaef6]"
+						onclick={() => onArtistSelect(artist)}
+					>
+						{artist.name}
+					</button>
+				</li>
+			{/each}
+		{/key}
 	</ul>
 </div>

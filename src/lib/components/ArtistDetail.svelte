@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import { SvelteSet } from 'svelte/reactivity';
 	import type { Artist } from '$lib/data/artists';
 
@@ -24,14 +25,16 @@
 	role="dialog"
 	tabindex="-1"
 >
-	<button
-		class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.7rem] text-pink opacity-70 transition-all hover:opacity-100 hover:[text-shadow:0_0_8px_#ffaef6]"
-		onclick={onBack}
-	>
-		[BACK]
-	</button>
+	<div in:fly={{ x: -10, duration: 150 }}>
+		<button
+			class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.7rem] text-pink opacity-70 transition-all hover:opacity-100 hover:[text-shadow:0_0_8px_#ffaef6]"
+			onclick={onBack}
+		>
+			[BACK]
+		</button>
+	</div>
 
-	<h2 class="mb-3 text-lg font-bold uppercase">
+	<h2 class="mb-3 text-lg font-bold uppercase" in:fly={{ x: -10, duration: 200, delay: 50 }}>
 		<a
 			href={artist.musicUrl}
 			target="_blank"
@@ -42,13 +45,13 @@
 		</a>
 	</h2>
 
-	<div class="space-y-1 text-[0.75rem] leading-snug">
+	<div class="space-y-1 text-[0.75rem] leading-snug" in:fly={{ x: -10, duration: 200, delay: 100 }}>
 		<p><span class="opacity-50">COUNTRY:</span> {artist.country}</p>
 		<p><span class="opacity-50">BIO:</span> {artist.description}</p>
 	</div>
 
 	{#if artist.soundcloudUrl?.length}
-		<div class="mt-3">
+		<div class="mt-3" in:fly={{ x: -10, duration: 200, delay: 150 }}>
 			<p class="mb-1 text-[0.7rem]"><span class="opacity-50">TOP3:</span></p>
 			{#each artist.soundcloudUrl as url (url)}
 				<div class="relative min-h-5 py-0.5">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { fly, fade } from 'svelte/transition';
 	import type { Artist } from '$lib/data/artists';
 	import ArtistDetail from './ArtistDetail.svelte';
 	import ArtistsList from './ArtistsList.svelte';
@@ -7,10 +8,9 @@
 	interface Props {
 		selectedCountry: string | null;
 		onCountrySelect: (country: string | null) => void;
-		onFocusCountry: (country: string | null) => void;
 	}
 
-	let { selectedCountry, onCountrySelect, onFocusCountry }: Props = $props();
+	let { selectedCountry, onCountrySelect }: Props = $props();
 
 	// Selected artist for detail view
 	let selectedArtist = $state<Artist | null>(null);
@@ -53,12 +53,16 @@
 </script>
 
 {#if selectedArtist}
-	<ArtistDetail artist={selectedArtist} onBack={goBackToList} />
+	<div in:fly={{ x: 20, duration: 250, delay: 100 }} out:fade={{ duration: 150 }}>
+		<ArtistDetail artist={selectedArtist} onBack={goBackToList} />
+	</div>
 {:else}
-	<ArtistsList
-		{selectedCountry}
-		{onCountrySelect}
-		onArtistSelect={selectArtist}
-		bind:countryTagRefs
-	/>
+	<div in:fade={{ duration: 200, delay: 100 }} out:fade={{ duration: 100 }}>
+		<ArtistsList
+			{selectedCountry}
+			{onCountrySelect}
+			onArtistSelect={selectArtist}
+			bind:countryTagRefs
+		/>
+	</div>
 {/if}
