@@ -33,7 +33,7 @@
 	onkeydown={(e) => e.stopPropagation()}
 >
 	<div
-		class="flex items-center gap-1 rounded-full bg-black/60 px-3 py-2 font-mono backdrop-blur-md"
+		class="flex items-center gap-1 rounded-full border border-pink/20 bg-black/60 px-3 py-2 font-mono backdrop-blur-md"
 	>
 		<button
 			class="cursor-pointer border-none bg-transparent px-2 py-0.5 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200

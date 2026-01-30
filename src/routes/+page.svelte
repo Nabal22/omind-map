@@ -37,6 +37,10 @@
 </script>
 
 <div class="relative h-dvh w-screen overflow-hidden bg-black">
+	<!-- Logo mobile centré en haut -->
+	<div class="absolute top-4 left-0 right-0 z-50 flex w-full justify-center sm:hidden pointer-events-none">
+		<img src="/assets/icon-512.png" alt="0mind logo" class="h-20 w-20" />
+	</div>
 	<div class="absolute inset-0" onclick={clearCountry} onkeydown={(e) => e.key === 'Escape' && clearCountry()} role="button" tabindex="-1">
 		<Scene>
 			<SceneContent onCountryClick={selectCountry} {selectedCountry} {focusCountry} />
@@ -51,8 +55,8 @@
 
 	<!-- Footer -->
 	<footer
-		class="pointer-events-none absolute bottom-0 right-0 z-40 p-4 font-mono text-pink sm:bottom-0 sm:left-0 sm:right-auto sm:p-6 flex items-center gap-2 opacity-70 transition-opacity hover:opacity-100"
+		class="absolute bottom-5 left-5 z-50 opacity-70"
 	>
-		<img src="/assets/icon-512.png" alt="0mind logo" class="mb-1 h-12 w-12 hidden sm:block" />
+		<img src="/assets/icon-512.png" alt="0mind logo" class="h-12 w-12 hidden sm:block" />
 	</footer>
 </div>

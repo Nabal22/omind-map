@@ -19,7 +19,7 @@
 </script>
 
 <div
-	class="fixed inset-x-4 bottom-4 z-50 rounded-xl bg-black/90 p-4 font-mono text-pink backdrop-blur-sm sm:inset-auto sm:left-6 sm:top-6 sm:max-w-sm sm:border-pink/20 sm:bg-black/80"
+	class="fixed inset-x-4 bottom-4 z-50 rounded-xl border border-pink/20 bg-black/90 p-4 font-mono text-pink backdrop-blur-sm sm:inset-auto sm:left-6 sm:top-6 sm:max-w-sm sm:border-pink/20 sm:bg-black/80"
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={(e) => e.key === 'Escape' && onBack()}
 	role="dialog"
