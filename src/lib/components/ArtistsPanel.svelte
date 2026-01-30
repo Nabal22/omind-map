@@ -8,9 +8,10 @@
 	interface Props {
 		selectedCountry: string | null;
 		onCountrySelect: (country: string | null) => void;
+		onFocusCountry: (country: string | null) => void;
 	}
 
-	let { selectedCountry, onCountrySelect }: Props = $props();
+	let { selectedCountry, onCountrySelect, onFocusCountry }: Props = $props();
 
 	// Selected artist for detail view
 	let selectedArtist = $state<Artist | null>(null);
@@ -42,22 +43,32 @@
 	function selectArtist(artist: Artist) {
 		isSelectingArtist = true;
 		selectedArtist = artist;
-		// Focus on the artist's country
-		onCountrySelect(artist.country);
+		onFocusCountry(artist.country);
 	}
 
 	function goBackToList() {
 		selectedArtist = null;
-		onCountrySelect(null);
 	}
 </script>
 
 {#if selectedArtist}
-	<div in:fly={{ x: 20, duration: 250, delay: 100 }} out:fade={{ duration: 150 }}>
+	<div
+		in:fly={{ x: 20, duration: 250, delay: 100 }}
+		out:fade={{ duration: 150 }}
+		onclick={(e) => e.stopPropagation()}
+		onkeydown={(e) => e.stopPropagation()}
+		role="presentation"
+	>
 		<ArtistDetail artist={selectedArtist} onBack={goBackToList} />
 	</div>
 {:else}
-	<div in:fade={{ duration: 200, delay: 100 }} out:fade={{ duration: 100 }}>
+	<div
+		in:fade={{ duration: 200, delay: 100 }}
+		out:fade={{ duration: 100 }}
+		onclick={(e) => e.stopPropagation()}
+		onkeydown={(e) => e.stopPropagation()}
+		role="presentation"
+	>
 		<ArtistsList
 			{selectedCountry}
 			{onCountrySelect}

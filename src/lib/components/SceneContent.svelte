@@ -9,9 +9,10 @@
 	interface Props {
 		onCountryClick: (countryName: string) => void;
 		selectedCountry: string | null;
+		focusCountry: string | null;
 	}
 
-	let { onCountryClick, selectedCountry }: Props = $props();
+	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
 
 	const { camera } = useThrelte();
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
@@ -70,20 +71,20 @@
 		animating = true;
 	}
 
-	// React to country selection
+	// React to camera focus
 	$effect(() => {
-		if (selectedCountry && geoData) {
-			animateToCountry(selectedCountry);
+		if (focusCountry && geoData) {
+			animateToCountry(focusCountry);
 		}
 	});
 
-	// React to deselection
-	let prevSelectedCountry: string | null = null;
+	// React to unfocus
+	let prevFocusCountry: string | null = null;
 	$effect(() => {
-		if (prevSelectedCountry && !selectedCountry) {
+		if (prevFocusCountry && !focusCountry) {
 			animateZoomOut();
 		}
-		prevSelectedCountry = selectedCountry;
+		prevFocusCountry = focusCountry;
 	});
 
 	// Animate camera with easing
@@ -120,7 +121,7 @@
 		minDistance={isMobile ? 2.2 : 1.8}
 		maxDistance={isMobile ? 8 : 4}
 		enablePan={false}
-		autoRotate={!selectedCountry && !animating}
+		autoRotate={!focusCountry && !animating}
 		autoRotateSpeed={0.4}
 	/>
 </T.PerspectiveCamera>
