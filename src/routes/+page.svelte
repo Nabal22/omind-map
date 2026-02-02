@@ -39,7 +39,7 @@
 
 <div class="relative h-dvh w-screen overflow-hidden bg-black">
 	<!-- Mobile: Logo centré en haut -->
-	<div class="pointer-events-none absolute left-0 right-0 top-4 z-30 flex w-full justify-center sm:hidden">
+	<div class="pointer-events-none absolute inset-x-0 top-4 z-30 flex justify-center sm:hidden">
 		<img src="/assets/icon-512.png" alt="0mind logo" class="h-16 w-16 opacity-80" />
 	</div>
 

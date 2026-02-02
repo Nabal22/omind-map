@@ -1,6 +1,8 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.png';
+	import MobileNav from '$lib/components/MobileNav.svelte';
+	import { page } from '$app/stores';
 
 	let { children } = $props();
 </script>
@@ -14,4 +16,7 @@
 
 	<meta name="theme-color" content="#ffffff" />
 </svelte:head>
+
+<MobileNav currentPath={$page.url.pathname} />
+
 {@render children()}
