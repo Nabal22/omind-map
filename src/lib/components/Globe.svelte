@@ -29,9 +29,9 @@
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
 
 	function getOpacity(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return 0.8;
-		if (name === hoveredCountry && hasArtists) return 0.7;
-		if (hasArtists) return 0.5;
+		if (name === selectedCountry) return 0.6;
+		if (name === hoveredCountry && hasArtists) return 0.4;
+		if (hasArtists) return 0.15;
 		return 0;
 	}
 
@@ -71,7 +71,7 @@
 <!-- Globe sphere -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
 	<T.SphereGeometry args={[RADIUS, 48, 48]} />
-	<T.MeshStandardMaterial color="#1a1a2e" roughness={0.8} metalness={0.6} />
+	<T.MeshStandardMaterial color="#0a0a0a" roughness={0.9} metalness={0.3} />
 </T.Mesh>
 
 <!-- Borders -->
@@ -83,7 +83,7 @@
 				geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 			}}
 		/>
-		<T.LineBasicMaterial color={0xffaef6} transparent opacity={0.6} />
+		<T.LineBasicMaterial color={0xffffff} transparent opacity={0.3} />
 	</T.LineSegments>
 {/if}
 
@@ -104,7 +104,7 @@
 						geo.computeVertexNormals();
 					}}
 				/>
-				<T.MeshBasicMaterial color={0xffaef6} transparent {opacity} side={THREE.DoubleSide} />
+				<T.MeshBasicMaterial color={0xffffff} transparent {opacity} side={THREE.DoubleSide} />
 			</T.Mesh>
 		{/each}
 	</T.Group>

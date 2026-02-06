@@ -3,26 +3,26 @@
 </script>
 
 <div class="flex h-dvh w-screen flex-col items-center justify-center bg-black font-mono text-pink">
-	<div class="text-center" in:fade={{ duration: 300 }}>
+	<div class="text-center" in:fade={{ duration: 200 }}>
 		<h1
-			class="mb-4 text-4xl font-bold uppercase tracking-wider [text-shadow:0_0_20px_#ffaef6]"
-			in:fly={{ y: -20, duration: 400 }}
+			class="mb-4 text-3xl font-normal uppercase tracking-[0.2em]"
+			in:fly={{ y: -15, duration: 300 }}
 		>
 			EVENTS
 		</h1>
 		<p
-			class="text-sm uppercase tracking-widest text-pink/60"
-			in:fly={{ y: 20, duration: 400, delay: 100 }}
+			class="text-[0.7rem] uppercase tracking-[0.3em] text-pink/30"
+			in:fly={{ y: 15, duration: 300, delay: 80 }}
 		>
-			[COMING SOON]
+			COMING SOON
 		</p>
 
-		<div class="mt-8" in:fly={{ y: 20, duration: 400, delay: 200 }}>
+		<div class="mt-8" in:fly={{ y: 15, duration: 300, delay: 160 }}>
 			<a
 				href="/"
-				class="rounded-full border border-pink/30 bg-black/60 px-6 py-2 text-[0.7rem] uppercase backdrop-blur-sm transition-all duration-200 hover:border-pink/60 hover:bg-pink/10 hover:[text-shadow:0_0_8px_#ffaef6]"
+				class="border border-pink/10 bg-black px-5 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-pink/40 transition-opacity duration-150 hover:text-pink"
 			>
-				← BACK TO GLOBE
+				BACK
 			</a>
 		</div>
 	</div>

@@ -38,15 +38,15 @@
 </script>
 
 <div class="relative h-dvh w-screen overflow-hidden bg-black">
-	<!-- Mobile: Logo centré en haut -->
+	<!-- Mobile: Logo centred en haut -->
 	<div class="pointer-events-none absolute inset-x-0 top-4 z-30 flex justify-center sm:hidden">
-		<img src="/assets/icon-512.png" alt="0mind logo" class="h-16 w-16 opacity-80" />
+		<img src="/assets/icon-512.png" alt="0mind logo" class="h-14 w-14 opacity-60" />
 	</div>
 
 	<!-- Mobile: Hint text (shows when no country selected) -->
 	{#if !selectedCountry}
 		<div class="pointer-events-none absolute bottom-8 left-0 right-0 z-30 flex justify-center sm:hidden">
-			<span class="rounded-full bg-black/50 px-4 py-2 font-mono text-[0.65rem] uppercase tracking-wider text-pink/60 backdrop-blur-sm">
+			<span class="bg-black px-3 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-pink/30">
 				Tap a country to explore
 			</span>
 		</div>
@@ -73,7 +73,7 @@
 	</div>
 
 	<!-- Footer: Logo desktop -->
-	<footer class="absolute bottom-5 left-5 z-50 opacity-70">
-		<img src="/assets/icon-512.png" alt="0mind logo" class="hidden h-12 w-12 sm:block" />
+	<footer class="absolute bottom-5 left-5 z-50 opacity-50">
+		<img src="/assets/icon-512.png" alt="0mind logo" class="hidden h-10 w-10 sm:block" />
 	</footer>
 </div>

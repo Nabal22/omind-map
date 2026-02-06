@@ -32,28 +32,26 @@
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={(e) => e.stopPropagation()}
 >
-	<div
-		class="flex items-center gap-1 rounded-full border border-pink/20 bg-black/60 px-3 py-2 font-mono backdrop-blur-md"
-	>
+	<div class="flex items-center gap-0 border border-pink/10 bg-black font-mono">
 		<button
-			class="cursor-pointer border-none bg-transparent px-2 py-0.5 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
-				{!selectedCountry ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
+			class="cursor-pointer border-none border-r border-r-pink/10 bg-transparent px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.15em] transition-opacity duration-150
+				{!selectedCountry ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
 			onclick={clearFilter}
 		>
-			[ALL]
+			ALL
 		</button>
 
-		<span class="mx-1 text-pink/30">|</span>
+		<span class="text-pink/10">|</span>
 
-		<div class="flex max-w-[60vw] gap-1 overflow-x-auto [scrollbar-width:none]">
+		<div class="flex max-w-[60vw] gap-0 overflow-x-auto [scrollbar-width:none]">
 			{#each countries as country (country)}
 				{@const isActive = selectedCountry === country}
 				<button
-					class="shrink-0 cursor-pointer border-none bg-transparent px-2 py-0.5 font-mono text-[0.6rem] uppercase text-pink transition-all duration-200
-						{isActive ? 'scale-110 opacity-100 [text-shadow:0_0_8px_#ffaef6]' : 'scale-100 opacity-50 hover:scale-105 hover:opacity-80'}"
+					class="shrink-0 cursor-pointer border-none bg-transparent px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.15em] transition-opacity duration-150
+						{isActive ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
 					onclick={() => handleTagClick(country)}
 				>
-					[{country.length > 10 ? country.slice(0, 8) + '..' : country}]
+					{country}
 				</button>
 			{/each}
 		</div>

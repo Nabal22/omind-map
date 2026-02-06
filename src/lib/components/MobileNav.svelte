@@ -26,22 +26,22 @@
 
 <!-- Mobile: Hamburger Button -->
 <button
-	class="fixed left-4 top-4 z-[60] flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg border border-pink/30 bg-black/80 backdrop-blur-md sm:hidden"
+	class="fixed left-4 top-4 z-[60] flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-pink/20 bg-black sm:hidden"
 	onclick={() => (isOpen = !isOpen)}
 	aria-label={isOpen ? 'Close menu' : 'Open menu'}
 	aria-expanded={isOpen}
 >
 	<span
-		class="block h-0.5 w-5 bg-pink transition-all duration-200 {isOpen
-			? 'translate-y-2 rotate-45'
+		class="block h-px w-5 bg-pink transition-all duration-200 {isOpen
+			? 'translate-y-[7px] rotate-45'
 			: ''}"
 	></span>
 	<span
-		class="block h-0.5 w-5 bg-pink transition-all duration-200 {isOpen ? 'opacity-0' : ''}"
+		class="block h-px w-5 bg-pink transition-all duration-200 {isOpen ? 'opacity-0' : ''}"
 	></span>
 	<span
-		class="block h-0.5 w-5 bg-pink transition-all duration-200 {isOpen
-			? '-translate-y-2 -rotate-45'
+		class="block h-px w-5 bg-pink transition-all duration-200 {isOpen
+			? '-translate-y-[7px] -rotate-45'
 			: ''}"
 	></span>
 </button>
@@ -50,8 +50,8 @@
 {#if isOpen}
 	<!-- Backdrop -->
 	<div
-		class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm sm:hidden"
-		transition:fade={{ duration: 200 }}
+		class="fixed inset-0 z-50 bg-black/80 sm:hidden"
+		transition:fade={{ duration: 150 }}
 		onclick={() => (isOpen = false)}
 		onkeydown={(e) => e.key === 'Enter' && (isOpen = false)}
 		role="button"
@@ -60,18 +60,18 @@
 
 	<!-- Menu Panel -->
 	<nav
-		class="fixed left-0 top-0 z-[55] h-dvh w-64 border-r border-pink/20 bg-black/95 p-6 pt-20 font-mono backdrop-blur-md sm:hidden"
-		transition:fly={{ x: -256, duration: 250 }}
+		class="fixed left-0 top-0 z-[55] h-dvh w-64 border-r border-pink/10 bg-black p-6 pt-20 font-mono sm:hidden"
+		transition:fly={{ x: -256, duration: 200 }}
 	>
-		<ul class="space-y-2">
+		<ul class="space-y-0">
 			{#each navItems as item, i (item.path)}
-				<li in:fly={{ x: -20, duration: 200, delay: 50 + i * 50 }}>
+				<li in:fly={{ x: -20, duration: 150, delay: 50 + i * 40 }}>
 					<a
 						href={item.path}
-						class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm uppercase tracking-wider transition-all duration-200
+						class="flex items-center border-b border-pink/10 px-0 py-3 text-[0.7rem] uppercase tracking-[0.2em] transition-opacity duration-150
 							{currentPath === item.path
-							? 'bg-pink/20 text-pink [text-shadow:0_0_10px_#ffaef6]'
-							: 'text-pink/70 hover:bg-pink/10 hover:text-pink'}"
+							? 'text-pink'
+							: 'text-pink/40 hover:text-pink'}"
 						onclick={() => (isOpen = false)}
 					>
 						{item.label}
@@ -83,16 +83,16 @@
 {/if}
 
 <!-- Desktop: Horizontal Nav -->
-<nav class="fixed right-6 top-6 z-50 hidden items-center gap-4 font-mono sm:flex">
+<nav class="fixed right-6 top-6 z-50 hidden items-center gap-6 font-mono sm:flex">
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
-			class="text-[0.7rem] uppercase tracking-wider transition-all duration-200
+			class="text-[0.65rem] uppercase tracking-[0.2em] transition-opacity duration-150
 				{currentPath === item.path
-				? 'text-pink [text-shadow:0_0_8px_#ffaef6]'
-				: 'text-pink/50 hover:text-pink hover:[text-shadow:0_0_8px_#ffaef6]'}"
+				? 'text-pink'
+				: 'text-pink/40 hover:text-pink'}"
 		>
-			[{item.label}]
+			{item.label}
 		</a>
 	{/each}
 </nav>

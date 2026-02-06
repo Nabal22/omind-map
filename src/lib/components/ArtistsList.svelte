@@ -35,12 +35,12 @@
 	role="menu"
 	tabindex="-1"
 >
-	<ul class="max-h-[50vh] flex-col gap-[0.2rem] overflow-y-auto">
+	<ul class="max-h-[50vh] flex-col gap-0 overflow-y-auto">
 		{#key listKey}
 			{#each filteredArtists as artist, i (artist.id)}
-				<li in:fly={{ x: -15, duration: 200, delay: Math.min(i * 30, 300) }}>
+				<li in:fly={{ x: -10, duration: 150, delay: Math.min(i * 25, 250) }}>
 					<button
-						class="cursor-pointer whitespace-nowrap border-l-2 border-l-transparent border-none bg-transparent px-2 py-[0.3rem] text-left font-mono text-[0.85rem] uppercase text-pink transition-all duration-150 hover:border-l-pink hover:pl-4 hover:[text-shadow:0_0_8px_#ffaef6]"
+						class="cursor-pointer whitespace-nowrap border-none bg-transparent px-0 py-[0.35rem] text-left font-mono text-[0.8rem] uppercase tracking-[0.05em] text-pink/40 transition-all duration-150 hover:text-pink"
 						onclick={() => onArtistSelect(artist)}
 					>
 						{artist.name}
