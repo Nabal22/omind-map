@@ -112,7 +112,7 @@
 </script>
 
 <!-- Camera -->
-<T.PerspectiveCamera makeDefault position={[0, 0, CAMERA_DISTANCE]} fov={isMobile ? 80 : 55}>
+<T.PerspectiveCamera makeDefault position={[25, 15, CAMERA_DISTANCE]} fov={isMobile ? 80 : 55}>
 	<OrbitControls
 		enableDamping
 		dampingFactor={0.12}
