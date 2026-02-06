@@ -60,13 +60,26 @@ function subdivideTriangle(
 
 	// Split longest edge
 	const maxEdgeIdx = edges.indexOf(maxDist);
-	const [a, b] = [[c1, c2], [c2, c3], [c3, c1]][maxEdgeIdx];
+	const [a, b] = [
+		[c1, c2],
+		[c2, c3],
+		[c3, c1]
+	][maxEdgeIdx];
 	const mid = { lat: (a.lat + b.lat) / 2, lng: (a.lng + b.lng) / 2 };
 
 	const triangles = [
-		[[c1, mid, c3], [mid, c2, c3]],
-		[[c1, c2, mid], [c1, mid, c3]],
-		[[c1, c2, mid], [mid, c2, c3]]
+		[
+			[c1, mid, c3],
+			[mid, c2, c3]
+		],
+		[
+			[c1, c2, mid],
+			[c1, mid, c3]
+		],
+		[
+			[c1, c2, mid],
+			[mid, c2, c3]
+		]
 	][maxEdgeIdx];
 
 	for (const tri of triangles) {
@@ -93,7 +106,11 @@ function triangulatePolygon(
 
 		for (let i = 0; i < originalIndices.length; i += 3) {
 			subdivideTriangle(
-				[coords[originalIndices[i]], coords[originalIndices[i + 1]], coords[originalIndices[i + 2]]],
+				[
+					coords[originalIndices[i]],
+					coords[originalIndices[i + 1]],
+					coords[originalIndices[i + 2]]
+				],
 				radius,
 				3,
 				vertices,

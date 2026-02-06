@@ -28,13 +28,13 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- Desktop only: top center filter bar -->
 <nav
-	class="pointer-events-auto fixed left-1/2 top-6 z-50 hidden -translate-x-1/2 sm:block"
+	class="pointer-events-auto fixed top-6 left-1/2 z-50 hidden -translate-x-1/2 sm:block"
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={(e) => e.stopPropagation()}
 >
 	<div class="flex items-center gap-0 border border-pink/10 bg-black font-mono">
 		<button
-			class="cursor-pointer border-none border-r border-r-pink/10 bg-transparent px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.15em] transition-opacity duration-150
+			class="cursor-pointer border-r border-none border-r-pink/10 bg-transparent px-3 py-2 font-mono text-[0.6rem] tracking-[0.15em] uppercase transition-opacity duration-150
 				{!selectedCountry ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
 			onclick={clearFilter}
 		>
@@ -47,7 +47,7 @@
 			{#each countries as country (country)}
 				{@const isActive = selectedCountry === country}
 				<button
-					class="shrink-0 cursor-pointer border-none bg-transparent px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.15em] transition-opacity duration-150
+					class="shrink-0 cursor-pointer border-none bg-transparent px-3 py-2 font-mono text-[0.6rem] tracking-[0.15em] uppercase transition-opacity duration-150
 						{isActive ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
 					onclick={() => handleTagClick(country)}
 				>

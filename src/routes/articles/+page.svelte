@@ -1,29 +1,43 @@
 <script lang="ts">
-	import { fly, fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
+	import { articles } from '$lib/data/articles';
 </script>
 
-<div class="flex h-dvh w-screen flex-col items-center justify-center bg-black font-mono text-pink">
-	<div class="text-center" in:fade={{ duration: 200 }}>
+<div class="h-dvh w-screen overflow-y-auto bg-black font-mono text-pink">
+	<div class="mx-auto max-w-2xl px-6 py-20">
 		<h1
-			class="mb-4 text-3xl font-normal uppercase tracking-[0.2em]"
+			class="mb-2 text-3xl font-normal tracking-[0.2em] uppercase"
 			in:fly={{ y: -15, duration: 300 }}
 		>
 			ARTICLES
 		</h1>
-		<p
-			class="text-[0.7rem] uppercase tracking-[0.3em] text-pink/30"
-			in:fly={{ y: 15, duration: 300, delay: 80 }}
-		>
-			COMING SOON
-		</p>
 
-		<div class="mt-8" in:fly={{ y: 15, duration: 300, delay: 160 }}>
+		{#each articles as article, i (article._id)}
 			<a
-				href="/"
-				class="border border-pink/10 bg-black px-5 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-pink/40 transition-opacity duration-150 hover:text-pink"
+				href="/articles/{article.slug}"
+				class="group block border-b border-pink/10 py-8 transition-opacity duration-150 first:pt-0"
+				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>
-				BACK
+				<div class="aspect-video w-full border border-pink/10 bg-pink/5"></div>
+
+				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-pink/30 uppercase">
+					{article.category} · {new Date(article.publishedAt).toLocaleDateString('en-US', {
+						year: 'numeric',
+						month: 'short',
+						day: 'numeric'
+					})}
+				</div>
+
+				<h2
+					class="mt-2 text-lg font-normal tracking-[0.1em] uppercase transition-opacity duration-150 group-hover:opacity-70"
+				>
+					{article.title}
+				</h2>
+
+				<p class="mt-2 text-[0.75rem] leading-relaxed text-pink/50">
+					{article.excerpt}
+				</p>
 			</a>
-		</div>
+		{/each}
 	</div>
 </div>

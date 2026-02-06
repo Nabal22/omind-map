@@ -15,7 +15,7 @@
 	class="pointer-events-none fixed inset-0 z-50 flex items-start justify-end p-4 pt-20 sm:items-center sm:p-6"
 >
 	<div
-		class="pointer-events-auto relative w-full max-w-xs animate-slide-up border-2 border-pink bg-black/95 p-4 font-mono text-pink shadow-[0_0_30px_rgba(255,174,246,0.2)]"
+		class="animate-slide-up pointer-events-auto relative w-full max-w-xs border-2 border-pink bg-black/95 p-4 font-mono text-pink shadow-[0_0_30px_rgba(255,174,246,0.2)]"
 	>
 		<button
 			class="absolute top-3 right-3 z-10 cursor-pointer bg-transparent p-1 font-mono text-sm text-pink transition-all hover:[text-shadow:0_0_8px_#ffaef6]"
