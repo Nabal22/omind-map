@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fly, fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { artists, type Artist } from '$lib/data/artists';
 
@@ -21,6 +21,28 @@
 		selectedCountry ? artists.filter((a) => a.country === selectedCountry) : []
 	);
 
+	// Tap-outside detection: close on tap, ignore swipes
+	let panelEl = $state<HTMLElement | null>(null);
+	let touchStart = { x: 0, y: 0 };
+	let tracking = false;
+
+	function handleDocTouchStart(e: TouchEvent) {
+		if (!selectedCountry) return;
+		if (panelEl?.contains(e.target as Node)) return;
+		const t = e.touches[0];
+		touchStart = { x: t.clientX, y: t.clientY };
+		tracking = true;
+	}
+
+	function handleDocTouchEnd(e: TouchEvent) {
+		if (!tracking) return;
+		tracking = false;
+		const t = e.changedTouches[0];
+		const dx = Math.abs(t.clientX - touchStart.x);
+		const dy = Math.abs(t.clientY - touchStart.y);
+		if (dx < 10 && dy < 10) onClose();
+	}
+
 	function handleArtistClick(artist: Artist) {
 		selectedArtist = artist;
 	}
@@ -40,22 +62,17 @@
 	});
 </script>
 
-{#if selectedCountry}
-	<!-- Backdrop -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="fixed inset-0 z-40"
-		transition:fade={{ duration: 100 }}
-		onclick={onClose}
-		onkeydown={(e) => e.key === 'Escape' && onClose()}
-	></div>
+<svelte:document
+	ontouchstart={handleDocTouchStart}
+	ontouchend={handleDocTouchEnd}
+/>
 
+{#if selectedCountry}
 	<!-- Bottom Panel -->
 	<div
+		bind:this={panelEl}
 		class="fixed bottom-0 left-0 right-0 z-50 max-h-[45vh] overflow-hidden border-t border-pink/10 bg-black font-mono"
 		transition:fly={{ y: 300, duration: 200 }}
-		onclick={(e) => e.stopPropagation()}
-		onkeydown={(e) => e.stopPropagation()}
 		role="dialog"
 		tabindex="-1"
 	>
