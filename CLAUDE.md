@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A 3D globe application showing artist locations worldwide, built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
+An rap media mobile-first site with a 3D globe showing artist locations worldwide, and other pages, built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
 
 ## Commands
 
