@@ -1,20 +1,77 @@
 <script lang="ts">
+	import { replaceState } from '$app/navigation';
 	import Scene from '$lib/components/Scene.svelte';
 	import SceneContent from '$lib/components/SceneContent.svelte';
 	import ArtistsPanel from '$lib/components/ArtistsPanel.svelte';
 	import CountryFilter from '$lib/components/CountryFilter.svelte';
 	import MobileCountryPanel from '$lib/components/MobileCountryPanel.svelte';
+	import { artists, type Artist } from '$lib/data/artists';
 
 	// Filter state (controls artist list filtering)
 	let selectedCountry = $state<string | null>(null);
 	// Camera focus state (controls globe camera position)
 	let focusCountry = $state<string | null>(null);
+	// Selected artist (lifted from panels)
+	let selectedArtist = $state<Artist | null>(null);
 	let justSelectedCountry = false;
+
+	// URL sync
+	let initialized = false;
+	const countriesWithArtists = new Set(artists.map((a) => a.country));
+
+	// Read URL params on mount
+	$effect(() => {
+		if (initialized) return;
+		initialized = true;
+
+		const params = new URLSearchParams(window.location.search);
+		const countryParam = params.get('country');
+		const artistParam = params.get('artist');
+
+		if (artistParam) {
+			const artist = artists.find((a) => a.id === artistParam);
+			if (artist) {
+				selectedCountry = artist.country;
+				focusCountry = artist.country;
+				requestAnimationFrame(() => {
+					selectedArtist = artist;
+				});
+				return;
+			}
+		}
+
+		if (countryParam && countriesWithArtists.has(countryParam)) {
+			selectedCountry = countryParam;
+			focusCountry = countryParam;
+		}
+	});
+
+	// Write URL on state change
+	$effect(() => {
+		const country = selectedCountry;
+		const artist = selectedArtist;
+
+		if (!initialized) return;
+
+		const url = new URL(window.location.href);
+		if (country) {
+			url.searchParams.set('country', country);
+		} else {
+			url.searchParams.delete('country');
+		}
+		if (artist) {
+			url.searchParams.set('artist', artist.id);
+		} else {
+			url.searchParams.delete('artist');
+		}
+		replaceState(url, {});
+	});
 
 	// Click on globe country: set both filter and camera
 	function selectCountry(name: string) {
 		selectedCountry = name;
 		focusCountry = name;
+		selectedArtist = null;
 		justSelectedCountry = true;
 		setTimeout(() => (justSelectedCountry = false), 0);
 	}
@@ -23,6 +80,11 @@
 	function handleCountrySelect(country: string | null) {
 		selectedCountry = country;
 		focusCountry = country;
+		selectedArtist = null;
+	}
+
+	function handleArtistSelect(artist: Artist | null) {
+		selectedArtist = artist;
 	}
 
 	// Artist select: only move camera, don't change filter
@@ -34,6 +96,7 @@
 		if (justSelectedCountry) return;
 		selectedCountry = null;
 		focusCountry = null;
+		selectedArtist = null;
 	}
 </script>
 
@@ -64,12 +127,12 @@
 
 	<!-- Desktop: Artists Panel / Nav Menu -->
 	<div class="hidden sm:block">
-		<ArtistsPanel {selectedCountry} onCountrySelect={handleCountrySelect} onFocusCountry={handleFocusCountry} />
+		<ArtistsPanel {selectedCountry} {selectedArtist} onCountrySelect={handleCountrySelect} onArtistSelect={handleArtistSelect} onFocusCountry={handleFocusCountry} />
 	</div>
 
 	<!-- Mobile: Country Panel (appears when country is selected) -->
 	<div class="sm:hidden">
-		<MobileCountryPanel {selectedCountry} onClose={clearCountry} />
+		<MobileCountryPanel {selectedCountry} {selectedArtist} onClose={clearCountry} onArtistSelect={handleArtistSelect} />
 	</div>
 
 	<!-- Footer: Logo desktop -->

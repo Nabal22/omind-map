@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import type { Artist } from '$lib/data/artists';
 	import ArtistDetail from './ArtistDetail.svelte';
@@ -7,37 +6,21 @@
 
 	interface Props {
 		selectedCountry: string | null;
+		selectedArtist: Artist | null;
 		onCountrySelect: (country: string | null) => void;
+		onArtistSelect: (artist: Artist | null) => void;
 		onFocusCountry: (country: string | null) => void;
 	}
 
-	let { selectedCountry, onCountrySelect, onFocusCountry }: Props = $props();
-
-	// Selected artist for detail view
-	let selectedArtist = $state<Artist | null>(null);
-
-	// Flag to prevent resetting artist when we're selecting one
-	let isSelectingArtist = false;
-
-	// Reset to list view when country changes (unless selecting artist)
-	$effect(() => {
-		selectedCountry;
-		untrack(() => {
-			if (!isSelectingArtist) {
-				selectedArtist = null;
-			}
-			isSelectingArtist = false;
-		});
-	});
+	let { selectedCountry, selectedArtist, onCountrySelect, onArtistSelect, onFocusCountry }: Props = $props();
 
 	function selectArtist(artist: Artist) {
-		isSelectingArtist = true;
-		selectedArtist = artist;
+		onArtistSelect(artist);
 		onFocusCountry(artist.country);
 	}
 
 	function goBackToList() {
-		selectedArtist = null;
+		onArtistSelect(null);
 	}
 </script>
 
@@ -46,7 +29,10 @@
 		in:fly={{ x: 20, duration: 250 }}
 		out:fade={{ duration: 150 }}
 		onclick={(e) => e.stopPropagation()}
-		onkeydown={(e) => e.stopPropagation()}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') goBackToList();
+			else e.stopPropagation();
+		}}
 		role="presentation"
 	>
 		<ArtistDetail artist={selectedArtist} onBack={goBackToList} />
@@ -56,7 +42,9 @@
 		in:fade={{ duration: 200, delay: 50 }}
 		out:fade={{ duration: 100 }}
 		onclick={(e) => e.stopPropagation()}
-		onkeydown={(e) => e.stopPropagation()}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') onCountrySelect(null);
+		}}
 		role="presentation"
 	>
 		<ArtistsList

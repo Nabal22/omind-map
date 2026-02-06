@@ -66,6 +66,25 @@
 			onCountryClick(name);
 		}
 	}
+
+	function handlePointerEnter(name: string) {
+		hoveredCountry = name;
+		if (countriesWithArtists.has(name)) {
+			document.body.style.cursor = 'pointer';
+		}
+	}
+
+	function handlePointerLeave() {
+		hoveredCountry = null;
+		document.body.style.cursor = 'auto';
+	}
+
+	// Cleanup cursor on unmount
+	$effect(() => {
+		return () => {
+			document.body.style.cursor = 'auto';
+		};
+	});
 </script>
 
 <!-- Globe sphere -->
@@ -92,8 +111,8 @@
 	{@const opacity = getOpacity(country.name, country.hasArtists)}
 	<T.Group
 		onclick={(event: GlobePointerEvent) => handleClick(country.name, event)}
-		onpointerenter={() => (hoveredCountry = country.name)}
-		onpointerleave={() => (hoveredCountry = null)}
+		onpointerenter={() => handlePointerEnter(country.name)}
+		onpointerleave={handlePointerLeave}
 	>
 		{#each country.polygons as polygon, i (i)}
 			<T.Mesh renderOrder={2} frustumCulled={false}>

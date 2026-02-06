@@ -5,13 +5,12 @@
 
 	interface Props {
 		selectedCountry: string | null;
+		selectedArtist: Artist | null;
 		onClose: () => void;
+		onArtistSelect: (artist: Artist | null) => void;
 	}
 
-	let { selectedCountry, onClose }: Props = $props();
-
-	// Internal state for artist detail view
-	let selectedArtist = $state<Artist | null>(null);
+	let { selectedCountry, selectedArtist, onClose, onArtistSelect }: Props = $props();
 
 	// Cache for loaded iframes
 	const loadedIframes = new SvelteSet<string>();
@@ -44,22 +43,51 @@
 	}
 
 	function handleArtistClick(artist: Artist) {
-		selectedArtist = artist;
+		onArtistSelect(artist);
 	}
 
 	function goBackToList() {
-		selectedArtist = null;
+		onArtistSelect(null);
 	}
 
 	function handleIframeLoad(url: string) {
 		loadedIframes.add(url);
 	}
 
-	// Reset artist view when country changes
+	// Keyboard navigation
+	let focusedIndex = $state(-1);
+
+	// Reset focused index when artist list changes
 	$effect(() => {
-		selectedCountry;
-		selectedArtist = null;
+		countryArtists;
+		focusedIndex = -1;
 	});
+
+	// Auto-focus panel on mount
+	$effect(() => {
+		if (selectedCountry && panelEl) {
+			requestAnimationFrame(() => panelEl?.focus());
+		}
+	});
+
+	function handlePanelKeydown(e: KeyboardEvent) {
+		if (selectedArtist) {
+			if (e.key === 'Escape') goBackToList();
+			return;
+		}
+
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			focusedIndex = focusedIndex < countryArtists.length - 1 ? focusedIndex + 1 : 0;
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			focusedIndex = focusedIndex > 0 ? focusedIndex - 1 : countryArtists.length - 1;
+		} else if (e.key === 'Enter' && focusedIndex >= 0) {
+			handleArtistClick(countryArtists[focusedIndex]);
+		} else if (e.key === 'Escape') {
+			onClose();
+		}
+	}
 </script>
 
 <svelte:document
@@ -73,6 +101,7 @@
 		bind:this={panelEl}
 		class="fixed bottom-0 left-0 right-0 z-50 max-h-[45vh] overflow-hidden border-t border-pink/10 bg-black font-mono"
 		transition:fly={{ y: 300, duration: 200 }}
+		onkeydown={handlePanelKeydown}
 		role="dialog"
 		tabindex="-1"
 	>
@@ -144,7 +173,7 @@
 						{#each countryArtists as artist, i (artist.id)}
 							<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>
 								<button
-									class="w-full cursor-pointer border-b border-pink/5 bg-transparent px-0 py-2.5 text-left font-mono transition-opacity duration-150 hover:opacity-60"
+									class="w-full cursor-pointer border-b border-pink/5 bg-transparent py-2.5 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex === i ? 'border-l-2 border-l-pink pl-2' : 'px-0'}"
 									onclick={() => handleArtistClick(artist)}
 								>
 									<span class="block text-xs uppercase tracking-[0.05em] text-pink">{artist.name}</span>
