@@ -78,7 +78,7 @@
 	<!-- Bottom Panel -->
 	<div
 		bind:this={panelEl}
-		class="fixed right-0 bottom-0 left-0 z-50 max-h-[45vh] overflow-hidden border-t border-pink/10 bg-black font-mono"
+		class="fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-pink/10 bg-black font-mono"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		role="dialog"
@@ -98,7 +98,7 @@
 				<span class="text-[0.6rem] text-pink/30">{countryArtists.length}</span>
 			</div>
 
-			<div class="overflow-y-auto" style="max-height: calc(45vh - 100px);">
+			<div class="overflow-y-auto" style="max-height: calc(40vh - 100px);">
 				<ul class="space-y-0">
 					{#each countryArtists as artist, i (artist.id)}
 						<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>

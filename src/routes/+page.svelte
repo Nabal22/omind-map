@@ -59,7 +59,7 @@
 	<!-- Mobile: Hint text (shows when no country selected) -->
 	{#if !selectedCountry}
 		<div
-			class="pointer-events-none absolute right-0 bottom-8 left-0 z-30 flex justify-center sm:hidden"
+			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
 		>
 			<span
 				class="bg-black px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-pink/30 uppercase"
