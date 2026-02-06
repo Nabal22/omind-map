@@ -1,65 +1,111 @@
 <script lang="ts">
-	import { T, useTask } from '@threlte/core';
-	import { interactivity } from '@threlte/extras';
-	import { SphereGeometry, BufferGeometry, type Group } from 'three';
-	import { buildCountryGeometry } from '$lib/data/geo';
-	import type { Snippet } from 'svelte';
+	import { T, useThrelte } from '@threlte/core';
+	import * as THREE from 'three';
+	import { loadGeoJSON, type GeoJSONData } from '$lib/data/geo';
+	import { processGeoData, type CountryData } from '$lib/utils/globe-geometry';
+	import { artists } from '$lib/data/artists';
 
 	interface Props {
-		children?: Snippet;
-		paused?: boolean;
-		oncreate?: (group: Group) => void;
+		onCountryClick: (countryName: string) => void;
+		selectedCountry: string | null;
+		onGeoDataLoad?: (data: GeoJSONData) => void;
 	}
 
-	let { children, paused = false, oncreate }: Props = $props();
+	let { onCountryClick, selectedCountry, onGeoDataLoad }: Props = $props();
 
-	let groupRef = $state<Group | undefined>(undefined);
-	let countryGeometry = $state<BufferGeometry | undefined>(undefined);
+	const { camera } = useThrelte();
 
+	// Constants
+	const RADIUS = 1;
+	const FILL_RADIUS = RADIUS * 1.01;
+	const BORDER_RADIUS = RADIUS * 1.011;
+
+	// State
+	let countries: CountryData[] = $state([]);
+	let borderPositions: Float32Array | null = $state(null);
+	let hoveredCountry: string | null = $state(null);
+
+	// Derived
+	const countriesWithArtists = new Set(artists.map((a) => a.country));
+
+	function getOpacity(name: string, hasArtists: boolean): number {
+		if (name === selectedCountry) return 0.8;
+		if (name === hoveredCountry && hasArtists) return 0.7;
+		if (hasArtists) return 0.5;
+		return 0;
+	}
+
+	// Load and process GeoJSON
 	$effect(() => {
-		if (groupRef && oncreate) {
-			oncreate(groupRef);
+		loadGeoJSON('/data/ne_110m_countries.geojson').then((data) => {
+			const processed = processGeoData(data, countriesWithArtists, FILL_RADIUS, BORDER_RADIUS);
+			countries = processed.countries;
+			borderPositions = processed.borderPositions;
+			onGeoDataLoad?.(data);
+		});
+	});
+
+	interface GlobePointerEvent {
+		face?: { normal: THREE.Vector3 };
+		object?: THREE.Object3D;
+		point?: THREE.Vector3;
+	}
+
+	function isFrontFace(event: GlobePointerEvent): boolean {
+		if (!event?.face || !event?.object || !event?.point || !$camera) return false;
+		const normal = event.face.normal.clone().transformDirection(event.object.matrixWorld);
+		const toCamera = event.point
+			.clone()
+			.sub(($camera as THREE.PerspectiveCamera).position)
+			.normalize();
+		return normal.dot(toCamera) < 0;
+	}
+
+	function handleClick(name: string, event: GlobePointerEvent) {
+		if (isFrontFace(event) && countriesWithArtists.has(name)) {
+			onCountryClick(name);
 		}
-	});
-
-	$effect(() => {
-		// Based on https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_admin_0_countries.geojson
-		fetch('/data/world-110m.geojson')
-			.then((res) => res.json())
-			.then((geojson) => {
-				countryGeometry = buildCountryGeometry(geojson);
-			});
-	});
-
-	interactivity();
-
-	useTask((delta) => {
-		if (groupRef && !paused) {
-			groupRef.rotation.y += delta * 0.05;
-		}
-	});
+	}
 </script>
 
-<T.Group bind:ref={groupRef}>
-	<!-- Dark base sphere -->
-	<T.Mesh>
-		<T.SphereGeometry args={[2, 64, 64]} />
-		<T.MeshStandardMaterial color="#1a1a2e" roughness={0.7} metalness={0.3} />
-	</T.Mesh>
+<!-- Globe sphere -->
+<T.Mesh renderOrder={0} frustumCulled={false}>
+	<T.SphereGeometry args={[RADIUS, 48, 48]} />
+	<T.MeshStandardMaterial color="#1a1a2e" roughness={0.8} metalness={0.6} />
+</T.Mesh>
 
-	<!-- Pink wireframe overlay -->
-	<T.LineSegments>
-		<T.WireframeGeometry args={[new SphereGeometry(2.02, 24, 24)]} />
-		<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.1} />
+<!-- Borders -->
+{#if borderPositions}
+	{@const positions = borderPositions}
+	<T.LineSegments frustumCulled={false}>
+		<T.BufferGeometry
+			oncreate={(geo) => {
+				geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+			}}
+		/>
+		<T.LineBasicMaterial color={0xffaef6} transparent opacity={0.6} />
 	</T.LineSegments>
+{/if}
 
-	<!-- Country outlines -->
-	{#if countryGeometry}
-		<T.LineSegments geometry={countryGeometry}>
-				<T.LineBasicMaterial color="#FFAEF6" transparent opacity={0.7} />
-		</T.LineSegments>
-	{/if}
-
-	<!-- Markers (children) -->
-	{@render children?.()}
-</T.Group>
+<!-- Country fills - only countries with artists -->
+{#each countries as country (country.name)}
+	{@const opacity = getOpacity(country.name, country.hasArtists)}
+	<T.Group
+		onclick={(event: GlobePointerEvent) => handleClick(country.name, event)}
+		onpointerenter={() => (hoveredCountry = country.name)}
+		onpointerleave={() => (hoveredCountry = null)}
+	>
+		{#each country.polygons as polygon, i (i)}
+			<T.Mesh renderOrder={2} frustumCulled={false}>
+				<T.BufferGeometry
+					oncreate={(geo) => {
+						geo.setAttribute('position', new THREE.BufferAttribute(polygon.vertices, 3));
+						geo.setIndex(polygon.indices);
+						geo.computeVertexNormals();
+					}}
+				/>
+				<T.MeshBasicMaterial color={0xffaef6} transparent {opacity} side={THREE.DoubleSide} />
+			</T.Mesh>
+		{/each}
+	</T.Group>
+{/each}

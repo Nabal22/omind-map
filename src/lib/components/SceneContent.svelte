@@ -1,150 +1,135 @@
 <script lang="ts">
-	import { T, useTask } from '@threlte/core';
-	import { OrbitControls, Stars } from '@threlte/extras';
+	import { T, useTask, useThrelte } from '@threlte/core';
+	import { OrbitControls, interactivity } from '@threlte/extras';
+	import * as THREE from 'three';
 	import Globe from './Globe.svelte';
-	import Marker from './Marker.svelte';
-	import { artists, type Artist, latLngToVector3 } from '$lib/data/artists';
-	import { Vector3, type PerspectiveCamera, type Group } from 'three';
-	import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+	import { findCountryFeature } from '$lib/utils/globe-geometry';
+	import { getCountryCentroid, latLngToVector3, type GeoJSONData } from '$lib/data/geo';
 
 	interface Props {
-		onselect: (artist: Artist) => void;
-		targetArtist: Artist | null;
+		onCountryClick: (countryName: string) => void;
+		selectedCountry: string | null;
+		focusCountry: string | null;
 	}
 
-	let { onselect, targetArtist }: Props = $props();
+	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
 
-	let cameraRef = $state<PerspectiveCamera | undefined>(undefined);
-	let globeGroupRef = $state<Group | undefined>(undefined);
-	let controlsInstance: ThreeOrbitControls | null = null;
-
+	const { camera } = useThrelte();
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
-	const defaultCameraZ = isMobile ? 7 : 5;
+	interactivity();
 
-	let animating = $state(false);
-	let paused = $state(false);
+	// Constants
+	const CAMERA_DISTANCE = 2.5;
+	const ZOOM_DISTANCE = 1.8;
+	const ANIM_DURATION = 0.5;
 
 	// Animation state
-	let startPos = new Vector3();
-	let targetPos = new Vector3();
-	let startTarget = new Vector3();
-	let endTarget = new Vector3();
+	let animating = $state(false);
 	let animProgress = 0;
-	const ANIM_DURATION = 0.6; // seconds
+	let startPos = new THREE.Vector3();
+	let targetPos = new THREE.Vector3();
+	let startLookAt = new THREE.Vector3();
+	let targetLookAt = new THREE.Vector3();
+
+	// GeoData reference for camera animation
+	let geoData = $state<GeoJSONData | null>(null);
 
 	function easeOutCubic(t: number): number {
 		return 1 - Math.pow(1 - t, 3);
 	}
 
-	function zoomToArtist(artist: Artist) {
-		if (!cameraRef || !globeGroupRef) return;
+	function animateToCountry(countryName: string) {
+		if (!geoData || !$camera) return;
 
-		paused = true;
-		animating = true;
+		const feature = findCountryFeature(geoData, countryName);
+		if (!feature) return;
+
+		const cam = $camera as THREE.PerspectiveCamera;
+		const centroid = getCountryCentroid(feature);
+
+		startPos.copy(cam.position);
+		targetPos.copy(latLngToVector3(centroid.lat, centroid.lng, ZOOM_DISTANCE));
+		startLookAt.set(0, 0, 0);
+		targetLookAt.copy(latLngToVector3(centroid.lat, centroid.lng, 0));
+
 		animProgress = 0;
-
-		// Get marker world position (accounting for globe rotation)
-		const localPos = latLngToVector3(artist.lat, artist.lng, 2.05);
-		const worldPos = localPos.clone().applyEuler(globeGroupRef.rotation);
-
-		// Camera target: look at the marker
-		endTarget.copy(worldPos);
-
-		// Camera position: offset from marker along the direction from center
-		const dir = worldPos.clone().normalize();
-		targetPos.copy(worldPos).add(dir.multiplyScalar(1.2));
-
-		// Store current positions
-		startPos.copy(cameraRef.position);
-		if (controlsInstance) {
-			startTarget.copy(controlsInstance.target);
-		} else {
-			startTarget.set(0, 0, 0);
-		}
+		animating = true;
 	}
 
-	function resetCamera() {
-		if (!cameraRef) return;
+	function animateZoomOut() {
+		if (!$camera) return;
 
-		animating = true;
+		const cam = $camera as THREE.PerspectiveCamera;
+		const direction = cam.position.clone().normalize();
+
+		startPos.copy(cam.position);
+		targetPos.copy(direction.multiplyScalar(CAMERA_DISTANCE));
+		startLookAt.set(0, 0, 0);
+		targetLookAt.set(0, 0, 0);
+
 		animProgress = 0;
-
-		startPos.copy(cameraRef.position);
-		targetPos.set(0, 0, defaultCameraZ);
-
-		if (controlsInstance) {
-			startTarget.copy(controlsInstance.target);
-		}
-		endTarget.set(0, 0, 0);
+		animating = true;
 	}
 
-	// React to targetArtist changes
+	// React to camera focus
 	$effect(() => {
-		if (targetArtist) {
-			zoomToArtist(targetArtist);
-		} else if (cameraRef) {
-			resetCamera();
+		if (focusCountry && geoData) {
+			animateToCountry(focusCountry);
 		}
 	});
 
-	useTask((delta) => {
-		if (!animating || !cameraRef) return;
+	// React to unfocus
+	let prevFocusCountry: string | null = null;
+	$effect(() => {
+		if (prevFocusCountry && !focusCountry) {
+			animateZoomOut();
+		}
+		prevFocusCountry = focusCountry;
+	});
 
+	// Animate camera with easing
+	useTask((delta) => {
+		if (!animating || !$camera) return;
+
+		const cam = $camera as THREE.PerspectiveCamera;
 		animProgress += delta / ANIM_DURATION;
 
 		if (animProgress >= 1) {
 			animProgress = 1;
 			animating = false;
-			if (!targetArtist) {
-				paused = false;
-			}
 		}
 
 		const t = easeOutCubic(Math.min(animProgress, 1));
+		cam.position.lerpVectors(startPos, targetPos, t);
 
-		cameraRef.position.lerpVectors(startPos, targetPos, t);
-
-		if (controlsInstance) {
-			controlsInstance.target.lerpVectors(startTarget, endTarget, t);
-			controlsInstance.update();
-		}
+		const currentLookAt = new THREE.Vector3().lerpVectors(startLookAt, targetLookAt, t);
+		cam.lookAt(currentLookAt);
 	});
 
-	$effect(() => {
-		if (controlsInstance) {
-			controlsInstance.enabled = !animating;
-		}
-	});
-
-	function handleSelect(artist: Artist) {
-		onselect(artist);
+	function handleGeoDataLoad(data: GeoJSONData) {
+		geoData = data;
 	}
 </script>
 
-<T.PerspectiveCamera bind:ref={cameraRef} makeDefault position={[0, 0, defaultCameraZ]} fov={60}>
+<!-- Camera -->
+<T.PerspectiveCamera makeDefault position={[0, 0, CAMERA_DISTANCE]} fov={isMobile ? 80 : 55}>
 	<OrbitControls
-		oncreate={(ref) => {
-			controlsInstance = ref;
-		}}
-		minDistance={3.5}
-		maxDistance={isMobile ? 10 : 8}
-		enableDamping={true}
-		rotateSpeed={1.5}
-		dampingFactor={0.15}
+		enableDamping
+		dampingFactor={0.12}
+		rotateSpeed={1.2}
+		enableZoom
+		minDistance={isMobile ? 2.2 : 1.8}
+		maxDistance={isMobile ? 8 : 4}
 		enablePan={false}
-		minPolarAngle={0.6}
-		maxPolarAngle={2.54}
+		autoRotate={!focusCountry && !animating}
+		autoRotateSpeed={0.4}
 	/>
 </T.PerspectiveCamera>
 
-<T.AmbientLight intensity={0.7} />
+<!-- Lighting -->
+<T.AmbientLight intensity={0.6} />
 <T.DirectionalLight position={[5, 3, 5]} intensity={1} />
-<T.DirectionalLight position={[-3, -1, -3]} intensity={0.3} />
+<T.DirectionalLight position={[-3, -1, -3]} intensity={0.2} />
 
-<Globe {paused} oncreate={(group) => (globeGroupRef = group)}>
-	{#each artists as artist (artist.id)}
-		<Marker {artist} onselect={handleSelect} />
-	{/each}
-</Globe>
-
-<Stars count={1000} depth={50} factor={4} saturation={0} fade={true} />
+<!-- Globe -->
+<Globe {onCountryClick} {selectedCountry} onGeoDataLoad={handleGeoDataLoad} />

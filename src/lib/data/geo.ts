@@ -1,58 +1,56 @@
-import { BufferGeometry, Float32BufferAttribute, type Vector3 } from 'three';
-import { latLngToVector3 } from '$lib/data/artists';
+import * as THREE from 'three';
 
-interface GeoJsonGeometry {
-	type: 'Polygon' | 'MultiPolygon';
-	coordinates: number[][][] | number[][][][];
-}
-
-interface GeoJsonFeature {
+export interface CountryFeature {
 	type: 'Feature';
-	geometry: GeoJsonGeometry;
+	properties: {
+		NAME: string;
+		ADMIN: string;
+		ISO_A3: string;
+		[key: string]: unknown;
+	};
+	geometry: {
+		type: 'Polygon' | 'MultiPolygon';
+		coordinates: number[][][] | number[][][][];
+	};
 }
 
-interface GeoJsonFeatureCollection {
+export interface GeoJSONData {
 	type: 'FeatureCollection';
-	features: GeoJsonFeature[];
+	features: CountryFeature[];
 }
 
-function ringToSegments(ring: number[][], radius: number, output: number[]): void {
-	const verts: Vector3[] = [];
-	for (const coord of ring) {
-		verts.push(latLngToVector3(coord[1], coord[0], radius));
-	}
-	for (let i = 0; i < verts.length - 1; i++) {
-		const a = verts[i];
-		const b = verts[i + 1];
-		output.push(a.x, a.y, a.z, b.x, b.y, b.z);
-	}
-	// Close the loop
-	const last = verts[verts.length - 1];
-	const first = verts[0];
-	output.push(last.x, last.y, last.z, first.x, first.y, first.z);
+export function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
+	const phi = (90 - lat) * (Math.PI / 180);
+	const theta = (lng + 180) * (Math.PI / 180);
+
+	return new THREE.Vector3(
+		-(radius * Math.sin(phi) * Math.cos(theta)),
+		radius * Math.cos(phi),
+		radius * Math.sin(phi) * Math.sin(theta)
+	);
 }
 
-export function buildCountryGeometry(
-	geojson: GeoJsonFeatureCollection,
-	radius = 2.01
-): BufferGeometry {
-	const segments: number[] = [];
+export function getCountryCentroid(feature: CountryFeature): { lat: number; lng: number } {
+	const coords =
+		feature.geometry.type === 'MultiPolygon'
+			? feature.geometry.coordinates.flat(2)
+			: feature.geometry.coordinates.flat();
 
-	for (const feature of geojson.features) {
-		const { geometry } = feature;
-		if (!geometry) continue;
+	let sumLng = 0;
+	let sumLat = 0;
 
-		if (geometry.type === 'Polygon') {
-			const outerRing = (geometry.coordinates as number[][][])[0];
-			ringToSegments(outerRing, radius, segments);
-		} else if (geometry.type === 'MultiPolygon') {
-			for (const polygon of geometry.coordinates as number[][][][]) {
-				ringToSegments(polygon[0], radius, segments);
-			}
-		}
+	for (const coord of coords as number[][]) {
+		sumLng += coord[0];
+		sumLat += coord[1];
 	}
 
-	const geo = new BufferGeometry();
-	geo.setAttribute('position', new Float32BufferAttribute(segments, 3));
-	return geo;
+	return {
+		lng: sumLng / coords.length,
+		lat: sumLat / coords.length
+	};
+}
+
+export async function loadGeoJSON(url: string): Promise<GeoJSONData> {
+	const response = await fetch(url);
+	return response.json();
 }
