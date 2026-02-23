@@ -24,6 +24,7 @@
 	let focusCountry = $state<string | null>(null);
 	let justSelectedCountry = false;
 
+
 	// Click on globe country: set both filter and camera
 	function selectCountry(name: string) {
 		selectedCountry = name;
