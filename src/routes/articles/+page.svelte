@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { articles } from '$lib/data/articles';
+	import { resolve } from '$app/paths';
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
@@ -14,10 +15,13 @@
 
 		{#each articles as article, i (article._id)}
 			<a
-				href={resolveRoute('/articles/[slug]', { slug: article.slug })}
+				href={resolve('/articles/[slug]', { slug: article.slug })}
 				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
 				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>
+				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
+
+				ration: 300, delay: i * 80 }} >
 				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
 
 				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">

@@ -4,6 +4,7 @@
 	import { beforeNavigate } from '$app/navigation';
 	import { getSelectedArtist, closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { articles } from '$lib/data/articles';
+	import { resolve } from '$app/paths';
 
 	const loadedIframes = new SvelteSet<string>();
 
@@ -110,7 +111,7 @@
 					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">ARTICLES</p>
 					{#each relatedArticles as article (article._id)}
 						<a
-							href={resolveRoute('/articles/[slug]', { slug: article.slug })}
+							href={resolve('/articles/[slug]', { slug: article.slug })}
 							class="block py-1.5 text-[0.7rem] text-black/60 transition-opacity duration-150 hover:text-pink"
 						>
 							{article.title}
