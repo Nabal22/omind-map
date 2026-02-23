@@ -46,7 +46,7 @@
 </script>
 
 {#if anchorPos && countryArtists.length > 0}
-	<div class="pointer-events-none absolute inset-0 z-50">
+	<div class="pointer-events-none absolute inset-0 z-[60]">
 		<!-- SVG lines from anchor to each pin -->
 		<svg class="pointer-events-none absolute inset-0 h-full w-full">
 			{#each countryArtists as _, i (i)}
@@ -70,7 +70,7 @@
 				{@const pos = pinPositions[i]}
 				<button
 					type="button"
-					class="pointer-events-auto absolute flex cursor-pointer flex-col items-center gap-1 border-none bg-transparent p-0"
+					class="pointer-events-auto absolute flex cursor-pointer touch-manipulation flex-col items-center gap-1 border-none bg-transparent p-0"
 					style="
 						left: {pos.x}px;
 						top: {pos.y}px;
@@ -80,6 +80,11 @@
 					in:fly={{ y: 20, duration: 300, delay: i * 80 }}
 					out:fly={{ y: 20, duration: 200 }}
 					onclick={() => openArtistDrawer(artist)}
+					ontouchend={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						openArtistDrawer(artist);
+					}}
 				>
 					<div class="h-[70px] w-[70px] overflow-hidden">
 						<img
