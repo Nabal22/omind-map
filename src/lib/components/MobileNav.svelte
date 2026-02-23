@@ -19,7 +19,7 @@
 
 <!-- Mobile: Top Logo -->
 <div class="pointer-events-none fixed inset-x-0 top-4 z-30 flex justify-center sm:hidden">
-	<img src="/assets/icon-512.png" alt="0mind" class="h-10 w-10 opacity-60" />
+	<img src="/assets/icon-512.png" alt="0mind" class="h-14 w-14" />
 </div>
 
 <!-- Mobile: Bottom Tab Bar -->
