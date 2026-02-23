@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fly, scale as scaleTransition } from 'svelte/transition';
 	import { artists } from '$lib/data/artists';
-	import { getAnchorPos, getPinScreenPositions } from '$lib/stores/globe-overlay.svelte';
+	import {
+		getAnchorPos,
+		getPinScreenPositions,
+		getHiddenArtistCount
+	} from '$lib/stores/globe-overlay.svelte';
 	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 
 	interface Props {
@@ -12,6 +16,7 @@
 
 	const anchorPos = $derived(getAnchorPos());
 	const pinScreenPositions = $derived(getPinScreenPositions());
+	const hiddenCount = $derived(getHiddenArtistCount());
 
 	const countryArtists = $derived(
 		selectedCountry ? artists.filter((a) => a.country === selectedCountry) : []
@@ -25,19 +30,18 @@
 			{#each countryArtists as _, i (i)}
 				{@const pin = pinScreenPositions[i]}
 				{#if pin?.visible}
-					{@const fanOffset = (i - (countryArtists.length - 1) / 2) * 0.5}
-					{@const startX = anchorPos.x + fanOffset}
+					{@const startX = anchorPos.x}
 					{@const startY = anchorPos.y}
 					{@const endX = pin.x}
 					{@const endY = pin.y}
 					{@const ctrlX = startX + (endX - startX) * 0.5}
-					{@const ctrlY = startY + (endY - startY) * 0.2}
+					{@const ctrlY = startY + (endY - startY) * 0.15}
 					<path
 						d="M {startX} {startY} Q {ctrlX} {ctrlY} {endX} {endY}"
 						stroke="black"
-						stroke-width="1"
+						stroke-width="0.8"
 						fill="none"
-						opacity="0.15"
+						opacity={0.12 - pin.ring * 0.02}
 					/>
 				{/if}
 			{/each}
@@ -55,8 +59,8 @@
 						top: {pin.y}px;
 						transform: translate(-50%, -50%) scale({pin.scale});
 					"
-					in:fly={{ y: 20, duration: 300, delay: Math.min(i * 30, 600) }}
-					out:fly={{ y: 20, duration: 200 }}
+					in:scaleTransition={{ duration: 250, delay: Math.min(i * 20, 400), start: 0.3 }}
+					out:fly={{ y: 10, duration: 150 }}
 					onclick={() => openArtistDrawer(artist)}
 					ontouchend={(e) => {
 						e.preventDefault();
@@ -64,7 +68,7 @@
 						openArtistDrawer(artist);
 					}}
 				>
-					<div class="h-[60px] w-[60px] overflow-hidden sm:h-[50px] sm:w-[50px]">
+					<div class="h-[20px] w-[20px] overflow-hidden sm:h-[30px] sm:w-[30px]">
 						<img
 							src={artist.imageUrl}
 							alt={artist.name}
@@ -80,5 +84,23 @@
 				</button>
 			{/if}
 		{/each}
+
+		<!-- "Zoom to reveal more" badge -->
+		{#if hiddenCount > 0}
+			<div
+				class="pointer-events-none absolute flex flex-col items-center gap-0.5"
+				style="left: {anchorPos.x}px; top: {anchorPos.y + 30}px; transform: translate(-50%, 0);"
+				in:scaleTransition={{ duration: 200, start: 0.5 }}
+			>
+				<span
+					class="rounded-full bg-black/70 px-2.5 py-1 font-mono text-[0.6rem] tracking-wider text-white"
+				>
+					+{hiddenCount}
+				</span>
+				<span class="font-mono text-[0.45rem] tracking-wider text-black/40 uppercase">
+					zoom to reveal
+				</span>
+			</div>
+		{/if}
 	</div>
 {/if}

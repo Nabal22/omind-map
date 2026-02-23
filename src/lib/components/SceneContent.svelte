@@ -120,7 +120,7 @@
 		dampingFactor={0.12}
 		rotateSpeed={1.2}
 		enableZoom
-		minDistance={isMobile ? 2.2 : 1.8}
+		minDistance={isMobile ? 1.5 : 1.4}
 		maxDistance={isMobile ? 8 : 4}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
