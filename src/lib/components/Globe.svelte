@@ -37,7 +37,7 @@
 		if (name === selectedCountry) return 0xff0080;
 		if (name === hoveredCountry && hasArtists) return 0xff80c0;
 		if (hasArtists) return 0xffb3e0;
-		return 0x111111;
+		return 0x282828;
 	}
 
 	// Load and process GeoJSON in two phases so the browser renders borders
