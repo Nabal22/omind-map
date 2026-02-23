@@ -106,6 +106,96 @@ export const artists: Artist[] = [
 		imageUrl: '/assets/images/artists/af2008%20stiffy.png'
 	},
 	{
+		id: 'test-usa-1',
+		name: 'Test Artist 1',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/perswave%20png.png'
+	},
+	{
+		id: 'test-usa-2',
+		name: 'Test Artist 2',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/afkgoat%20png.png'
+	},
+	{
+		id: 'test-usa-3',
+		name: 'Test Artist 3',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/Zell%20png.png'
+	},
+	{
+		id: 'test-usa-4',
+		name: 'Test Artist 4',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/bic%20png.png'
+	},
+	{
+		id: 'test-usa-5',
+		name: 'Test Artist 5',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/elaiyah%20png.png'
+	},
+	{
+		id: 'test-usa-6',
+		name: 'Test Artist 6',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/turrobaby%20png.png'
+	},
+	{
+		id: 'test-usa-7',
+		name: 'Test Artist 7',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/perswave%20png.png'
+	},
+	{
+		id: 'test-usa-8',
+		name: 'Test Artist 8',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/afkgoat%20png.png'
+	},
+	{
+		id: 'test-usa-9',
+		name: 'Test Artist 9',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/Zell%20png.png'
+	},
+	{
+		id: 'test-usa-10',
+		name: 'Test Artist 10',
+		country: 'United States of America',
+		description: 'Test artist for USA.',
+		musicUrl: 'https://soundcloud.com/test',
+		soundcloudUrl: ['https://soundcloud.com/lilyeat/breathe'],
+		imageUrl: '/assets/images/artists/bic%20png.png'
+	},
+	{
 		id: 'gesaffelstein',
 		name: 'Gesaffelstein',
 		country: 'France',

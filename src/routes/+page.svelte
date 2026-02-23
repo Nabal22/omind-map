@@ -86,7 +86,7 @@
 			</span>
 		</div>
 	{/if}
-
+	
 	<!-- Globe scene -->
 	<div
 		class="absolute inset-0"

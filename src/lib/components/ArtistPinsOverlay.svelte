@@ -16,12 +16,18 @@
 		selectedCountry ? artists.filter((a) => a.country === selectedCountry) : []
 	);
 
+	// Fonction pour générer une valeur pseudo-aléatoire déterministe basée sur l'index
+	function seededRandom(seed: number): number {
+		const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+		return x - Math.floor(x);
+	}
+
 	function computePinPositions(
 		anchor: { x: number; y: number },
 		count: number
 	): { x: number; y: number }[] {
-		const R = 150;
-		const verticalLift = 40;
+		const R = 180;
+		const verticalLift = 50;
 		if (count === 1) {
 			return [{ x: anchor.x, y: anchor.y - R - verticalLift }];
 		}
@@ -51,13 +57,15 @@
 		<svg class="pointer-events-none absolute inset-0 h-full w-full">
 			{#each countryArtists as _, i (i)}
 				{#if pinPositions[i]}
-					<line
-						x1={anchorPos.x}
-						y1={anchorPos.y}
-						x2={pinPositions[i].x}
-						y2={pinPositions[i].y}
+					{@const baseRatio = 0.3 + seededRandom(i) * 0.4}
+					{@const xOffset = (seededRandom(i + 100) - 0.5) * 60}
+					{@const midX = anchorPos.x + (pinPositions[i].x - anchorPos.x) * baseRatio + xOffset}
+					<path
+						d="M {anchorPos.x} {anchorPos.y} L {midX} {pinPositions[i].y} L {pinPositions[i]
+							.x} {pinPositions[i].y}"
 						stroke="black"
 						stroke-width="1"
+						fill="none"
 						opacity="0.25"
 					/>
 				{/if}
@@ -70,7 +78,7 @@
 				{@const pos = pinPositions[i]}
 				<button
 					type="button"
-					class="pointer-events-auto absolute flex cursor-pointer touch-manipulation flex-col items-center gap-1 border-none bg-transparent p-0"
+					class="pointer-events-auto absolute flex cursor-pointer touch-manipulation flex-col items-center gap-1.5 border-none bg-transparent p-3 sm:p-0"
 					style="
 						left: {pos.x}px;
 						top: {pos.y}px;
@@ -86,7 +94,9 @@
 						openArtistDrawer(artist);
 					}}
 				>
-					<div class="h-[70px] w-[70px] overflow-hidden">
+					<div
+						class="h-[90px] w-[90px] overflow-hidden rounded-full shadow-lg sm:h-[70px] sm:w-[70px]"
+					>
 						<img
 							src={artist.imageUrl}
 							alt={artist.name}
@@ -94,7 +104,9 @@
 							draggable="false"
 						/>
 					</div>
-					<span class="font-mono text-[0.6rem] font-medium tracking-widest text-black uppercase">
+					<span
+						class="font-mono text-[0.65rem] font-medium tracking-widest text-black uppercase drop-shadow-sm sm:text-[0.6rem]"
+					>
 						{artist.name}
 					</span>
 				</button>
