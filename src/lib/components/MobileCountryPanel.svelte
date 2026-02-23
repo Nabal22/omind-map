@@ -92,7 +92,7 @@
 		<!-- Country Header + Artist List -->
 		<div class="px-4 pb-4">
 			<div class="mb-3 flex items-center justify-between">
-				<h3 class="text-xs font-normal tracking-[0.15em] text-black/30 uppercase">
+				<h3 class="text-xs font-bold tracking-[0.15em] text-black/30 uppercase">
 					{selectedCountry}
 				</h3>
 				<span class="text-[0.6rem] text-black/30">{countryArtists.length}</span>

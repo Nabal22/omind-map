@@ -35,7 +35,7 @@
 				})} · {article.author}
 			</div>
 
-			<h1 class="mt-4 text-2xl font-normal tracking-[0.15em] uppercase sm:text-3xl">
+			<h1 class="mt-4 text-2xl font-bold tracking-[0.15em] uppercase sm:text-3xl">
 				{article.title}
 			</h1>
 
@@ -48,7 +48,7 @@
 							{block.text}
 						</p>
 					{:else if block._type === 'heading'}
-						<h2 class="text-base font-normal tracking-[0.1em] uppercase">
+						<h2 class="text-base font-bold tracking-[0.1em] uppercase">
 							{block.text}
 						</h2>
 					{:else if block._type === 'quote'}

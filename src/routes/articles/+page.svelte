@@ -6,7 +6,7 @@
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 py-20">
 		<h1
-			class="mb-2 text-3xl font-normal tracking-[0.2em] uppercase"
+			class="mb-2 text-3xl font-bold tracking-[0.2em] uppercase"
 			in:fly={{ y: -15, duration: 300 }}
 		>
 			ARTICLES
@@ -29,7 +29,7 @@
 				</div>
 
 				<h2
-					class="mt-2 text-lg font-normal tracking-[0.1em] uppercase transition-opacity duration-150 group-hover:opacity-70"
+					class="mt-2 text-lg font-bold tracking-[0.1em] uppercase transition-opacity duration-150 group-hover:opacity-70"
 				>
 					{article.title}
 				</h2>

@@ -64,7 +64,7 @@
 				CLOSE
 			</button>
 
-			<h2 class="mb-3 text-base font-normal tracking-[0.1em] uppercase">
+			<h2 class="mb-3 text-base font-bold tracking-[0.1em] uppercase">
 				<a
 					href={artist.musicUrl}
 					target="_blank"

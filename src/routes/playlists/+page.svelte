@@ -5,7 +5,7 @@
 <div class="flex h-dvh w-screen flex-col items-center justify-center bg-white font-mono text-black">
 	<div class="text-center" in:fade={{ duration: 200 }}>
 		<h1
-			class="mb-4 text-3xl font-normal tracking-[0.2em] uppercase"
+			class="mb-4 text-3xl font-bold tracking-[0.2em] uppercase"
 			in:fly={{ y: -15, duration: 300 }}
 		>
 			PLAYLISTS

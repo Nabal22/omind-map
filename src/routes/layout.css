@@ -1,18 +1,27 @@
 @import 'tailwindcss';
 
+@font-face {
+	font-family: 'Nohemi';
+	src: url('/fonts/Nohemi-VF.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
 @theme {
 	--color-pink: #FFAEFB;
 	--color-black: #000000;
 	--color-gray: #666666;
 	--color-white: #f5f5f5;
-	--font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+	--font-mono: 'Nohemi', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
 @layer base {
 	body {
-		background: #ffffff;
+		background: var(--color-white);
 		color: var(--color-black);
 		font-family: var(--font-mono);
+		font-weight: 400;
 		overflow: hidden;
 	}
 
@@ -26,6 +35,6 @@
 
 	::selection {
 		background: var(--color-pink);
-		color: #ffffff;
+		color: var(--color-white);
 	}
 }
