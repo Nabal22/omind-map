@@ -103,7 +103,7 @@
 <!-- Globe sphere (same color as background = invisible ocean) -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
 	<T.SphereGeometry args={[RADIUS, 48, 48]} />
-	<T.MeshBasicMaterial color="#f0f5fa" />
+	<T.MeshBasicMaterial color="#f0f5fa" transparent opacity={0.98} />
 </T.Mesh>
 
 <!-- Borders -->
@@ -115,7 +115,7 @@
 				geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 			}}
 		/>
-		<T.LineBasicMaterial color={0xffffff} transparent opacity={0.4} />
+		<T.LineBasicMaterial color={0xffffff} opacity={0.1} />
 	</T.LineSegments>
 {/if}
 
