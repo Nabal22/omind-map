@@ -4,10 +4,11 @@
 
 	interface Props {
 		selectedCountry: string | null;
+		onCountrySelect: (country: string | null) => void;
 		onArtistSelect: (artist: Artist) => void;
 	}
 
-	let { selectedCountry, onArtistSelect }: Props = $props();
+	let { selectedCountry, onCountrySelect, onArtistSelect }: Props = $props();
 
 	// Track previous country to trigger list animation
 	let prevCountry: string | null = null;
@@ -31,7 +32,7 @@
 
 	// Reset focused index when filtered list changes
 	$effect(() => {
-		void filteredArtists;
+		filteredArtists;
 		focusedIndex = -1;
 	});
 

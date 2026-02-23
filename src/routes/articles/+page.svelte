@@ -14,7 +14,7 @@
 
 		{#each articles as article, i (article._id)}
 			<a
-				href={resolveRoute('/articles/[slug]', { slug: article.slug })}
+				href="/articles/{article.slug}"
 				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
 				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>

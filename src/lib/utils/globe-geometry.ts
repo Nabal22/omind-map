@@ -137,23 +137,6 @@ function buildBorderLines(ring: number[][], radius: number): number[] {
 	return borders;
 }
 
-/** Fast pass: only compute border lines (no triangulation). */
-export function computeBorderPositions(geoData: GeoJSONData, borderRadius: number): Float32Array {
-	const borders: number[] = [];
-	for (const feature of geoData.features) {
-		const rawPolygons =
-			feature.geometry.type === 'MultiPolygon'
-				? feature.geometry.coordinates
-				: [feature.geometry.coordinates];
-		for (const polygon of rawPolygons) {
-			const ring = (polygon as number[][][])[0];
-			if (!ring || ring.length < 3) continue;
-			borders.push(...buildBorderLines(ring, borderRadius));
-		}
-	}
-	return new Float32Array(borders);
-}
-
 export function processGeoData(
 	geoData: GeoJSONData,
 	countriesWithArtists: Set<string>,

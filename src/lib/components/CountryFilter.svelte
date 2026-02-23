@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import { artists } from '$lib/data/artists';
 
 	interface Props {
