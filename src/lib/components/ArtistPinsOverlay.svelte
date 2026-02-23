@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import { artists, type Artist } from '$lib/data/artists';
+	import { artists } from '$lib/data/artists';
 	import { getAnchorPos } from '$lib/stores/globe-overlay.svelte';
 	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 
@@ -48,8 +48,8 @@
 {#if anchorPos && countryArtists.length > 0}
 	<div class="pointer-events-none absolute inset-0 z-50">
 		<!-- SVG lines from anchor to each pin -->
-		<svg class="absolute inset-0 h-full w-full pointer-events-none">
-			{#each countryArtists as _artist, i (i)}
+		<svg class="pointer-events-none absolute inset-0 h-full w-full">
+			{#each countryArtists as _, i (i)}
 				{#if pinPositions[i]}
 					<line
 						x1={anchorPos.x}
@@ -70,7 +70,7 @@
 				{@const pos = pinPositions[i]}
 				<button
 					type="button"
-					class="absolute flex flex-col items-center gap-1 pointer-events-auto cursor-pointer bg-transparent border-none p-0"
+					class="pointer-events-auto absolute flex cursor-pointer flex-col items-center gap-1 border-none bg-transparent p-0"
 					style="
 						left: {pos.x}px;
 						top: {pos.y}px;
@@ -81,9 +81,7 @@
 					out:fly={{ y: 20, duration: 200 }}
 					onclick={() => openArtistDrawer(artist)}
 				>
-					<div
-						class="h-[70px] w-[70px] overflow-hidden rounded-full border-2 border-white shadow-md"
-					>
+					<div class="h-[70px] w-[70px] overflow-hidden">
 						<img
 							src={artist.imageUrl}
 							alt={artist.name}
@@ -91,7 +89,7 @@
 							draggable="false"
 						/>
 					</div>
-					<span class="font-mono text-[0.6rem] font-bold tracking-widest text-black uppercase">
+					<span class="font-mono text-[0.6rem] font-medium tracking-widest text-black uppercase">
 						{artist.name}
 					</span>
 				</button>

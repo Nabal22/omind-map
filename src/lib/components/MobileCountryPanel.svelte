@@ -46,7 +46,7 @@
 
 	// Reset focused index when artist list changes
 	$effect(() => {
-		countryArtists;
+		void countryArtists;
 		focusedIndex = -1;
 	});
 

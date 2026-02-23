@@ -25,7 +25,9 @@
 		</button>
 
 		<p class="mb-1 text-[0.6rem] tracking-[0.25em] uppercase opacity-50">WHO THE FUCK IS FROM</p>
-		<h2 class="mb-4 text-xl font-bold tracking-wide text-pink uppercase [text-shadow:0_0_10px_#ff0080]">
+		<h2
+			class="mb-4 text-xl font-bold tracking-wide text-pink uppercase [text-shadow:0_0_10px_#ff0080]"
+		>
 			{countryName}
 		</h2>
 

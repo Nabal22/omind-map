@@ -2,8 +2,13 @@
 	import { T, useThrelte } from '@threlte/core';
 	import * as THREE from 'three';
 	import { loadGeoJSON, type GeoJSONData } from '$lib/data/geo';
-	import { processGeoData, type CountryData } from '$lib/utils/globe-geometry';
+	import {
+		computeBorderPositions,
+		processGeoData,
+		type CountryData
+	} from '$lib/utils/globe-geometry';
 	import { artists } from '$lib/data/artists';
+	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -35,13 +40,21 @@
 		return 0x111111;
 	}
 
-	// Load and process GeoJSON
+	// Load and process GeoJSON in two phases so the browser renders borders
+	// before the heavier country triangulation blocks the frame.
 	$effect(() => {
 		loadGeoJSON('/data/ne_110m_countries.geojson').then((data) => {
-			const processed = processGeoData(data, countriesWithArtists, FILL_RADIUS, BORDER_RADIUS);
-			countries = processed.countries;
-			borderPositions = processed.borderPositions;
+			// Phase 1 (synchronous, ~0 ms): border lines appear on the next frame.
+			borderPositions = computeBorderPositions(data, BORDER_RADIUS);
 			onGeoDataLoad?.(data);
+			setGlobeLoaded();
+
+			// Phase 2 (deferred): triangulate country fills after the browser
+			// has had a chance to render the wireframe globe.
+			requestAnimationFrame(() => {
+				const processed = processGeoData(data, countriesWithArtists, FILL_RADIUS, BORDER_RADIUS);
+				countries = processed.countries;
+			});
 		});
 	});
 

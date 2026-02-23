@@ -16,10 +16,7 @@
 			in:fly={{ y: -10, duration: 300 }}
 			aria-label="Breadcrumb"
 		>
-			<a
-				href="/articles"
-				class="text-black/40 transition-opacity duration-150 hover:text-pink"
-			>
+			<a href="/articles" class="text-black/40 transition-opacity duration-150 hover:text-pink">
 				ARTICLES
 			</a>
 			<span class="text-black/20">/</span>
@@ -35,7 +32,7 @@
 				})} · {article.author}
 			</div>
 
-			<h1 class="mt-4 tracking-wide text-2xl font-medium sm:text-3xl">
+			<h1 class="mt-4 text-2xl font-medium tracking-wide sm:text-3xl">
 				{article.title}
 			</h1>
 
