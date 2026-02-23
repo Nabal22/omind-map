@@ -11,6 +11,10 @@
 		closeArtistDrawer,
 		getSelectedArtist
 	} from '$lib/stores/artist-drawer.svelte';
+	import { fade } from 'svelte/transition';
+	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
+
+	const globeLoaded = $derived(isGlobeLoaded());
 
 	let drawerArtist = $derived(getSelectedArtist());
 
@@ -56,14 +60,27 @@
 </script>
 
 <div class="relative h-dvh w-screen overflow-hidden" style="background:#f0f5fa">
+	<!-- Loading overlay — visible while GeoJSON is being fetched -->
+	{#if !globeLoaded}
+		<div
+			class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
+			out:fade={{ duration: 600 }}
+		>
+			<span class="animate-pulse font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
+				Loading
+			</span>
+		</div>
+	{/if}
 
-	<!-- Mobile: Hint text (shows when no country selected) -->
-	{#if !selectedCountry}
+	<!-- Mobile: Hint text (shows when loaded and no country selected) -->
+	{#if globeLoaded && !selectedCountry}
 		<div
 			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
+			in:fade={{ duration: 300 }}
 		>
 			<span
-				class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase" style="background:#f0f5fa"
+				class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
+				style="background:#f0f5fa"
 			>
 				Tap a country to explore
 			</span>
@@ -96,18 +113,15 @@
 		/>
 	</div>
 
-	<!-- Mobile: Country Panel (only when no country selected; pins overlay replaces it) -->
-	{#if !selectedCountry}
-		<div class="sm:hidden">
-			<MobileCountryPanel
-				{selectedCountry}
-				onClose={clearCountry}
-				onArtistSelect={handleArtistSelect}
-			/>
-		</div>
-	{/if}
+	<!-- Mobile: Country Panel (appears when country is selected) -->
+	<div class="sm:hidden">
+		<MobileCountryPanel
+			{selectedCountry}
+			onClose={clearCountry}
+			onArtistSelect={handleArtistSelect}
+		/>
+	</div>
 
 	<!-- Artist pins overlay (all screen sizes) -->
 	<ArtistPinsOverlay {selectedCountry} />
-
 </div>
