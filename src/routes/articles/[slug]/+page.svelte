@@ -35,7 +35,7 @@
 				})} · {article.author}
 			</div>
 
-			<h1 class="mt-4 text-2xl font-bold tracking-[0.15em] uppercase sm:text-3xl">
+			<h1 class="mt-4 tracking-wide text-2xl font-medium sm:text-3xl">
 				{article.title}
 			</h1>
 
