@@ -5,6 +5,7 @@ export interface Artist {
 	description: string;
 	musicUrl: string;
 	soundcloudUrl?: string[];
+	imageUrl: string;
 }
 
 export const artists: Artist[] = [
@@ -17,7 +18,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/perswave%20png.png'
 	},
 	{
 		id: 'yeat2',
@@ -28,7 +30,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/afkgoat%20png.png'
 	},
 	{
 		id: 'bladee',
@@ -39,7 +42,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/bladee1000/3-star-reunite',
 			'https://soundcloud.com/bladee1000/the-kingdom'
-		]
+		],
+		imageUrl: '/assets/images/artists/Zell%20png.png'
 	},
 	{
 		id: 'arca',
@@ -50,7 +54,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/eluney%20benedetti%20png.png'
 	},
 	{
 		id: 'death-grips',
@@ -61,7 +66,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/bic%20png.png'
 	},
 	{
 		id: 'sophie',
@@ -72,7 +78,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/elaiyah%20png.png'
 	},
 	{
 		id: 'crystal-castles',
@@ -83,7 +90,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/turrobaby%20png.png'
 	},
 	{
 		id: 'burial',
@@ -94,7 +102,8 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/af2008%20stiffy.png'
 	},
 	{
 		id: 'gesaffelstein',
@@ -105,6 +114,7 @@ export const artists: Artist[] = [
 		soundcloudUrl: [
 			'https://soundcloud.com/lilyeat/breathe',
 			'https://soundcloud.com/lilyeat/psycho-ceo'
-		]
+		],
+		imageUrl: '/assets/images/artists/cero%20png.png'
 	}
 ];

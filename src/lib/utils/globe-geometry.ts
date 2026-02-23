@@ -89,7 +89,8 @@ function subdivideTriangle(
 
 function triangulatePolygon(
 	ring: number[][],
-	radius: number
+	radius: number,
+	maxAngle: number
 ): { vertices: Float32Array; indices: number[] } | null {
 	if (ring.length < 3) return null;
 
@@ -112,7 +113,7 @@ function triangulatePolygon(
 					coords[originalIndices[i + 2]]
 				],
 				radius,
-				3,
+				maxAngle,
 				vertices,
 				indices
 			);
@@ -153,27 +154,24 @@ export function processGeoData(
 				? feature.geometry.coordinates
 				: [feature.geometry.coordinates];
 
-		// Only create meshes for countries with artists (huge performance boost)
 		const polygons: { vertices: Float32Array; indices: number[] }[] = [];
+		// Artist countries: fine subdivision (maxAngle=3°) for smooth pink highlight.
+		// All others: coarse subdivision (maxAngle=10°) — they're flat black fills.
+		const maxAngle = hasArtists ? 3 : 10;
 
 		for (const polygon of rawPolygons) {
 			const ring = (polygon as number[][][])[0];
 			if (!ring || ring.length < 3) continue;
 
-			// Only triangulate countries with artists
-			if (hasArtists) {
-				const triangulated = triangulatePolygon(ring, fillRadius);
-				if (triangulated) polygons.push(triangulated);
-			}
+			// Triangulate all countries for full globe fill
+			const triangulated = triangulatePolygon(ring, fillRadius, maxAngle);
+			if (triangulated) polygons.push(triangulated);
 
 			// Borders for all countries
 			borders.push(...buildBorderLines(ring, borderRadius));
 		}
 
-		// Only add to countries array if it has polygons (i.e., has artists)
-		if (polygons.length > 0) {
-			countries.push({ name, hasArtists, polygons });
-		}
+		countries.push({ name, hasArtists, polygons });
 	}
 
 	return { countries, borderPositions: new Float32Array(borders) };

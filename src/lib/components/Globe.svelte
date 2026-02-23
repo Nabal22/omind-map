@@ -28,11 +28,11 @@
 	// Derived
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
 
-	function getOpacity(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return 0.6;
-		if (name === hoveredCountry && hasArtists) return 0.4;
-		if (hasArtists) return 0.15;
-		return 0;
+	function getColor(name: string, hasArtists: boolean): number {
+		if (name === selectedCountry) return 0xff0080;
+		if (name === hoveredCountry && hasArtists) return 0xff80c0;
+		if (hasArtists) return 0xffb3e0;
+		return 0x111111;
 	}
 
 	// Load and process GeoJSON
@@ -87,28 +87,28 @@
 	});
 </script>
 
-<!-- Globe sphere -->
+<!-- Globe sphere (same color as background = invisible ocean) -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
 	<T.SphereGeometry args={[RADIUS, 48, 48]} />
-	<T.MeshStandardMaterial color="#FFFFFF" roughness={0.9} metalness={0.3} />
+	<T.MeshBasicMaterial color="#f0f5fa" />
 </T.Mesh>
 
 <!-- Borders -->
 {#if borderPositions}
 	{@const positions = borderPositions}
-	<T.LineSegments frustumCulled={false}>
+	<T.LineSegments renderOrder={3} frustumCulled={false}>
 		<T.BufferGeometry
 			oncreate={(geo) => {
 				geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 			}}
 		/>
-		<T.LineBasicMaterial color={0xffffff} transparent opacity={0.3} />
+		<T.LineBasicMaterial color={0xffffff} transparent opacity={0.4} />
 	</T.LineSegments>
 {/if}
 
-<!-- Country fills - only countries with artists -->
+<!-- Country fills - all countries -->
 {#each countries as country (country.name)}
-	{@const opacity = getOpacity(country.name, country.hasArtists)}
+	{@const color = getColor(country.name, country.hasArtists)}
 	<T.Group
 		onclick={(event: GlobePointerEvent) => handleClick(country.name, event)}
 		onpointerenter={() => handlePointerEnter(country.name)}
@@ -123,7 +123,7 @@
 						geo.computeVertexNormals();
 					}}
 				/>
-				<T.MeshBasicMaterial color={0xffffff} transparent {opacity} side={THREE.DoubleSide} />
+				<T.MeshBasicMaterial {color} side={THREE.DoubleSide} />
 			</T.Mesh>
 		{/each}
 	</T.Group>

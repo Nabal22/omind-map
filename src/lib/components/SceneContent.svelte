@@ -3,6 +3,7 @@
 	import { OrbitControls, interactivity } from '@threlte/extras';
 	import * as THREE from 'three';
 	import Globe from './Globe.svelte';
+	import GlobeAnchor from './GlobeAnchor.svelte';
 	import { findCountryFeature } from '$lib/utils/globe-geometry';
 	import { getCountryCentroid, latLngToVector3, type GeoJSONData } from '$lib/data/geo';
 
@@ -134,3 +135,6 @@
 
 <!-- Globe -->
 <Globe {onCountryClick} {selectedCountry} onGeoDataLoad={handleGeoDataLoad} />
+
+<!-- Screen-space anchor for artist pins overlay -->
+<GlobeAnchor {selectedCountry} {geoData} />

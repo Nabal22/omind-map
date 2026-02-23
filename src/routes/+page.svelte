@@ -4,6 +4,7 @@
 	import ArtistsPanel from '$lib/components/ArtistsPanel.svelte';
 	import CountryFilter from '$lib/components/CountryFilter.svelte';
 	import MobileCountryPanel from '$lib/components/MobileCountryPanel.svelte';
+	import ArtistPinsOverlay from '$lib/components/ArtistPinsOverlay.svelte';
 	import { type Artist } from '$lib/data/artists';
 	import {
 		openArtistDrawer,
@@ -95,13 +96,18 @@
 		/>
 	</div>
 
-	<!-- Mobile: Country Panel (appears when country is selected) -->
-	<div class="sm:hidden">
-		<MobileCountryPanel
-			{selectedCountry}
-			onClose={clearCountry}
-			onArtistSelect={handleArtistSelect}
-		/>
-	</div>
+	<!-- Mobile: Country Panel (only when no country selected; pins overlay replaces it) -->
+	{#if !selectedCountry}
+		<div class="sm:hidden">
+			<MobileCountryPanel
+				{selectedCountry}
+				onClose={clearCountry}
+				onArtistSelect={handleArtistSelect}
+			/>
+		</div>
+	{/if}
+
+	<!-- Artist pins overlay (all screen sizes) -->
+	<ArtistPinsOverlay {selectedCountry} />
 
 </div>
