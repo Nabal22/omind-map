@@ -24,13 +24,13 @@
 
 <!-- Mobile: Bottom Tab Bar -->
 <nav
-	class="fixed inset-x-0 bottom-0 z-[60] flex items-center border-t border-pink/10 bg-black font-mono sm:hidden"
+	class="fixed inset-x-0 bottom-0 z-[60] flex items-center border-t border-black/10 bg-white font-mono sm:hidden"
 >
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
 			class="flex flex-1 items-center justify-center py-4 text-[0.55rem] tracking-[0.2em] uppercase transition-opacity duration-150
-				{isActive(item.path, currentPath) ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
+				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/30 hover:text-pink'}"
 		>
 			{item.label}
 		</a>
@@ -43,7 +43,7 @@
 		<a
 			href={item.path}
 			class="text-[0.65rem] tracking-[0.2em] uppercase transition-opacity duration-150
-				{isActive(item.path, currentPath) ? 'text-pink' : 'text-pink/40 hover:text-pink'}"
+				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/40 hover:text-pink'}"
 		>
 			{item.label}
 		</a>

@@ -54,7 +54,7 @@
 	}
 </script>
 
-<div class="relative h-dvh w-screen overflow-hidden bg-black">
+<div class="relative h-dvh w-screen overflow-hidden" style="background:#f0f5fa">
 
 	<!-- Mobile: Hint text (shows when no country selected) -->
 	{#if !selectedCountry}
@@ -62,7 +62,7 @@
 			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
 		>
 			<span
-				class="bg-black px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-pink/30 uppercase"
+				class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase" style="background:#f0f5fa"
 			>
 				Tap a country to explore
 			</span>

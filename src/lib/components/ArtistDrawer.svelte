@@ -34,7 +34,7 @@
 {#if artist}
 	<!-- Mobile backdrop (hidden on desktop) -->
 	<button
-		class="fixed inset-0 z-[70] border-none bg-black/80 p-0 sm:hidden"
+		class="fixed inset-0 z-[70] border-none bg-black/30 p-0 sm:hidden"
 		transition:fade={{ duration: 150 }}
 		onclick={closeArtistDrawer}
 		aria-label="Close artist drawer"
@@ -43,7 +43,7 @@
 	<!-- Mobile: bottom drawer / Desktop: top-left panel -->
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-[71] max-h-[50vh] overflow-y-auto border-t border-pink/10 bg-black font-mono text-pink sm:inset-auto sm:top-6 sm:left-6 sm:max-h-none sm:max-w-sm sm:border sm:border-pink/10"
+		class="fixed inset-x-0 bottom-0 z-[71] max-h-[50vh] overflow-y-auto border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-h-none sm:max-w-sm sm:border sm:border-black/10"
 		transition:fly={{ y: 300, duration: 200 }}
 		onclick={(e) => e.stopPropagation()}
 		ontouchstart={(e) => e.stopPropagation()}
@@ -53,12 +53,12 @@
 	>
 		<!-- Handle bar (mobile only) -->
 		<div class="flex justify-center py-2 sm:hidden">
-			<div class="h-px w-10 bg-pink/20"></div>
+			<div class="h-px w-10 bg-black/10"></div>
 		</div>
 
 		<div class="px-4 pb-6 sm:pt-4">
 			<button
-				class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.65rem] tracking-[0.15em] text-pink/40 uppercase transition-opacity duration-150 hover:text-pink"
+				class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.65rem] tracking-[0.15em] text-black/40 uppercase transition-opacity duration-150 hover:text-pink"
 				onclick={closeArtistDrawer}
 			>
 				CLOSE
@@ -76,17 +76,17 @@
 			</h2>
 
 			<div class="space-y-1 text-[0.7rem] leading-relaxed">
-				<p><span class="text-pink/30">{artist.country}</span></p>
-				<p class="text-pink/60">{artist.description}</p>
+				<p><span class="text-black/30">{artist.country}</span></p>
+				<p class="text-black/60">{artist.description}</p>
 			</div>
 
 			{#if artist.soundcloudUrl?.length}
-				<div class="mt-4 border-t border-pink/10 pt-3">
-					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-pink/30 uppercase">TRACKS</p>
+				<div class="mt-4 border-t border-black/10 pt-3">
+					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">TRACKS</p>
 					{#each artist.soundcloudUrl as url (url)}
 						<div class="relative h-5 py-0.5">
 							{#if !loadedIframes.has(url)}
-								<span class="absolute text-[0.6rem] tracking-[0.1em] text-pink/20">LOADING</span>
+								<span class="absolute text-[0.6rem] tracking-[0.1em] text-black/20">LOADING</span>
 							{/if}
 							<iframe
 								title="{artist.name} on SoundCloud"
@@ -106,12 +106,12 @@
 			{/if}
 
 			{#if relatedArticles.length}
-				<div class="mt-4 border-t border-pink/10 pt-3">
-					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-pink/30 uppercase">ARTICLES</p>
+				<div class="mt-4 border-t border-black/10 pt-3">
+					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">ARTICLES</p>
 					{#each relatedArticles as article (article._id)}
 						<a
 							href="/articles/{article.slug}"
-							class="block py-1.5 text-[0.7rem] text-pink/60 transition-opacity duration-150 hover:text-pink"
+							class="block py-1.5 text-[0.7rem] text-black/60 transition-opacity duration-150 hover:text-pink"
 						>
 							{article.title}
 						</a>

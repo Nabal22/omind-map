@@ -76,7 +76,7 @@
 						class="cursor-pointer border-none bg-transparent px-0 py-[0.35rem] text-left font-mono text-[0.8rem] tracking-[0.05em] whitespace-nowrap uppercase transition-all duration-150 hover:text-pink {focusedIndex ===
 						i
 							? 'border-l-2 border-l-pink pl-2 text-pink'
-							: 'text-pink/40'}"
+							: 'text-black/40'}"
 						onclick={() => onArtistSelect(artist)}
 					>
 						{artist.name}

@@ -78,7 +78,7 @@
 	<!-- Bottom Panel -->
 	<div
 		bind:this={panelEl}
-		class="fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-pink/10 bg-black font-mono"
+		class="fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-black/10 bg-white font-mono"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		role="dialog"
@@ -86,16 +86,16 @@
 	>
 		<!-- Handle bar -->
 		<div class="flex justify-center py-2">
-			<div class="h-px w-10 bg-pink/20"></div>
+			<div class="h-px w-10 bg-black/10"></div>
 		</div>
 
 		<!-- Country Header + Artist List -->
 		<div class="px-4 pb-4">
 			<div class="mb-3 flex items-center justify-between">
-				<h3 class="text-xs font-normal tracking-[0.15em] text-pink/30 uppercase">
+				<h3 class="text-xs font-normal tracking-[0.15em] text-black/30 uppercase">
 					{selectedCountry}
 				</h3>
-				<span class="text-[0.6rem] text-pink/30">{countryArtists.length}</span>
+				<span class="text-[0.6rem] text-black/30">{countryArtists.length}</span>
 			</div>
 
 			<div class="overflow-y-auto" style="max-height: calc(40vh - 100px);">
@@ -103,7 +103,7 @@
 					{#each countryArtists as artist, i (artist.id)}
 						<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>
 							<button
-								class="w-full cursor-pointer border-b border-pink/5 bg-transparent py-2.5 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex ===
+								class="w-full cursor-pointer border-b border-black/5 bg-transparent py-2.5 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex ===
 								i
 									? 'border-l-2 border-l-pink pl-2'
 									: 'px-0'}"

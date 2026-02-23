@@ -14,7 +14,8 @@
 
 	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
 
-	const { camera } = useThrelte();
+	const { camera, scene } = useThrelte();
+	scene.background = new THREE.Color(0xf0f5fa);
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
 	interactivity();
 
@@ -127,9 +128,9 @@
 </T.PerspectiveCamera>
 
 <!-- Lighting -->
-<T.AmbientLight intensity={0.6} />
-<T.DirectionalLight position={[5, 3, 5]} intensity={1} />
-<T.DirectionalLight position={[-3, -1, -3]} intensity={0.2} />
+<T.AmbientLight intensity={0.18} />
+<T.DirectionalLight position={[5, 3, 5]} intensity={1.6} color="#fff8e8" />
+<T.DirectionalLight position={[-3, -1, -3]} intensity={0.06} color="#3355aa" />
 
 <!-- Globe -->
 <Globe {onCountryClick} {selectedCountry} onGeoDataLoad={handleGeoDataLoad} />

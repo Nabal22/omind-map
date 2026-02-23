@@ -32,23 +32,23 @@
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={(e) => e.stopPropagation()}
 >
-	<div class="flex items-center gap-0 border border-pink/10 bg-black font-mono">
+	<div class="flex items-center gap-0 border border-black/10 bg-white font-mono">
 		<button
-			class="cursor-pointer border-r border-none border-r-pink/10 bg-transparent px-3 py-2 font-mono text-[0.6rem] tracking-[0.15em] uppercase transition-opacity duration-150
-				{!selectedCountry ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
+			class="cursor-pointer border-r border-none border-r-black/10 bg-transparent px-3 py-2 font-mono text-[0.6rem] tracking-[0.15em] uppercase transition-opacity duration-150
+				{!selectedCountry ? 'text-pink' : 'text-black/30 hover:text-pink'}"
 			onclick={clearFilter}
 		>
 			ALL
 		</button>
 
-		<span class="text-pink/10">|</span>
+		<span class="text-black/10">|</span>
 
 		<div class="flex max-w-[60vw] gap-0 overflow-x-auto [scrollbar-width:none]">
 			{#each countries as country (country)}
 				{@const isActive = selectedCountry === country}
 				<button
 					class="shrink-0 cursor-pointer border-none bg-transparent px-3 py-2 font-mono text-[0.6rem] tracking-[0.15em] uppercase transition-opacity duration-150
-						{isActive ? 'text-pink' : 'text-pink/30 hover:text-pink'}"
+						{isActive ? 'text-pink' : 'text-black/30 hover:text-pink'}"
 					onclick={() => handleTagClick(country)}
 				>
 					{country}

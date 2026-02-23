@@ -90,7 +90,7 @@
 <!-- Globe sphere -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
 	<T.SphereGeometry args={[RADIUS, 48, 48]} />
-	<T.MeshStandardMaterial color="#0a0a0a" roughness={0.9} metalness={0.3} />
+	<T.MeshStandardMaterial color="#FFFFFF" roughness={0.9} metalness={0.3} />
 </T.Mesh>
 
 <!-- Borders -->

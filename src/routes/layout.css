@@ -1,18 +1,23 @@
 @import 'tailwindcss';
 
 @theme {
-	--color-pink: #ffffff;
+	--color-pink: #FFAEFB;
 	--color-black: #000000;
 	--color-gray: #666666;
+	--color-white: #f5f5f5;
 	--font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
 @layer base {
 	body {
-		background: var(--color-black);
-		color: var(--color-pink);
+		background: #ffffff;
+		color: var(--color-black);
 		font-family: var(--font-mono);
 		overflow: hidden;
+	}
+
+	h1 {
+		color: var(--color-pink);
 	}
 
 	::-webkit-scrollbar {
@@ -21,6 +26,6 @@
 
 	::selection {
 		background: var(--color-pink);
-		color: var(--color-black);
+		color: #ffffff;
 	}
 }
