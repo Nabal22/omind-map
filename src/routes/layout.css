@@ -54,6 +54,18 @@
 	}
 }
 
+:root {
+	--mini-globe-right: 1rem;
+	--mini-globe-left: calc(100vw - 1rem - 5rem);
+}
+
+@media (min-width: 640px) {
+	:root {
+		--mini-globe-right: calc(100vw - 1rem - 5rem);
+		--mini-globe-left: 1rem;
+	}
+}
+
 @layer base {
 	body {
 		background: var(--color-white);

@@ -81,7 +81,7 @@
 		class="fixed touch-manipulation overflow-hidden
 			{isExplorePage
 			? 'z-0 bg-white'
-			: 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
+			: 'z-20 cursor-pointer opacity-70 hover:opacity-100 focus:opacity-100'}"
 		style="
 			transition: top 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 350ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -90,9 +90,9 @@
 				border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				transform 150ms ease;
 			top: {isExplorePage ? '0px' : '1rem'};
-			right: {isExplorePage ? '0px' : '1rem'};
+			right: {isExplorePage ? '0px' : 'var(--mini-globe-right)'};
 			bottom: {isExplorePage ? '0px' : 'calc(100dvh - 1rem - 5rem)'};
-			left: {isExplorePage ? '0px' : 'calc(100vw - 1rem - 5rem)'};
+			left: {isExplorePage ? '0px' : 'var(--mini-globe-left)'};
 			border-radius: {isExplorePage ? '0px' : '9999px'};
 		"
 		onclick={isExplorePage ? undefined : handleMiniGlobeClick}
