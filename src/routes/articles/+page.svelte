@@ -21,9 +21,6 @@
 			>
 				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
 
-				ration: 300, delay: i * 80 }} >
-				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
-
 				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
 					{article.category} · {new Date(article.publishedAt).toLocaleDateString('en-US', {
 						year: 'numeric',
