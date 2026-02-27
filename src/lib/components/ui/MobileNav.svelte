@@ -24,12 +24,12 @@
 
 <!-- Mobile: Bottom Tab Bar -->
 <nav
-	class="fixed inset-x-0 bottom-0 z-[60] flex items-center border-t border-black/10 bg-white font-mono sm:hidden"
+	class="fixed inset-x-0 bottom-0 z-[60] flex items-center border-t border-black/10 bg-white pb-safe font-mono sm:hidden"
 >
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
-			class="flex flex-1 items-center justify-center py-4 text-[0.55rem] tracking-[0.2em] uppercase transition-opacity duration-150
+			class="flex min-h-[44px] flex-1 items-center justify-center px-2 py-3 text-[0.55rem] tracking-[0.2em] uppercase transition-opacity duration-150
 				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/30 hover:text-pink'}"
 		>
 			{item.label}

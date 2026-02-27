@@ -5,9 +5,9 @@
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-2xl px-6 py-20">
+	<div class="mx-auto max-w-2xl px-6 pt-20 pb-nav-safe">
 		<h1
-			class="mb-2 text-3xl font-bold tracking-[0.2em] uppercase"
+			class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl"
 			in:fly={{ y: -15, duration: 300 }}
 		>
 			ARTICLES

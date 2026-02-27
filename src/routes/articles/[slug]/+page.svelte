@@ -10,7 +10,7 @@
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-xl px-6 py-20">
+	<div class="mx-auto max-w-xl px-6 pt-20 pb-nav-safe">
 		<nav
 			class="mb-8 flex items-center gap-2 text-[0.65rem] tracking-[0.15em] uppercase"
 			in:fly={{ y: -10, duration: 300 }}

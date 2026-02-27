@@ -40,9 +40,7 @@
 			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
 			in:fade={{ duration: 300 }}
 		>
-			<span
-				class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
-			>
+			<span class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
 				Tap a country to explore
 			</span>
 		</div>
@@ -67,7 +65,9 @@
 			in:fade={{ duration: 200, delay: 50 }}
 			out:fade={{ duration: 100 }}
 			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => { if (e.key === 'Escape') setCountryFilter(null); }}
+			onkeydown={(e) => {
+				if (e.key === 'Escape') setCountryFilter(null);
+			}}
 			role="presentation"
 		>
 			<ArtistsList
@@ -85,8 +85,9 @@
 		<MobileCountryPanel
 			{selectedCountry}
 			onClose={clearSelection}
-			onArtistSelect={(artist) => { if (artist) selectArtist(artist); }}
+			onArtistSelect={(artist) => {
+				if (artist) selectArtist(artist);
+			}}
 		/>
 	</div>
-
 </div>

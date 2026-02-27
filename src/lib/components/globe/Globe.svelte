@@ -1,5 +1,9 @@
 <script lang="ts" module>
-	import { computeBorderPositions, processGeoData, type CountryData } from '$lib/utils/globe-geometry';
+	import {
+		computeBorderPositions,
+		processGeoData,
+		type CountryData
+	} from '$lib/utils/globe-geometry';
 	import { artists } from '$lib/data/artists';
 	import { GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
 
@@ -45,7 +49,7 @@
 
 	const geoQuery = createQuery<GeoJSONData>(() => ({
 		queryKey: ['geojson', 'countries'],
-		queryFn: () => fetch('/data/ne_110m_countries.geojson').then((r) => r.json()),
+		queryFn: () => fetch('/data/ne_110m_countries.geojson').then((r) => r.json())
 	}));
 
 	function getColor(name: string, hasArtists: boolean): number {
@@ -75,7 +79,12 @@
 		setGlobeLoaded();
 
 		requestAnimationFrame(() => {
-			const processed = processGeoData(data, countriesWithArtists, GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS);
+			const processed = processGeoData(
+				data,
+				countriesWithArtists,
+				GLOBE_FILL_RADIUS,
+				GLOBE_BORDER_RADIUS
+			);
 			cachedCountries = processed.countries;
 			countries = cachedCountries;
 		});

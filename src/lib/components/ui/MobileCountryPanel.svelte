@@ -19,7 +19,9 @@
 
 	const outsideTap = createOutsideTapDetector(
 		() => panelEl,
-		() => { if (selectedCountry) onClose(); }
+		() => {
+			if (selectedCountry) onClose();
+		}
 	);
 
 	// Keyboard navigation
@@ -56,7 +58,8 @@
 {#if selectedCountry}
 	<div
 		bind:this={panelEl}
-		class="fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-black/10 bg-white font-mono"
+		class="fixed right-0 left-0 z-[55] max-h-[45vh] overflow-hidden border-t border-black/10 bg-white font-mono"
+		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px))"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		role="dialog"
@@ -79,7 +82,7 @@
 					{#each countryArtists as artist, i (artist.id)}
 						<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>
 							<button
-								class="w-full cursor-pointer border-b border-black/5 bg-transparent py-2.5 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex ===
+								class="min-h-[44px] w-full cursor-pointer border-b border-black/5 bg-transparent py-3 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex ===
 								i
 									? 'border-l-2 border-l-pink pl-2'
 									: 'px-0'}"

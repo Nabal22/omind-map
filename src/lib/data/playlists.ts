@@ -35,7 +35,7 @@ export const playlists: Playlist[] = [
 		tags: ['rage', 'opium', 'punk rap'],
 		streamingLinks: {
 			spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd',
-			appleMusic: 'https://music.apple.com/us/playlist/rage-hits/pl.u-leyl0jgf4XoYaJ',
+			appleMusic: 'https://music.apple.com/us/playlist/rage-hits/pl.u-leyl0jgf4XoYaJ'
 		},
 		tracks: [
 			{ title: 'Rockstar Made', artist: 'Playboi Carti', duration: '2:14' },
@@ -47,7 +47,7 @@ export const playlists: Playlist[] = [
 			{ title: 'Paranoid', artist: 'Ken Carson', duration: '2:08' },
 			{ title: 'Buss It', artist: 'Homixide Gang', duration: '1:55' },
 			{ title: '2093', artist: 'Yeat', duration: '2:44' },
-			{ title: 'Overseas', artist: 'Destroy Lonely', duration: '3:11' },
+			{ title: 'Overseas', artist: 'Destroy Lonely', duration: '3:11' }
 		]
 	},
 	{
@@ -61,7 +61,7 @@ export const playlists: Playlist[] = [
 		tags: ['drain gang', 'sweden', 'ambient rap'],
 		streamingLinks: {
 			spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX1rVvRgjX59F',
-			soundcloud: 'https://soundcloud.com/bladee/sets',
+			soundcloud: 'https://soundcloud.com/bladee/sets'
 		},
 		tracks: [
 			{ title: 'Icedancer', artist: 'Bladee', duration: '2:53' },
@@ -71,7 +71,7 @@ export const playlists: Playlist[] = [
 			{ title: 'Ginseng Strip 2002', artist: 'Yung Lean', duration: '3:28' },
 			{ title: 'Calcium', artist: 'Ecco2k', duration: '2:59' },
 			{ title: 'Numb', artist: 'Bladee', duration: '3:05' },
-			{ title: 'Agony', artist: 'Yung Lean', duration: '3:52' },
+			{ title: 'Agony', artist: 'Yung Lean', duration: '3:52' }
 		]
 	},
 	{
@@ -86,7 +86,7 @@ export const playlists: Playlist[] = [
 		streamingLinks: {
 			spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX6ujZpAN0v6r',
 			appleMusic: 'https://music.apple.com/us/playlist/experimental-club/pl.u-leyl0WTf4XoYaJ',
-			soundcloud: 'https://soundcloud.com/xcxarcaxcx/sets',
+			soundcloud: 'https://soundcloud.com/xcxarcaxcx/sets'
 		},
 		tracks: [
 			{ title: 'Nonbinary', artist: 'Arca', duration: '4:12' },
@@ -98,7 +98,7 @@ export const playlists: Playlist[] = [
 			{ title: 'Ratchet', artist: 'Arca', duration: '4:02' },
 			{ title: 'Hacker', artist: 'Death Grips', duration: '3:33' },
 			{ title: 'Gesaffelstein - Pursuit', artist: 'Gesaffelstein', duration: '5:17' },
-			{ title: 'Untitled 3', artist: 'Burial', duration: '9:22' },
+			{ title: 'Untitled 3', artist: 'Burial', duration: '9:22' }
 		]
 	},
 	{
@@ -112,7 +112,7 @@ export const playlists: Playlist[] = [
 		tags: ['uk', 'grime', 'drill'],
 		streamingLinks: {
 			spotify: 'https://open.spotify.com/playlist/37i9dQZF1DX1gPRCPAhi8E',
-			appleMusic: 'https://music.apple.com/gb/playlist/uk-drill/pl.u-leyl0abf4XoYaJ',
+			appleMusic: 'https://music.apple.com/gb/playlist/uk-drill/pl.u-leyl0abf4XoYaJ'
 		},
 		tracks: [
 			{ title: 'Shutdown', artist: 'Skepta', duration: '3:44' },
@@ -120,9 +120,9 @@ export const playlists: Playlist[] = [
 			{ title: 'Lesley', artist: 'Dave', duration: '4:31' },
 			{ title: 'That\u2019s Not Me', artist: 'Skepta', duration: '3:02' },
 			{ title: 'Loading', artist: 'Central Cee', duration: '2:41' },
-			{ title: 'Survivor\'s Guilt', artist: 'Dave', duration: '5:18' },
+			{ title: "Survivor's Guilt", artist: 'Dave', duration: '5:18' },
 			{ title: 'Nasty', artist: 'Skepta', duration: '3:19' },
-			{ title: '6 for 6', artist: 'Central Cee', duration: '2:33' },
+			{ title: '6 for 6', artist: 'Central Cee', duration: '2:33' }
 		]
 	}
 ];

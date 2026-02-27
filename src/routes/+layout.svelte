@@ -12,9 +12,9 @@
 		defaultOptions: {
 			queries: {
 				staleTime: Infinity,
-				gcTime: Infinity,
-			},
-		},
+				gcTime: Infinity
+			}
+		}
 	});
 </script>
 
@@ -26,6 +26,7 @@
 	<link rel="manifest" href="/site.webmanifest" />
 
 	<meta name="theme-color" content="#ffffff" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>

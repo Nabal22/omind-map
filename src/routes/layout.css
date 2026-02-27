@@ -18,6 +18,14 @@
 	--font-mono: 'Nohemi', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
+@utility pb-safe {
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pb-nav-safe {
+	padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
+
 @layer base {
 	body {
 		background: var(--color-white);

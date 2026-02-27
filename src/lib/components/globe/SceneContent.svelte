@@ -15,7 +15,7 @@
 		MOBILE_MIN_ZOOM,
 		DESKTOP_MIN_ZOOM,
 		MOBILE_MAX_ZOOM,
-		DESKTOP_MAX_ZOOM,
+		DESKTOP_MAX_ZOOM
 	} from '$lib/config';
 
 	interface Props {

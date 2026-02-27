@@ -57,7 +57,10 @@
 			<div class="h-px w-10 bg-black/10"></div>
 		</div>
 
-		<div class="max-h-[50vh] overflow-y-auto px-4 pb-6 sm:max-h-none sm:pt-4">
+		<div
+			class="max-h-[70dvh] overflow-y-auto px-4 pb-safe sm:max-h-none sm:pt-4"
+			style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px))"
+		>
 			<button
 				class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.65rem] tracking-[0.15em] text-black/40 uppercase transition-opacity duration-150 hover:text-pink"
 				onclick={closeArtistDrawer}
@@ -93,7 +96,7 @@
 				<div class="mt-4 border-t border-black/10 pt-3">
 					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">TRACKS</p>
 					{#each artist.soundcloudUrl as url (url)}
-						<div class="relative h-5 py-0.5 mb-1">
+						<div class="relative mb-1 h-5 py-0.5">
 							{#if !loadedIframes.has(url)}
 								<span class="absolute text-[0.6rem] tracking-[0.1em] text-black/20">LOADING</span>
 							{/if}
