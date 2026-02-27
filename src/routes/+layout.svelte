@@ -79,15 +79,9 @@
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 	<div
 		class="fixed overflow-hidden
-			{isExplorePage ? 'z-0 bg-white' : 'z-20 cursor-pointer hover:scale-110 hover:opacity-100'}"
+			{isExplorePage ? 'z-0 bg-white' : 'z-20 cursor-pointer'}"
 		style="
-			transition: top 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
-				right 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
-				bottom 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
-				left 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
-				border-radius 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
-				opacity 300ms ease {isExplorePage ? '100ms' : '0ms'},
-				transform 150ms ease;
+			transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
 			top: {isExplorePage ? '0px' : '1rem'};
 			right: {isExplorePage ? '0px' : '1rem'};
 			bottom: {isExplorePage ? '0px' : 'calc(100dvh - 1rem - 5rem)'};
