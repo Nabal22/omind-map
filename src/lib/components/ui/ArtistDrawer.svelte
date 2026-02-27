@@ -121,7 +121,9 @@
 					{#each artist.soundcloudUrl as url (url)}
 						<div class="relative mb-1 h-5 py-0.5">
 							{#if !loadedIframes.has(url)}
-								<span class="absolute text-[0.6rem] tracking-[0.1em] text-black/20">LOADING</span>
+								<div class="absolute inset-0 flex items-center">
+									<div class="h-3 w-full animate-pulse rounded-sm bg-black/5"></div>
+								</div>
 							{/if}
 							<iframe
 								title="{artist.name} on SoundCloud"
@@ -130,7 +132,7 @@
 								width="100%"
 								height="20"
 								src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ffaefb&auto_play=false&show_user=false&show_artwork=false`}
-								class="transition-opacity duration-200 {loadedIframes.has(url)
+								class="transition-opacity duration-300 {loadedIframes.has(url)
 									? 'opacity-100'
 									: 'opacity-0'}"
 								onload={() => handleIframeLoad(url)}
