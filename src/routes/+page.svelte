@@ -2,7 +2,6 @@
 	import Scene from '$lib/components/globe/Scene.svelte';
 	import SceneContent from '$lib/components/globe/SceneContent.svelte';
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
-	import CountryFilter from '$lib/components/ui/CountryFilter.svelte';
 	import MobileCountryPanel from '$lib/components/ui/MobileCountryPanel.svelte';
 
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
@@ -62,9 +61,6 @@
 			<SceneContent onCountryClick={selectCountry} {selectedCountry} {focusCountry} />
 		</Scene>
 	</div>
-
-	<!-- Desktop: Country Filter -->
-	<CountryFilter {selectedCountry} onCountrySelect={setCountryFilter} />
 
 	<!-- Desktop: Artists list (hidden when artist drawer is open) -->
 	<div class="hidden {drawerArtist ? '' : 'sm:block'}">
