@@ -42,6 +42,11 @@ export function setFocusCountry(country: string | null): void {
 /** Clear all selection */
 export function clearSelection(): void {
 	if (justSelectedCountry) return;
+	resetSelection();
+}
+
+/** Force-clear selection (bypasses justSelectedCountry guard) */
+export function resetSelection(): void {
 	selectedCountry = null;
 	focusCountry = null;
 	closeArtistDrawer();

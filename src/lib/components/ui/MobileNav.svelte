@@ -1,9 +1,10 @@
 <script lang="ts">
 	interface Props {
 		currentPath: string;
+		isExplorePage?: boolean;
 	}
 
-	let { currentPath }: Props = $props();
+	let { currentPath, isExplorePage = false }: Props = $props();
 
 	const navItems = [
 		{ path: '/', label: 'EXPLORE' },
@@ -17,10 +18,12 @@
 	}
 </script>
 
-<!-- Mobile: Top Logo -->
-<div class="pointer-events-none fixed inset-x-0 top-4 z-30 flex justify-center sm:hidden">
-	<img src="/assets/icon-512.png" alt="0mind" class="h-14 w-14" />
-</div>
+<!-- Mobile: Top Logo (hidden on non-explore pages to avoid clash with mini globe) -->
+{#if isExplorePage}
+	<div class="pointer-events-none fixed inset-x-0 top-4 z-30 flex justify-center sm:hidden">
+		<img src="/assets/icon-512.png" alt="0mind" class="h-14 w-14" />
+	</div>
+{/if}
 
 <!-- Mobile: Bottom Tab Bar -->
 <nav

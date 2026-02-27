@@ -21,7 +21,8 @@
 		setCountryFilter,
 		selectArtist,
 		setFocusCountry,
-		clearSelection
+		clearSelection,
+		resetSelection
 	} from '$lib/stores/explore.svelte';
 
 	let { children } = $props();
@@ -37,6 +38,11 @@
 	}
 
 	onNavigate((navigation) => {
+		// Force-clear selection immediately before navigation starts
+		if (navigation.from?.url.pathname === '/' && navigation.to?.url.pathname !== '/') {
+			resetSelection();
+		}
+
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
@@ -68,22 +74,25 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<MobileNav currentPath={$page.url.pathname} />
+	<MobileNav currentPath={$page.url.pathname} {isExplorePage} />
 
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div
-		class="fixed overflow-hidden bg-white {isExplorePage ? 'z-0' : 'z-20 cursor-pointer'}"
+		class="fixed overflow-hidden bg-white
+			{isExplorePage ? 'z-0' : 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
 		style="
 			transition: top 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				bottom 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				left 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1);
+				border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1),
+				opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
+				transform 150ms ease;
 			top: {isExplorePage ? '0px' : '1rem'};
-			right: {isExplorePage ? '0px' : 'calc(100vw - 1rem - 4rem)'};
-			bottom: {isExplorePage ? '0px' : 'calc(100dvh - 1rem - 4rem)'};
-			left: {isExplorePage ? '0px' : '1rem'};
+			right: {isExplorePage ? '0px' : '1rem'};
+			bottom: {isExplorePage ? '0px' : 'calc(100dvh - 1rem - 5rem)'};
+			left: {isExplorePage ? '0px' : 'calc(100vw - 1rem - 5rem)'};
 			border-radius: {isExplorePage ? '0px' : '9999px'};
 		"
 		onclick={isExplorePage ? undefined : handleMiniGlobeClick}
@@ -165,7 +174,7 @@
 		{/if}
 	</div>
 
-	<!-- Page content — hidden on explore page -->
+	<!-- Page content — hidden on explore page, padded to clear mini globe -->
 	<div class="relative z-10" class:hidden={isExplorePage}>
 		{@render children()}
 	</div>

@@ -9,7 +9,7 @@
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-xl px-6 pt-20 pb-nav-safe">
+	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">
 		<nav
 			class="mb-8 flex items-center gap-2 text-[0.65rem] tracking-[0.15em] uppercase"
 			aria-label="Breadcrumb"
