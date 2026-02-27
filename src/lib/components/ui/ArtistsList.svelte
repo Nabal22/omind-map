@@ -5,9 +5,10 @@
 	interface Props {
 		selectedCountry: string | null;
 		onArtistSelect: (artist: Artist) => void;
+		onClose?: () => void;
 	}
 
-	let { selectedCountry, onArtistSelect }: Props = $props();
+	let { selectedCountry, onArtistSelect, onClose }: Props = $props();
 
 	// Track previous country to trigger list animation
 	let prevCountry: string | null = null;
@@ -66,6 +67,14 @@
 	role="menu"
 	tabindex="-1"
 >
+	{#if selectedCountry && onClose}
+		<button
+			class="mb-1 cursor-pointer border-none bg-transparent px-0 py-1 text-left font-mono text-[0.65rem] text-black/30 uppercase transition-colors duration-150 hover:text-pink"
+			onclick={onClose}
+		>
+			<span class="mr-1">&larr;</span> All artists
+		</button>
+	{/if}
 	<ul bind:this={listEl} class="flex max-h-screen flex-col gap-0 overflow-y-auto py-6">
 		{#key listKey}
 			{#each filteredArtists as artist, i (artist.id)}

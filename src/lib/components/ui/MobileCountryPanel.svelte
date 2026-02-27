@@ -74,7 +74,13 @@
 				<h3 class="text-xs font-bold tracking-[0.15em] text-black/30 uppercase">
 					{selectedCountry}
 				</h3>
-				<span class="text-[0.6rem] text-black/30">{countryArtists.length}</span>
+				<button
+					class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
+					onclick={onClose}
+					aria-label="Close"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+				</button>
 			</div>
 
 			<div class="overflow-y-auto" style="max-height: calc(40vh - 100px);">

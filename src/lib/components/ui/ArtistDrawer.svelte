@@ -57,6 +57,15 @@
 			<div class="h-px w-10 bg-black/10"></div>
 		</div>
 
+		<!-- Close button — absolutely positioned -->
+		<button
+			class="absolute top-2 right-3 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60 sm:top-3"
+			onclick={closeArtistDrawer}
+			aria-label="Close"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+		</button>
+
 		<div
 			class="max-h-[70dvh] overflow-y-auto px-4 pb-safe sm:max-h-none sm:pt-4"
 			style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px))"
@@ -64,7 +73,7 @@
 			<!-- Text left, image right (mobile + desktop) -->
 			<div class="mb-3 flex items-start gap-3">
 				<div class="min-w-0 flex-1">
-					<h2 class="text-base font-bold tracking-[0.1em] uppercase">
+					<h2 class="text-base font-bold uppercase">
 						<a
 							href={artist.musicUrl}
 							target="_blank"

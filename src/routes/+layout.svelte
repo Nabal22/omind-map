@@ -154,6 +154,7 @@
 							selectArtist(artist);
 							setFocusCountry(artist.country);
 						}}
+						onClose={clearSelection}
 					/>
 				</div>
 			</div>
