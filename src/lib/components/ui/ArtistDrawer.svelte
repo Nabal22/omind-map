@@ -93,7 +93,7 @@
 				<div class="mt-4 border-t border-black/10 pt-3">
 					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">TRACKS</p>
 					{#each artist.soundcloudUrl as url (url)}
-						<div class="relative h-5 py-0.5">
+						<div class="relative h-5 py-0.5 mb-1">
 							{#if !loadedIframes.has(url)}
 								<span class="absolute text-[0.6rem] tracking-[0.1em] text-black/20">LOADING</span>
 							{/if}
@@ -103,7 +103,7 @@
 								allow="autoplay"
 								width="100%"
 								height="20"
-								src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ffffff&auto_play=false&show_user=false&show_artwork=false`}
+								src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ffaefb&auto_play=false&show_user=false&show_artwork=false`}
 								class="transition-opacity duration-200 {loadedIframes.has(url)
 									? 'opacity-100'
 									: 'opacity-0'}"
