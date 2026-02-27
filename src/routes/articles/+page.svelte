@@ -4,8 +4,8 @@
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-2xl px-6 pt-10 pb-nav-safe">
-		<h1 class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl">ARTICLES</h1>
+	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">
+		<h1 class="text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl">ARTICLES</h1>
 
 		{#each articles as article (article._id)}
 			<a
