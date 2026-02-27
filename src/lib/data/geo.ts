@@ -31,22 +31,33 @@ export function latLngToVector3(lat: number, lng: number, radius: number): THREE
 }
 
 export function getCountryCentroid(feature: CountryFeature): { lat: number; lng: number } {
-	const coords =
-		feature.geometry.type === 'MultiPolygon'
-			? feature.geometry.coordinates.flat(2)
-			: feature.geometry.coordinates.flat();
+	let ring: number[][];
+
+	if (feature.geometry.type === 'MultiPolygon') {
+		// Use the largest polygon (mainland) for centroid calculation
+		const polygons = feature.geometry.coordinates as number[][][][];
+		let largest = polygons[0];
+		for (let i = 1; i < polygons.length; i++) {
+			if (polygons[i][0].length > largest[0].length) {
+				largest = polygons[i];
+			}
+		}
+		ring = largest[0];
+	} else {
+		ring = (feature.geometry.coordinates as number[][][])[0];
+	}
 
 	let sumLng = 0;
 	let sumLat = 0;
 
-	for (const coord of coords as number[][]) {
+	for (const coord of ring) {
 		sumLng += coord[0];
 		sumLat += coord[1];
 	}
 
 	return {
-		lng: sumLng / coords.length,
-		lat: sumLat / coords.length
+		lng: sumLng / ring.length,
+		lat: sumLat / ring.length
 	};
 }
 
