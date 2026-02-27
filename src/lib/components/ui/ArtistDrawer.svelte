@@ -61,13 +61,6 @@
 			class="max-h-[70dvh] overflow-y-auto px-4 pb-safe sm:max-h-none sm:pt-4"
 			style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px))"
 		>
-			<button
-				class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.65rem] tracking-[0.15em] text-black/40 uppercase transition-opacity duration-150 hover:text-pink"
-				onclick={closeArtistDrawer}
-			>
-				CLOSE
-			</button>
-
 			<!-- Text left, image right (mobile + desktop) -->
 			<div class="mb-3 flex items-start gap-3">
 				<div class="min-w-0 flex-1">
