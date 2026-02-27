@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-An rap media mobile-first site with a 3D globe showing artist locations worldwide, and other pages, built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
+A rap media mobile-first site with a 3D globe showing artist locations worldwide, articles, and playlists — built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
 
 ## Commands
 
@@ -31,7 +31,7 @@ An rap media mobile-first site with a 3D globe showing artist locations worldwid
 - **Svelte 5 runes**: Use `$props()`, `$state()`, `$derived()`, `$effect()` — not legacy Svelte 4 syntax
 - **Snippets over slots**: Use `{@render children()}` pattern, not `<slot />`
 - **Tailwind utility-first**: Use Tailwind classes directly in markup — no `<style>` blocks with custom CSS classes
-- **Tailwind theme**: Custom values defined via `@theme` in `layout.css` (colors: `pink`, `black`; animations: `glitch-in`, `slide-up`)
+- **Tailwind theme**: Custom values defined via `@theme` in `layout.css` (colors: `pink`, `pink-highlight`, `black`, `gray`, `white`, `globe-default`; custom font: Nohemi; custom utilities: `pb-safe`, `pb-nav-safe`)
 - **Formatting**: Tabs, single quotes, no trailing commas, printWidth 100
 - **TypeScript**: Strict mode enabled
 
