@@ -19,8 +19,7 @@
 	$effect(() => {
 		if (open) {
 			mounted = true;
-			// Focus search on open (desktop)
-			requestAnimationFrame(() => searchInput?.focus());
+			setTimeout(() => searchInput?.focus(), 350);
 		} else {
 			const timeout = setTimeout(() => {
 				mounted = false;
