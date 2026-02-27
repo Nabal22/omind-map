@@ -9,7 +9,7 @@
 	} from '$lib/utils/globe-geometry';
 	import { artists } from '$lib/data/artists';
 	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
-	import { GLOBE_RADIUS, GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS, COLORS } from '$lib/config';
+	import { GLOBE_RADIUS, GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -25,6 +25,15 @@
 	const FILL_RADIUS = GLOBE_FILL_RADIUS;
 	const BORDER_RADIUS = GLOBE_BORDER_RADIUS;
 
+	function cssVar(name: string): number {
+		const hex = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+		return parseInt(hex.replace('#', ''), 16);
+	}
+
+	const colorPink = cssVar('--color-pink');
+	const highlightPink = cssVar('--color-pink-highlight');
+	const colorGlobeDefault = cssVar('--color-globe-default');
+
 	// State
 	let countries: CountryData[] = $state([]);
 	let borderPositions: Float32Array | null = $state(null);
@@ -34,10 +43,10 @@
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
 
 	function getColor(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return COLORS.selected;
-		if (name === hoveredCountry && hasArtists) return COLORS.hoveredWithArtists;
-		if (hasArtists) return COLORS.hasArtists;
-		return COLORS.defaultCountry;
+		if (name === selectedCountry) return highlightPink;
+		if (name === hoveredCountry && hasArtists) return highlightPink;
+		if (hasArtists) return colorPink;
+		return colorGlobeDefault;
 	}
 
 	// Load and process GeoJSON in two phases so the browser renders borders

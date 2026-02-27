@@ -16,12 +16,3 @@ export const DESKTOP_MAX_ZOOM = 4;
 
 // Touch
 export const TAP_THRESHOLD = 10;
-
-// Globe colors
-export const COLORS = {
-	selected: 0xff0080,
-	hoveredWithArtists: 0xff80c0,
-	hasArtists: 0xffb3e0,
-	defaultCountry: 0x282828,
-	background: 0xf0f5fa
-} as const;

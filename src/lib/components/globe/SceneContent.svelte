@@ -16,7 +16,6 @@
 		DESKTOP_MIN_ZOOM,
 		MOBILE_MAX_ZOOM,
 		DESKTOP_MAX_ZOOM,
-		COLORS
 	} from '$lib/config';
 
 	interface Props {
@@ -28,7 +27,7 @@
 	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
 
 	const { camera, scene } = useThrelte();
-	scene.background = new THREE.Color(COLORS.background);
+	scene.background = new THREE.Color(0xffffff);
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
 	interactivity();
 

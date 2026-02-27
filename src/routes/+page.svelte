@@ -23,7 +23,7 @@
 	const focusCountry = $derived(getFocusCountry());
 </script>
 
-<div class="relative h-dvh w-screen overflow-hidden" style="background:#f0f5fa">
+<div class="relative h-dvh w-screen overflow-hidden bg-white">
 	{#if !globeLoaded}
 		<div
 			class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
@@ -42,7 +42,6 @@
 		>
 			<span
 				class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
-				style="background:#f0f5fa"
 			>
 				Tap a country to explore
 			</span>
