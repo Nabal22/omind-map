@@ -79,21 +79,21 @@
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 	<div
 		class="fixed overflow-hidden
-			{isExplorePage
-			? 'z-0 bg-white'
-			: 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
+			{isExplorePage ? 'z-0 bg-white' : 'z-20 cursor-pointer hover:scale-110 hover:opacity-100'}"
 		style="
-			transition: top 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				right 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				bottom 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				left 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1),
+			transition: top 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
+				right 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
+				bottom 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
+				left 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
+				border-radius 400ms cubic-bezier(0.2, 0.9, 0.3, 1),
+				opacity 300ms ease {isExplorePage ? '100ms' : '0ms'},
 				transform 150ms ease;
 			top: {isExplorePage ? '0px' : '1rem'};
 			right: {isExplorePage ? '0px' : '1rem'};
 			bottom: {isExplorePage ? '0px' : 'calc(100dvh - 1rem - 5rem)'};
 			left: {isExplorePage ? '0px' : 'calc(100vw - 1rem - 5rem)'};
 			border-radius: {isExplorePage ? '0px' : '9999px'};
+			opacity: {isExplorePage ? 1 : 0.7};
 		"
 		onclick={isExplorePage ? undefined : handleMiniGlobeClick}
 		onkeydown={isExplorePage ? undefined : (e) => e.key === 'Enter' && handleMiniGlobeClick()}
@@ -179,8 +179,12 @@
 		{/if}
 	</div>
 
-	<!-- Page content — hidden on explore page, padded to clear mini globe -->
-	<div class="relative z-10" class:hidden={isExplorePage}>
+	<!-- Page content — hidden on explore page -->
+	<div
+		class="relative z-10"
+		class:hidden={isExplorePage}
+		style="animation: {isExplorePage ? 'none' : 'fadeSlideIn 300ms ease both 100ms'};"
+	>
 		{@render children()}
 	</div>
 
