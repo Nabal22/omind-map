@@ -7,6 +7,7 @@
 		getHiddenArtistCount
 	} from '$lib/stores/globe-overlay.svelte';
 	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
+	import { createTapDetector } from '$lib/utils/touch';
 
 	interface Props {
 		selectedCountry: string | null;
@@ -21,6 +22,8 @@
 	const countryArtists = $derived(
 		selectedCountry ? artists.filter((a) => a.country === selectedCountry) : []
 	);
+
+	const tap = createTapDetector();
 </script>
 
 {#if anchorPos && countryArtists.length > 0}
@@ -62,11 +65,8 @@
 					in:scaleTransition={{ duration: 250, delay: Math.min(i * 20, 400), start: 0.3 }}
 					out:fly={{ y: 10, duration: 150 }}
 					onclick={() => openArtistDrawer(artist)}
-					ontouchend={(e) => {
-						e.preventDefault();
-						e.stopPropagation();
-						openArtistDrawer(artist);
-					}}
+					ontouchstart={tap.onTouchStart}
+					ontouchend={(e) => tap.onTouchEnd(e, () => openArtistDrawer(artist))}
 				>
 					<div class="h-[20px] w-[20px] overflow-hidden sm:h-[30px] sm:w-[30px]">
 						<img

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.png';
-	import MobileNav from '$lib/components/MobileNav.svelte';
-	import ArtistDrawer from '$lib/components/ArtistDrawer.svelte';
+	import MobileNav from '$lib/components/ui/MobileNav.svelte';
+	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
 	import { page } from '$app/stores';
 
 	let { children } = $props();

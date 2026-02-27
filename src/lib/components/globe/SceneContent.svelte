@@ -6,6 +6,18 @@
 	import GlobeAnchor from './GlobeAnchor.svelte';
 	import { findCountryFeature } from '$lib/utils/globe-geometry';
 	import { getCountryCentroid, latLngToVector3, type GeoJSONData } from '$lib/data/geo';
+	import {
+		CAMERA_DISTANCE,
+		ZOOM_DISTANCE,
+		CAMERA_ANIM_DURATION,
+		MOBILE_FOV,
+		DESKTOP_FOV,
+		MOBILE_MIN_ZOOM,
+		DESKTOP_MIN_ZOOM,
+		MOBILE_MAX_ZOOM,
+		DESKTOP_MAX_ZOOM,
+		COLORS
+	} from '$lib/config';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -16,14 +28,9 @@
 	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
 
 	const { camera, scene } = useThrelte();
-	scene.background = new THREE.Color(0xf0f5fa);
+	scene.background = new THREE.Color(COLORS.background);
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
 	interactivity();
-
-	// Constants
-	const CAMERA_DISTANCE = 2.5;
-	const ZOOM_DISTANCE = 1.8;
-	const ANIM_DURATION = 0.5;
 
 	// Animation state
 	let animating = $state(false);
@@ -33,7 +40,6 @@
 	let startLookAt = new THREE.Vector3();
 	let targetLookAt = new THREE.Vector3();
 
-	// GeoData reference for camera animation
 	let geoData = $state<GeoJSONData | null>(null);
 
 	function easeOutCubic(t: number): number {
@@ -73,14 +79,12 @@
 		animating = true;
 	}
 
-	// React to camera focus
 	$effect(() => {
 		if (focusCountry && geoData) {
 			animateToCountry(focusCountry);
 		}
 	});
 
-	// React to unfocus
 	let prevFocusCountry: string | null = null;
 	$effect(() => {
 		if (prevFocusCountry && !focusCountry) {
@@ -89,12 +93,11 @@
 		prevFocusCountry = focusCountry;
 	});
 
-	// Animate camera with easing
 	useTask((delta) => {
 		if (!animating || !$camera) return;
 
 		const cam = $camera as THREE.PerspectiveCamera;
-		animProgress += delta / ANIM_DURATION;
+		animProgress += delta / CAMERA_ANIM_DURATION;
 
 		if (animProgress >= 1) {
 			animProgress = 1;
@@ -113,28 +116,28 @@
 	}
 </script>
 
-<!-- Camera -->
-<T.PerspectiveCamera makeDefault position={[0, 0, CAMERA_DISTANCE]} fov={isMobile ? 80 : 55}>
+<T.PerspectiveCamera
+	makeDefault
+	position={[0, 0, CAMERA_DISTANCE]}
+	fov={isMobile ? MOBILE_FOV : DESKTOP_FOV}
+>
 	<OrbitControls
 		enableDamping
 		dampingFactor={0.12}
 		rotateSpeed={1.2}
 		enableZoom
-		minDistance={isMobile ? 1.5 : 1.4}
-		maxDistance={isMobile ? 8 : 4}
+		minDistance={isMobile ? MOBILE_MIN_ZOOM : DESKTOP_MIN_ZOOM}
+		maxDistance={isMobile ? MOBILE_MAX_ZOOM : DESKTOP_MAX_ZOOM}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
 		autoRotateSpeed={0.4}
 	/>
 </T.PerspectiveCamera>
 
-<!-- Lighting -->
 <T.AmbientLight intensity={0.18} />
 <T.DirectionalLight position={[5, 3, 5]} intensity={1.6} color="#fff8e8" />
 <T.DirectionalLight position={[-3, -1, -3]} intensity={0.06} color="#3355aa" />
 
-<!-- Globe -->
 <Globe {onCountryClick} {selectedCountry} onGeoDataLoad={handleGeoDataLoad} />
 
-<!-- Screen-space anchor for artist pins overlay -->
 <GlobeAnchor {selectedCountry} {geoData} />
