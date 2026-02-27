@@ -42,11 +42,11 @@
 	></button>
 
 	<!-- Mobile: bottom drawer / Desktop: top-left panel -->
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-[71] max-h-[50vh] overflow-y-auto border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-h-none sm:max-w-sm sm:border sm:border-black/10"
+		class="fixed inset-x-0 bottom-0 z-[71] border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
 		transition:fly={{ y: 300, duration: 200 }}
 		onclick={(e) => e.stopPropagation()}
+		onkeydown={(e) => e.stopPropagation()}
 		ontouchstart={(e) => e.stopPropagation()}
 		ontouchend={(e) => e.stopPropagation()}
 		role="dialog"
@@ -57,7 +57,7 @@
 			<div class="h-px w-10 bg-black/10"></div>
 		</div>
 
-		<div class="px-4 pb-6 sm:pt-4">
+		<div class="max-h-[50vh] overflow-y-auto px-4 pb-6 sm:max-h-none sm:pt-4">
 			<button
 				class="mb-3 cursor-pointer border-none bg-transparent p-0 font-mono text-[0.65rem] tracking-[0.15em] text-black/40 uppercase transition-opacity duration-150 hover:text-pink"
 				onclick={closeArtistDrawer}
@@ -65,14 +65,9 @@
 				CLOSE
 			</button>
 
-			<div class="mb-3 flex items-center gap-3">
-				<img
-					src={artist.imageUrl}
-					alt={artist.name}
-					class="h-14 w-14 shrink-0 object-cover sm:h-12 sm:w-12"
-					draggable="false"
-				/>
-				<div>
+			<!-- Text left, image right (mobile + desktop) -->
+			<div class="mb-3 flex items-start gap-3">
+				<div class="min-w-0 flex-1">
 					<h2 class="text-base font-bold tracking-[0.1em] uppercase">
 						<a
 							href={artist.musicUrl}
@@ -83,11 +78,16 @@
 							{artist.name}
 						</a>
 					</h2>
-					<p class="text-[0.7rem] text-black/30">{artist.country}</p>
+					<p class="mb-2 text-[0.7rem] text-black/30">{artist.country}</p>
+					<p class="text-[0.7rem] leading-relaxed text-black/60">{artist.description}</p>
 				</div>
+				<img
+					src={artist.imageUrl}
+					alt={artist.name}
+					class="h-28 w-24 shrink-0 object-cover"
+					draggable="false"
+				/>
 			</div>
-
-			<p class="text-[0.7rem] leading-relaxed text-black/60">{artist.description}</p>
 
 			{#if artist.soundcloudUrl?.length}
 				<div class="mt-4 border-t border-black/10 pt-3">
