@@ -4,9 +4,20 @@
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
 	import { page } from '$app/stores';
+	import { onNavigate } from '$app/navigation';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
 	let { children } = $props();
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 
 	const queryClient = new QueryClient({
 		defaultOptions: {

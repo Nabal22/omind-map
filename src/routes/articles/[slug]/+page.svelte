@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
 	import { artists } from '$lib/data/artists';
 	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 
@@ -13,7 +12,6 @@
 	<div class="mx-auto max-w-xl px-6 pt-20 pb-nav-safe">
 		<nav
 			class="mb-8 flex items-center gap-2 text-[0.65rem] tracking-[0.15em] uppercase"
-			in:fly={{ y: -10, duration: 300 }}
 			aria-label="Breadcrumb"
 		>
 			<a href="/articles" class="text-black/40 transition-opacity duration-150 hover:text-pink">
@@ -23,7 +21,7 @@
 			<span class="truncate text-black/70">{article.title}</span>
 		</nav>
 
-		<div in:fly={{ y: 15, duration: 300, delay: 80 }}>
+		<div>
 			<div class="text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
 				{article.category} · {new Date(article.publishedAt).toLocaleDateString('en-US', {
 					year: 'numeric',

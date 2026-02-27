@@ -26,6 +26,12 @@
 	padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 200ms;
+	animation-timing-function: ease-in-out;
+}
+
 @layer base {
 	body {
 		background: var(--color-white);

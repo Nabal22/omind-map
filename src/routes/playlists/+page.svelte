@@ -1,22 +1,15 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
 	import { playlists } from '$lib/data/playlists';
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-20 pb-nav-safe">
-		<h1
-			class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl"
-			in:fly={{ y: -15, duration: 300 }}
-		>
-			PLAYLISTS
-		</h1>
+		<h1 class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl">PLAYLISTS</h1>
 
-		{#each playlists as playlist, i (playlist.id)}
+		{#each playlists as playlist (playlist.id)}
 			<a
 				href="/playlists/{playlist.slug}"
 				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
-				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>
 				<div
 					class="mt-4 flex items-center gap-3 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"

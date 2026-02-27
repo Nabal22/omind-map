@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
-
 	let { data } = $props();
 	let playlist = $derived(data.playlist);
 </script>
@@ -9,7 +7,6 @@
 	<div class="mx-auto max-w-xl px-6 pt-20 pb-nav-safe">
 		<nav
 			class="mb-8 flex items-center gap-2 text-[0.65rem] tracking-[0.15em] uppercase"
-			in:fly={{ y: -10, duration: 300 }}
 			aria-label="Breadcrumb"
 		>
 			<a href="/playlists" class="text-black/40 transition-colors duration-150 hover:text-pink">
@@ -19,7 +16,7 @@
 			<span class="truncate text-black/70">{playlist.title}</span>
 		</nav>
 
-		<div in:fly={{ y: 15, duration: 300, delay: 80 }}>
+		<div>
 			<div class="text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
 				{playlist.tracks.length} tracks · {new Date(playlist.createdAt).toLocaleDateString(
 					'en-US',
@@ -86,10 +83,7 @@
 
 			<div class="mt-10 border-t border-black/10">
 				{#each playlist.tracks as track, i (track.title)}
-					<div
-						class="flex items-baseline gap-4 border-b border-black/5 py-3"
-						in:fly={{ x: -10, duration: 150, delay: 100 + Math.min(i * 30, 400) }}
-					>
+					<div class="flex items-baseline gap-4 border-b border-black/5 py-3">
 						<span class="w-5 shrink-0 text-right text-[0.6rem] text-black/20">{i + 1}</span>
 						<div class="min-w-0 flex-1">
 							<span class="text-[0.8rem] tracking-[0.05em] text-black/80 uppercase"

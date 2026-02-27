@@ -1,23 +1,16 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
 </script>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-20 pb-nav-safe">
-		<h1
-			class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl"
-			in:fly={{ y: -15, duration: 300 }}
-		>
-			ARTICLES
-		</h1>
+		<h1 class="mb-2 text-2xl font-bold tracking-[0.2em] uppercase sm:text-3xl">ARTICLES</h1>
 
-		{#each articles as article, i (article._id)}
+		{#each articles as article (article._id)}
 			<a
 				href={resolve('/articles/[slug]', { slug: article.slug })}
 				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
-				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>
 				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
 
