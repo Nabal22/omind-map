@@ -64,7 +64,7 @@
 {#if selectedCountry}
 	<div
 		bind:this={panelEl}
-		class="fixed right-0 left-0 z-[55] max-h-[45vh] overflow-hidden border-t border-black/10 bg-white font-mono"
+		class="fixed right-0 left-0 z-[55] max-h-[45vh] touch-manipulation overflow-hidden overscroll-contain border-t border-black/10 bg-white font-mono"
 		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); opacity: {1 -
 			swipe.progress * 0.4}; transition: {swipe.dragging
 			? 'none'
@@ -76,8 +76,8 @@
 		role="dialog"
 		tabindex="-1"
 	>
-		<div class="flex justify-center py-2">
-			<div class="h-px w-10 bg-black/10"></div>
+		<div class="flex justify-center py-2.5">
+			<div class="h-1 w-10 rounded-full bg-black/15"></div>
 		</div>
 
 		<div class="px-4 pb-4">
@@ -106,23 +106,27 @@
 			</div>
 
 			<div class="overflow-y-auto" style="max-height: calc(40vh - 100px);">
-				<ul class="space-y-0">
-					{#each countryArtists as artist, i (artist.id)}
-						<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>
-							<button
-								class="min-h-[44px] w-full cursor-pointer border-b border-black/5 bg-transparent py-3 text-left font-mono transition-all duration-150 hover:opacity-60 {focusedIndex ===
-								i
-									? 'border-l-2 border-l-pink pl-2'
-									: 'px-0'}"
-								onclick={() => onArtistSelect(artist)}
-							>
-								<span class="block text-xs tracking-[0.05em] text-pink uppercase"
-									>{artist.name}</span
+				{#if countryArtists.length === 0}
+					<p class="py-4 text-center text-[0.7rem] text-black/30">No artists yet</p>
+				{:else}
+					<ul class="space-y-0">
+						{#each countryArtists as artist, i (artist.id)}
+							<li in:fly={{ y: 8, duration: 120, delay: i * 40 }}>
+								<button
+									class="min-h-[44px] w-full cursor-pointer border-b border-black/5 bg-transparent py-3 text-left font-mono focus-ring transition-all duration-150 hover:opacity-60 {focusedIndex ===
+									i
+										? 'border-l-2 border-l-pink pl-2'
+										: 'px-0'}"
+									onclick={() => onArtistSelect(artist)}
 								>
-							</button>
-						</li>
-					{/each}
-				</ul>
+									<span class="block text-xs tracking-[0.05em] text-pink uppercase"
+										>{artist.name}</span
+									>
+								</button>
+							</li>
+						{/each}
+					</ul>
+				{/if}
 			</div>
 		</div>
 	</div>

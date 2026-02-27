@@ -78,7 +78,7 @@
 
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 	<div
-		class="fixed overflow-hidden
+		class="fixed touch-manipulation overflow-hidden
 			{isExplorePage
 			? 'z-0 bg-white'
 			: 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
@@ -109,7 +109,7 @@
 				<span
 					class="animate-pulse font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
 				>
-					Loading
+					Loading…
 				</span>
 			</div>
 		{/if}

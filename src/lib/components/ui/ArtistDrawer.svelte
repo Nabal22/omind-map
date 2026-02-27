@@ -49,7 +49,7 @@
 	<!-- Mobile: bottom drawer / Desktop: top-left panel -->
 	<div
 		bind:this={drawerEl}
-		class="fixed inset-x-0 bottom-0 z-[71] border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
+		class="fixed inset-x-0 bottom-0 z-[71] touch-manipulation overscroll-contain border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
 		style="transform: translateY({swipe.dragY}px); opacity: {1 -
 			swipe.progress * 0.4}; transition: {swipe.dragging
 			? 'none'
@@ -63,8 +63,8 @@
 		tabindex="-1"
 	>
 		<!-- Handle bar (mobile only) -->
-		<div class="flex justify-center py-2 sm:hidden">
-			<div class="h-px w-10 bg-black/10"></div>
+		<div class="flex justify-center py-2.5 sm:hidden">
+			<div class="h-1 w-10 rounded-full bg-black/15"></div>
 		</div>
 
 		<!-- Close button — absolutely positioned -->
@@ -99,7 +99,7 @@
 							href={artist.musicUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="text-pink no-underline transition-opacity duration-150 hover:opacity-60"
+							class="text-pink no-underline focus-ring transition-opacity duration-150 hover:opacity-60"
 						>
 							{artist.name}
 						</a>
@@ -110,6 +110,9 @@
 				<img
 					src={artist.imageUrl}
 					alt={artist.name}
+					width="96"
+					height="112"
+					loading="lazy"
 					class="h-28 w-24 shrink-0 object-cover"
 					draggable="false"
 				/>
@@ -148,7 +151,7 @@
 					{#each relatedArticles as article (article._id)}
 						<a
 							href={resolve('/articles/[slug]', { slug: article.slug })}
-							class="block py-1.5 text-[0.7rem] text-black/80 transition-opacity duration-150 hover:text-pink"
+							class="block py-1.5 text-[0.7rem] text-black/80 focus-ring transition-opacity duration-150 hover:text-pink"
 						>
 							{article.title}
 						</a>

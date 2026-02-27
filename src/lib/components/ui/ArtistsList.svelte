@@ -69,7 +69,7 @@
 >
 	{#if selectedCountry && onClose}
 		<button
-			class="mb-1 cursor-pointer border-none bg-transparent px-0 py-1 text-left font-mono text-[0.65rem] text-black/30 uppercase transition-colors duration-150 hover:text-pink"
+			class="mb-1 cursor-pointer border-none bg-transparent px-0 py-1 text-left font-mono text-[0.65rem] text-black/30 uppercase focus-ring transition-colors duration-150 hover:text-pink"
 			onclick={onClose}
 		>
 			<span class="mr-1">&larr;</span> All artists
@@ -80,7 +80,7 @@
 			{#each filteredArtists as artist, i (artist.id)}
 				<li in:fly={{ x: -10, duration: 150, delay: Math.min(i * 25, 250) }}>
 					<button
-						class="cursor-pointer border-none bg-transparent px-0 py-[0.35rem] text-left font-mono text-[0.8rem] tracking-[0.05em] whitespace-nowrap uppercase transition-all duration-150 hover:text-pink {focusedIndex ===
+						class="cursor-pointer border-none bg-transparent px-0 py-[0.35rem] text-left font-mono text-[0.8rem] tracking-[0.05em] whitespace-nowrap uppercase focus-ring transition-all duration-150 hover:text-pink {focusedIndex ===
 						i
 							? 'border-l-2 border-l-pink pl-2 text-pink'
 							: 'text-black/40'}"
