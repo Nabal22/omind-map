@@ -129,7 +129,7 @@
 		maxDistance={isMobile ? MOBILE_MAX_ZOOM : DESKTOP_MAX_ZOOM}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
-		autoRotateSpeed={0.4}
+		autoRotateSpeed={0.7}
 	/>
 </T.PerspectiveCamera>
 
