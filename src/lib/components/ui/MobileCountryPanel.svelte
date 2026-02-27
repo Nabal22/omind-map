@@ -65,9 +65,10 @@
 	<div
 		bind:this={panelEl}
 		class="fixed right-0 left-0 z-[55] max-h-[45vh] overflow-hidden border-t border-black/10 bg-white font-mono"
-		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); transition: {swipe.dragging
+		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); opacity: {1 -
+			swipe.progress * 0.4}; transition: {swipe.dragging
 			? 'none'
-			: 'transform 200ms ease'};"
+			: 'transform 300ms cubic-bezier(0.2, 0.9, 0.3, 1), opacity 300ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		ontouchstart={swipe.onTouchStart}

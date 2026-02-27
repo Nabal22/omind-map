@@ -50,9 +50,10 @@
 	<div
 		bind:this={drawerEl}
 		class="fixed inset-x-0 bottom-0 z-[71] border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
-		style="transform: translateY({swipe.dragY}px); transition: {swipe.dragging
+		style="transform: translateY({swipe.dragY}px); opacity: {1 -
+			swipe.progress * 0.4}; transition: {swipe.dragging
 			? 'none'
-			: 'transform 200ms ease'};"
+			: 'transform 300ms cubic-bezier(0.2, 0.9, 0.3, 1), opacity 300ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.stopPropagation()}
