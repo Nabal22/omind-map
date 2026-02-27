@@ -1,29 +1,44 @@
 <script lang="ts">
-	import { fly, fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
+	import { articles } from '$lib/data/articles';
+	import { resolve } from '$app/paths';
 </script>
 
-<div class="flex h-dvh w-screen flex-col items-center justify-center bg-black font-mono text-pink">
-	<div class="text-center" in:fade={{ duration: 300 }}>
+<div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
+	<div class="mx-auto max-w-2xl px-6 py-20">
 		<h1
-			class="mb-4 text-4xl font-bold uppercase tracking-wider [text-shadow:0_0_20px_#ffaef6]"
-			in:fly={{ y: -20, duration: 400 }}
+			class="mb-2 text-3xl font-bold tracking-[0.2em] uppercase"
+			in:fly={{ y: -15, duration: 300 }}
 		>
 			ARTICLES
 		</h1>
-		<p
-			class="text-sm uppercase tracking-widest text-pink/60"
-			in:fly={{ y: 20, duration: 400, delay: 100 }}
-		>
-			[COMING SOON]
-		</p>
 
-		<div class="mt-8" in:fly={{ y: 20, duration: 400, delay: 200 }}>
+		{#each articles as article, i (article._id)}
 			<a
-				href="/"
-				class="rounded-full border border-pink/30 bg-black/60 px-6 py-2 text-[0.7rem] uppercase backdrop-blur-sm transition-all duration-200 hover:border-pink/60 hover:bg-pink/10 hover:[text-shadow:0_0_8px_#ffaef6]"
+				href={resolve('/articles/[slug]', { slug: article.slug })}
+				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
+				in:fly={{ y: 15, duration: 300, delay: i * 80 }}
 			>
-				← BACK TO GLOBE
+				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
+
+				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
+					{article.category} · {new Date(article.publishedAt).toLocaleDateString('en-US', {
+						year: 'numeric',
+						month: 'short',
+						day: 'numeric'
+					})}
+				</div>
+
+				<h2
+					class="mt-2 text-lg font-bold tracking-[0.1em] uppercase transition-opacity duration-150 group-hover:opacity-70"
+				>
+					{article.title}
+				</h2>
+
+				<p class="mt-2 text-[0.75rem] leading-relaxed text-black/50">
+					{article.excerpt}
+				</p>
 			</a>
-		</div>
+		{/each}
 	</div>
 </div>

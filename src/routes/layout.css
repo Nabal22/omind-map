@@ -1,32 +1,42 @@
 @import 'tailwindcss';
 
-@theme {
-	--color-pink: #ffaef6;
-	--color-black: #000000;
-	--font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-	--animate-slide-up: slide-up 0.25s ease-out;
+@font-face {
+	font-family: 'Nohemi';
+	src: url('/fonts/Nohemi-VF.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
 }
 
-@keyframes slide-up {
-	from {
-		opacity: 0;
-		transform: translateY(1rem);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+@theme {
+	--color-pink: #ffaefb;
+	--color-pink-highlight: #fe91f9;
+	--color-black: #000000;
+	--color-gray: #666666;
+	--color-white: #ffffff;
+	--color-globe-default: #454444;
+	--font-mono: 'Nohemi', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
 @layer base {
 	body {
-		background: var(--color-black);
-		color: var(--color-pink);
+		background: var(--color-white);
+		color: var(--color-black);
 		font-family: var(--font-mono);
+		font-weight: 400;
 		overflow: hidden;
+	}
+
+	h1 {
+		color: var(--color-pink);
 	}
 
 	::-webkit-scrollbar {
 		display: none;
+	}
+
+	::selection {
+		background: var(--color-pink);
+		color: var(--color-white);
 	}
 }
