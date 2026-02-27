@@ -59,15 +59,14 @@
 	}
 </script>
 
-<!-- Desktop only: Artists list on left side -->
 <div
-	class="fixed top-6 left-6 z-50 font-mono"
+	class="fixed inset-y-0 left-6 z-50 flex flex-col justify-center font-mono"
 	onclick={(e) => e.stopPropagation()}
 	onkeydown={handleKeydown}
 	role="menu"
 	tabindex="-1"
 >
-	<ul bind:this={listEl} class="max-h-[50vh] flex-col gap-0 overflow-y-auto">
+	<ul bind:this={listEl} class="flex max-h-screen flex-col gap-0 overflow-y-auto py-6">
 		{#key listKey}
 			{#each filteredArtists as artist, i (artist.id)}
 				<li in:fly={{ x: -10, duration: 150, delay: Math.min(i * 25, 250) }}>
