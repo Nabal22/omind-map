@@ -77,10 +77,9 @@
 	<MobileNav currentPath={$page.url.pathname} {isExplorePage} />
 
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
-	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div
-		class="fixed overflow-hidden bg-white
-			{isExplorePage ? 'z-0' : 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
+		class="fixed overflow-hidden
+			{isExplorePage ? 'z-0 bg-white' : 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
 		style="
 			transition: top 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 350ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -96,9 +95,9 @@
 		"
 		onclick={isExplorePage ? undefined : handleMiniGlobeClick}
 		onkeydown={isExplorePage ? undefined : (e) => e.key === 'Enter' && handleMiniGlobeClick()}
-		role={isExplorePage ? undefined : 'button'}
-		tabindex={isExplorePage ? undefined : 0}
-		aria-label={isExplorePage ? undefined : 'Back to explore'}
+		role="button"
+		tabindex="-1"
+		aria-label={isExplorePage ? 'Globe scene' : 'Back to explore'}
 	>
 		{#if !globeLoaded}
 			<div
@@ -125,13 +124,12 @@
 		{/if}
 
 		<!-- Globe canvas -->
-		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 		<div
 			class="absolute inset-0"
 			onclick={isExplorePage ? clearSelection : undefined}
 			onkeydown={isExplorePage ? (e) => e.key === 'Escape' && clearSelection() : undefined}
-			role={isExplorePage ? 'button' : undefined}
-			tabindex={isExplorePage ? -1 : undefined}
+			role="button"
+			tabindex="-1"
 		>
 			<Scene>
 				<SceneContent onCountryClick={selectCountry} {selectedCountry} {focusCountry} />

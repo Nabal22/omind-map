@@ -30,7 +30,7 @@
 				})} · {article.author}
 			</div>
 
-			<h1 class="mt-4 text-2xl font-medium tracking-wide sm:text-3xl">
+			<h1 class="mt-4 text-2xl font-medium sm:text-3xl">
 				{article.title}
 			</h1>
 
@@ -43,7 +43,7 @@
 							{block.text}
 						</p>
 					{:else if block._type === 'heading'}
-						<h2 class="text-base font-bold tracking-[0.1em] uppercase">
+						<h2 class="text-base font-bold uppercase">
 							{block.text}
 						</h2>
 					{:else if block._type === 'quote'}
@@ -60,7 +60,7 @@
 				<div class="mt-16 border-t border-black/10 pt-8">
 					<div class="text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">RELATED ARTIST</div>
 					<button
-						class="mt-2 cursor-pointer border-none bg-transparent p-0 font-mono text-sm tracking-[0.1em] text-pink uppercase transition-opacity duration-150 hover:opacity-70"
+						class="mt-2 cursor-pointer border-none bg-transparent p-0 font-mono text-sm text-pink uppercase transition-opacity duration-150 hover:opacity-70"
 						onclick={() => openArtistDrawer(relatedArtist)}
 					>
 						{relatedArtist.name}

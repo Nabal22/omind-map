@@ -32,8 +32,8 @@
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
-			class="flex min-h-[44px] flex-1 items-center justify-center px-2 py-3 text-[0.55rem] tracking-[0.2em] uppercase transition-opacity duration-150
-				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/30 hover:text-pink'}"
+			class="flex min-h-[44px] flex-1 items-center justify-center px-2 py-3 text-[0.65rem] tracking-[0.15em] font-medium uppercase transition-opacity duration-150
+				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/80 hover:text-pink'}"
 		>
 			{item.label}
 		</a>

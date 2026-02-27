@@ -28,7 +28,7 @@
 				</div>
 
 				<h2
-					class="mt-2 text-lg font-bold tracking-[0.1em] uppercase transition-opacity duration-150 group-hover:opacity-70"
+					class="mt-2 text-lg font-bold uppercase transition-opacity duration-150 group-hover:opacity-70"
 				>
 					{playlist.title}
 				</h2>

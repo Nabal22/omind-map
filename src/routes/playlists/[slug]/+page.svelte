@@ -28,7 +28,7 @@
 				)} · {playlist.curator}
 			</div>
 
-			<h1 class="mt-4 text-2xl font-medium tracking-wide sm:text-3xl">
+			<h1 class="mt-4 text-2xl font-medium sm:text-3xl">
 				{playlist.title}
 			</h1>
 
@@ -86,7 +86,7 @@
 					<div class="flex items-baseline gap-4 border-b border-black/5 py-3">
 						<span class="w-5 shrink-0 text-right text-[0.6rem] text-black/20">{i + 1}</span>
 						<div class="min-w-0 flex-1">
-							<span class="text-[0.8rem] tracking-[0.05em] text-black/80 uppercase"
+							<span class="text-[0.8rem] text-black/80 uppercase"
 								>{track.title}</span
 							>
 							<span class="ml-2 text-[0.7rem] text-black/30">{track.artist}</span>
