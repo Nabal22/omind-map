@@ -8,8 +8,6 @@ interface TouchState {
 
 /**
  * Creates a tap detector that distinguishes taps from pinch/drag gestures.
- * Call `onTouchStart` on touchstart and `onTouchEnd` on touchend.
- * The callback fires only for single-finger taps with minimal movement.
  */
 export function createTapDetector() {
 	let touchStart: TouchState | null = null;
@@ -41,34 +39,59 @@ export function createTapDetector() {
 }
 
 /**
- * Creates a native-feeling swipe-to-dismiss handler for bottom drawers/panels.
- * Features: velocity-based dismissal, rubber-band resistance when pulling up,
- * opacity fade tied to drag progress, and dragging from anywhere on the panel.
+ * Native-feeling swipe-to-dismiss for bottom sheets.
+ * Returns reactive state + a Svelte action that binds non-passive touch listeners
+ * so preventDefault() actually works and the panel sticks to your finger.
  */
-export function createSwipeToDismiss(getElement: () => HTMLElement | null, onDismiss: () => void) {
+export function createSwipeToDismiss(onDismiss: () => void) {
 	let dragY = $state(0);
 	let dragging = $state(false);
+	let animating = $state(false);
 	let startY = 0;
 	let lastY = 0;
 	let lastTime = 0;
 	let velocity = 0;
-	let isScrollable = false;
+	let isScrolling = false;
+	let touchTarget: Node | null = null;
 
-	const VELOCITY_THRESHOLD = 0.5; // px/ms — fast flick dismisses
-	const DISTANCE_THRESHOLD = 80; // px — slow drag threshold
-	const RUBBER_BAND_FACTOR = 0.3; // resistance when pulling up
+	const VELOCITY_THRESHOLD = 0.4;
+	const DISTANCE_THRESHOLD = 60;
+	const RUBBER_BAND_FACTOR = 0.25;
 
-	function getScrollableParent(target: Node | null, container: HTMLElement): HTMLElement | null {
+	function findScrollableAncestor(target: Node | null, container: HTMLElement): HTMLElement | null {
 		let el = target as HTMLElement | null;
 		while (el && el !== container) {
-			if (el.scrollHeight > el.clientHeight && el.scrollTop > 0) return el;
+			const style = window.getComputedStyle(el);
+			const overflowY = style.overflowY;
+			if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+				return el;
+			}
 			el = el.parentElement;
 		}
 		return null;
 	}
 
-	function onTouchMove(e: TouchEvent) {
-		if (!dragging) return;
+	function handleTouchStart(this: HTMLElement, e: TouchEvent) {
+		if (animating) return;
+
+		touchTarget = e.target as Node;
+		startY = e.touches[0].clientY;
+		lastY = startY;
+		lastTime = performance.now();
+		velocity = 0;
+		isScrolling = false;
+		dragging = true;
+		dragY = 0;
+
+		const scrollable = findScrollableAncestor(touchTarget, this);
+		if (scrollable && scrollable.scrollTop > 0) {
+			isScrolling = true;
+		}
+	}
+
+	function handleTouchMove(this: HTMLElement, e: TouchEvent) {
+		if (!dragging || animating) return;
+
 		const currentY = e.touches[0].clientY;
 		const now = performance.now();
 		const dt = now - lastTime;
@@ -76,52 +99,63 @@ export function createSwipeToDismiss(getElement: () => HTMLElement | null, onDis
 		lastY = currentY;
 		lastTime = now;
 
+		if (isScrolling) {
+			const scrollable = findScrollableAncestor(touchTarget, this);
+			if (scrollable && scrollable.scrollTop > 0) return;
+			isScrolling = false;
+			startY = currentY;
+			return;
+		}
+
 		const delta = currentY - startY;
 
 		if (delta < 0) {
-			// Pulling up — rubber-band resistance
 			dragY = delta * RUBBER_BAND_FACTOR;
 		} else {
 			dragY = delta;
+			if (e.cancelable) e.preventDefault();
 		}
-
-		if (delta > 0 && e.cancelable) e.preventDefault();
 	}
 
-	function onTouchStart(e: TouchEvent) {
-		const el = getElement();
-		if (!el) return;
+	function handleTouchEnd() {
+		if (!dragging || animating) return;
+		dragging = false;
+		touchTarget = null;
 
-		// If the touch target is inside a scrollable area that's scrolled, let native scroll handle it
-		const scrollable = getScrollableParent(e.target as Node, el);
-		if (scrollable) {
-			isScrollable = true;
+		if (isScrolling) {
+			dragY = 0;
 			return;
 		}
-		isScrollable = false;
-
-		startY = e.touches[0].clientY;
-		lastY = startY;
-		lastTime = performance.now();
-		velocity = 0;
-		dragging = true;
-		dragY = 0;
-		el.addEventListener('touchmove', onTouchMove, { passive: false });
-	}
-
-	function onTouchEnd() {
-		if (isScrollable || !dragging) return;
-		const el = getElement();
-		el?.removeEventListener('touchmove', onTouchMove);
-		dragging = false;
 
 		const shouldDismiss =
-			dragY > DISTANCE_THRESHOLD || (dragY > 20 && velocity > VELOCITY_THRESHOLD);
+			dragY > DISTANCE_THRESHOLD || (dragY > 15 && velocity > VELOCITY_THRESHOLD);
 
 		if (shouldDismiss) {
-			onDismiss();
+			animating = true;
+			dragY = window.innerHeight;
+			setTimeout(() => {
+				onDismiss();
+				dragY = 0;
+				animating = false;
+			}, 280);
+		} else {
+			dragY = 0;
 		}
-		dragY = 0;
+	}
+
+	/** Svelte action — use as `use:swipeAction` on the panel element */
+	function action(node: HTMLElement) {
+		node.addEventListener('touchstart', handleTouchStart, { passive: true });
+		node.addEventListener('touchmove', handleTouchMove, { passive: false });
+		node.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+		return {
+			destroy() {
+				node.removeEventListener('touchstart', handleTouchStart);
+				node.removeEventListener('touchmove', handleTouchMove);
+				node.removeEventListener('touchend', handleTouchEnd);
+			}
+		};
 	}
 
 	return {
@@ -131,17 +165,18 @@ export function createSwipeToDismiss(getElement: () => HTMLElement | null, onDis
 		get dragging() {
 			return dragging;
 		},
+		get animating() {
+			return animating;
+		},
 		get progress() {
 			return Math.min(1, Math.max(0, dragY) / 200);
 		},
-		onTouchStart,
-		onTouchEnd
+		action
 	};
 }
 
 /**
  * Creates an outside-tap detector for dismissing panels.
- * Ignores swipe gestures — only fires on stationary taps outside the element.
  */
 export function createOutsideTapDetector(
 	getElement: () => HTMLElement | null,

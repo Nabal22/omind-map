@@ -53,10 +53,7 @@
 	}
 
 	// Swipe-to-dismiss
-	const swipe = createSwipeToDismiss(
-		() => panelEl,
-		() => onClose()
-	);
+	const swipe = createSwipeToDismiss(() => onClose());
 </script>
 
 <svelte:document ontouchstart={outsideTap.onTouchStart} ontouchend={outsideTap.onTouchEnd} />
@@ -68,11 +65,10 @@
 		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); opacity: {1 -
 			swipe.progress * 0.4}; transition: {swipe.dragging
 			? 'none'
-			: 'transform 300ms cubic-bezier(0.2, 0.9, 0.3, 1), opacity 300ms ease'};"
+			: 'transform 300ms cubic-bezier(0.25, 1, 0.5, 1), opacity 300ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
-		ontouchstart={swipe.onTouchStart}
-		ontouchend={swipe.onTouchEnd}
+		use:swipe.action
 		role="dialog"
 		tabindex="-1"
 	>
