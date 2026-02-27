@@ -3,6 +3,7 @@
 	import favicon from '$lib/assets/favicon.png';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
+	import ArtistBrowser from '$lib/components/ui/ArtistBrowser.svelte';
 	import Scene from '$lib/components/globe/Scene.svelte';
 	import SceneContent from '$lib/components/globe/SceneContent.svelte';
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
@@ -28,6 +29,7 @@
 	let { children } = $props();
 
 	const isExplorePage = $derived($page.url.pathname === '/');
+	let browserOpen = $state(false);
 	const globeLoaded = $derived(isGlobeLoaded());
 	const drawerArtist = $derived(getSelectedArtist());
 	const selectedCountry = $derived(getSelectedCountry());
@@ -185,4 +187,37 @@
 	</div>
 
 	<ArtistDrawer />
+
+	<!-- Browse all artists button (explore page only) -->
+	{#if isExplorePage}
+		<button
+			class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
+			onclick={() => (browserOpen = true)}
+			aria-label="Browse all artists"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<circle cx="11" cy="11" r="8" />
+				<line x1="21" y1="21" x2="16.65" y2="16.65" />
+			</svg>
+		</button>
+
+		<ArtistBrowser
+			open={browserOpen}
+			onClose={() => (browserOpen = false)}
+			onArtistSelect={(artist) => {
+				selectArtist(artist);
+				setFocusCountry(artist.country);
+			}}
+		/>
+	{/if}
 </QueryClientProvider>
