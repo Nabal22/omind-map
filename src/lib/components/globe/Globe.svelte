@@ -1,15 +1,21 @@
+<script lang="ts" module>
+	import { computeBorderPositions, processGeoData, type CountryData } from '$lib/utils/globe-geometry';
+	import { artists } from '$lib/data/artists';
+	import { GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
+
+	// Module-level cache: survives navigation, computed only once per session.
+	const countriesWithArtists = new Set(artists.map((a) => a.country));
+	let cachedBorderPositions: Float32Array | null = null;
+	let cachedCountries: CountryData[] | null = null;
+</script>
+
 <script lang="ts">
 	import { T, useThrelte } from '@threlte/core';
 	import * as THREE from 'three';
-	import { loadGeoJSON, type GeoJSONData } from '$lib/data/geo';
-	import {
-		computeBorderPositions,
-		processGeoData,
-		type CountryData
-	} from '$lib/utils/globe-geometry';
-	import { artists } from '$lib/data/artists';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { type GeoJSONData } from '$lib/data/geo';
 	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
-	import { GLOBE_RADIUS, GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
+	import { GLOBE_RADIUS } from '$lib/config';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -22,8 +28,6 @@
 	const { camera } = useThrelte();
 
 	const RADIUS = GLOBE_RADIUS;
-	const FILL_RADIUS = GLOBE_FILL_RADIUS;
-	const BORDER_RADIUS = GLOBE_BORDER_RADIUS;
 
 	function cssVar(name: string): number {
 		const hex = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -34,13 +38,15 @@
 	const highlightPink = cssVar('--color-pink-highlight');
 	const colorGlobeDefault = cssVar('--color-globe-default');
 
-	// State
-	let countries: CountryData[] = $state([]);
-	let borderPositions: Float32Array | null = $state(null);
+	// Initialise from module-level cache if already computed.
+	let countries: CountryData[] = $state(cachedCountries ?? []);
+	let borderPositions: Float32Array | null = $state(cachedBorderPositions);
 	let hoveredCountry: string | null = $state(null);
 
-	// Derived
-	const countriesWithArtists = new Set(artists.map((a) => a.country));
+	const geoQuery = createQuery<GeoJSONData>(() => ({
+		queryKey: ['geojson', 'countries'],
+		queryFn: () => fetch('/data/ne_110m_countries.geojson').then((r) => r.json()),
+	}));
 
 	function getColor(name: string, hasArtists: boolean): number {
 		if (name === selectedCountry) return highlightPink;
@@ -49,21 +55,29 @@
 		return colorGlobeDefault;
 	}
 
-	// Load and process GeoJSON in two phases so the browser renders borders
-	// before the heavier country triangulation blocks the frame.
 	$effect(() => {
-		loadGeoJSON('/data/ne_110m_countries.geojson').then((data) => {
-			// Phase 1 (synchronous, ~0 ms): border lines appear on the next frame.
-			borderPositions = computeBorderPositions(data, BORDER_RADIUS);
-			onGeoDataLoad?.(data);
-			setGlobeLoaded();
+		const data = geoQuery.data;
+		if (!data) return;
 
-			// Phase 2 (deferred): triangulate country fills after the browser
-			// has had a chance to render the wireframe globe.
-			requestAnimationFrame(() => {
-				const processed = processGeoData(data, countriesWithArtists, FILL_RADIUS, BORDER_RADIUS);
-				countries = processed.countries;
-			});
+		onGeoDataLoad?.(data);
+
+		// Already processed on a previous mount — restore from cache instantly.
+		if (cachedBorderPositions && cachedCountries) {
+			borderPositions = cachedBorderPositions;
+			countries = cachedCountries;
+			setGlobeLoaded();
+			return;
+		}
+
+		// First time: compute borders synchronously, then triangulate on next frame.
+		cachedBorderPositions = computeBorderPositions(data, GLOBE_BORDER_RADIUS);
+		borderPositions = cachedBorderPositions;
+		setGlobeLoaded();
+
+		requestAnimationFrame(() => {
+			const processed = processGeoData(data, countriesWithArtists, GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS);
+			cachedCountries = processed.countries;
+			countries = cachedCountries;
 		});
 	});
 
