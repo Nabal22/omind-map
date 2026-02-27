@@ -134,7 +134,12 @@
 			tabindex="-1"
 		>
 			<Scene>
-				<SceneContent onCountryClick={selectCountry} {selectedCountry} {focusCountry} />
+				<SceneContent
+					onCountryClick={selectCountry}
+					{selectedCountry}
+					{focusCountry}
+					{isExplorePage}
+				/>
 			</Scene>
 		</div>
 

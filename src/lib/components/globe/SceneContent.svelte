@@ -22,12 +22,16 @@
 		onCountryClick: (countryName: string) => void;
 		selectedCountry: string | null;
 		focusCountry: string | null;
+		isExplorePage: boolean;
 	}
 
-	let { onCountryClick, selectedCountry, focusCountry }: Props = $props();
+	let { onCountryClick, selectedCountry, focusCountry, isExplorePage }: Props = $props();
 
 	const { camera, scene } = useThrelte();
-	scene.background = new THREE.Color(0xffffff);
+
+	$effect(() => {
+		scene.background = isExplorePage ? new THREE.Color(0xffffff) : null;
+	});
 	const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
 	interactivity();
 
