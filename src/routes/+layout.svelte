@@ -87,7 +87,6 @@
 				bottom 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				left 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1),
-				opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				transform 150ms ease;
 			top: {isExplorePage ? '0px' : '1rem'};
 			right: {isExplorePage ? '0px' : '1rem'};
