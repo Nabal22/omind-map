@@ -56,7 +56,7 @@
 {#if selectedCountry}
 	<div
 		bind:this={panelEl}
-		class="hidden fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-black/10 bg-white font-mono"
+		class="fixed right-0 bottom-12 left-0 z-50 max-h-[40vh] overflow-hidden border-t border-black/10 bg-white font-mono"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		role="dialog"

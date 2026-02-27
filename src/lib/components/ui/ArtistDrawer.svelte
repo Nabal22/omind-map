@@ -65,21 +65,29 @@
 				CLOSE
 			</button>
 
-			<h2 class="mb-3 text-base font-bold tracking-[0.1em] uppercase">
-				<a
-					href={artist.musicUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="text-pink no-underline transition-opacity duration-150 hover:opacity-60"
-				>
-					{artist.name}
-				</a>
-			</h2>
-
-			<div class="space-y-1 text-[0.7rem] leading-relaxed">
-				<p><span class="text-black/30">{artist.country}</span></p>
-				<p class="text-black/60">{artist.description}</p>
+			<div class="mb-3 flex items-center gap-3">
+				<img
+					src={artist.imageUrl}
+					alt={artist.name}
+					class="h-14 w-14 shrink-0 object-cover sm:h-12 sm:w-12"
+					draggable="false"
+				/>
+				<div>
+					<h2 class="text-base font-bold tracking-[0.1em] uppercase">
+						<a
+							href={artist.musicUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-pink no-underline transition-opacity duration-150 hover:opacity-60"
+						>
+							{artist.name}
+						</a>
+					</h2>
+					<p class="text-[0.7rem] text-black/30">{artist.country}</p>
+				</div>
 			</div>
+
+			<p class="text-[0.7rem] leading-relaxed text-black/60">{artist.description}</p>
 
 			{#if artist.soundcloudUrl?.length}
 				<div class="mt-4 border-t border-black/10 pt-3">

@@ -4,7 +4,7 @@
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
 	import CountryFilter from '$lib/components/ui/CountryFilter.svelte';
 	import MobileCountryPanel from '$lib/components/ui/MobileCountryPanel.svelte';
-	import ArtistPinsOverlay from '$lib/components/ui/ArtistPinsOverlay.svelte';
+
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
@@ -94,6 +94,4 @@
 		/>
 	</div>
 
-	<!-- Artist pins overlay -->
-	<ArtistPinsOverlay {selectedCountry} />
 </div>
