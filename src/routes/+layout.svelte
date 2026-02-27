@@ -33,7 +33,6 @@
 
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return;
-		if (navigation.to?.url.pathname === '/') return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
 				resolve();
@@ -66,9 +65,9 @@
 <QueryClientProvider client={queryClient}>
 	<MobileNav currentPath={$page.url.pathname} />
 
-	<!-- Globe scene — always mounted, hidden when not on explore page -->
+	<!-- Globe scene — always mounted, visibility toggled by route -->
 	<div
-		class="fixed inset-0 overflow-hidden bg-white"
+		class="fixed inset-0 z-0 overflow-hidden bg-white"
 		class:invisible={!isExplorePage}
 		class:pointer-events-none={!isExplorePage}
 	>
@@ -96,7 +95,7 @@
 			</div>
 		{/if}
 
-		<!-- Globe scene -->
+		<!-- Globe canvas -->
 		<div
 			class="absolute inset-0"
 			onclick={clearSelection}
@@ -142,8 +141,8 @@
 		</div>
 	</div>
 
-	<!-- Page content — hidden on explore page -->
-	<div class:hidden={isExplorePage}>
+	<!-- Page content — sits above globe layer, hidden on explore page -->
+	<div class="relative z-10" class:hidden={isExplorePage}>
 		{@render children()}
 	</div>
 
