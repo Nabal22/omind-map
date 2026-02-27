@@ -5,6 +5,7 @@
 	import { getSelectedArtist, closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
+	import { createSwipeToDismiss } from '$lib/utils/touch';
 
 	const loadedIframes = new SvelteSet<string>();
 
@@ -28,6 +29,10 @@
 			closeArtistDrawer();
 		}
 	}
+
+	// Swipe-to-dismiss (mobile)
+	let drawerEl = $state<HTMLElement | null>(null);
+	const swipe = createSwipeToDismiss(() => drawerEl, closeArtistDrawer);
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -43,12 +48,15 @@
 
 	<!-- Mobile: bottom drawer / Desktop: top-left panel -->
 	<div
+		bind:this={drawerEl}
 		class="fixed inset-x-0 bottom-0 z-[71] border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
+		style="transform: translateY({swipe.dragY}px); transition: {swipe.dragging ? 'none' : 'transform 200ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.stopPropagation()}
-		ontouchstart={(e) => e.stopPropagation()}
-		ontouchend={(e) => e.stopPropagation()}
+		ontouchstart={swipe.onTouchStart}
+		ontouchmove={swipe.onTouchMove}
+		ontouchend={swipe.onTouchEnd}
 		role="dialog"
 		tabindex="-1"
 	>

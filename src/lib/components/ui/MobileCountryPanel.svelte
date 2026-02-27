@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
-	import { createOutsideTapDetector } from '$lib/utils/touch';
+	import { createOutsideTapDetector, createSwipeToDismiss } from '$lib/utils/touch';
 
 	interface Props {
 		selectedCountry: string | null;
@@ -51,6 +51,9 @@
 			onClose();
 		}
 	}
+
+	// Swipe-to-dismiss
+	const swipe = createSwipeToDismiss(() => panelEl, () => onClose());
 </script>
 
 <svelte:document ontouchstart={outsideTap.onTouchStart} ontouchend={outsideTap.onTouchEnd} />
@@ -59,9 +62,12 @@
 	<div
 		bind:this={panelEl}
 		class="fixed right-0 left-0 z-[55] max-h-[45vh] overflow-hidden border-t border-black/10 bg-white font-mono"
-		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px))"
+		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); transition: {swipe.dragging ? 'none' : 'transform 200ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
+		ontouchstart={swipe.onTouchStart}
+		ontouchmove={swipe.onTouchMove}
+		ontouchend={swipe.onTouchEnd}
 		role="dialog"
 		tabindex="-1"
 	>

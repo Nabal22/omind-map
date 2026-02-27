@@ -16,3 +16,4 @@ export const DESKTOP_MAX_ZOOM = 4;
 
 // Touch
 export const TAP_THRESHOLD = 10;
+export const SWIPE_DISMISS_THRESHOLD = 100;
