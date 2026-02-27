@@ -12,7 +12,7 @@
 				class="group block border-b border-black/10 py-8 transition-opacity duration-150 first:pt-0"
 			>
 				<div
-					class="mt-4 flex items-center gap-3 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
+					class="mt-4 flex items-center gap-3 text-[0.6rem] tracking-[0.2em] text-black/50 uppercase"
 				>
 					<span>{playlist.tracks.length} tracks</span>
 					<span>·</span>
@@ -33,14 +33,14 @@
 					{playlist.title}
 				</h2>
 
-				<p class="mt-2 text-[0.75rem] leading-relaxed text-black/50">
+				<p class="mt-2 text-[0.75rem] leading-relaxed text-black/80">
 					{playlist.description}
 				</p>
 
 				<div class="mt-4 flex flex-wrap gap-2">
 					{#each playlist.tags as tag (tag)}
 						<span
-							class="border border-black/10 px-2 py-0.5 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase"
+							class="border border-black/10 px-2 py-0.5 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase"
 						>
 							{tag}
 						</span>

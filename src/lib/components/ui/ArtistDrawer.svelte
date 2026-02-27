@@ -5,7 +5,7 @@
 	import { getSelectedArtist, closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
-	import { createSwipeToDismiss } from '$lib/utils/touch';
+	import { createSwipeToDismiss } from '$lib/utils/touch.svelte';
 
 	const loadedIframes = new SvelteSet<string>();
 
@@ -50,12 +50,13 @@
 	<div
 		bind:this={drawerEl}
 		class="fixed inset-x-0 bottom-0 z-[71] border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10"
-		style="transform: translateY({swipe.dragY}px); transition: {swipe.dragging ? 'none' : 'transform 200ms ease'};"
+		style="transform: translateY({swipe.dragY}px); transition: {swipe.dragging
+			? 'none'
+			: 'transform 200ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.stopPropagation()}
 		ontouchstart={swipe.onTouchStart}
-		ontouchmove={swipe.onTouchMove}
 		ontouchend={swipe.onTouchEnd}
 		role="dialog"
 		tabindex="-1"
@@ -71,7 +72,18 @@
 			onclick={closeArtistDrawer}
 			aria-label="Close"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg
+			>
 		</button>
 
 		<div
@@ -91,8 +103,8 @@
 							{artist.name}
 						</a>
 					</h2>
-					<p class="mb-2 text-[0.7rem] text-black/30">{artist.country}</p>
-					<p class="text-[0.7rem] leading-relaxed text-black/60">{artist.description}</p>
+					<p class="mb-2 text-[0.7rem] text-black/50">{artist.country}</p>
+					<p class="text-[0.7rem] leading-relaxed text-black/80">{artist.description}</p>
 				</div>
 				<img
 					src={artist.imageUrl}
@@ -104,7 +116,7 @@
 
 			{#if artist.soundcloudUrl?.length}
 				<div class="mt-4 border-t border-black/10 pt-3">
-					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">TRACKS</p>
+					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">TRACKS</p>
 					{#each artist.soundcloudUrl as url (url)}
 						<div class="relative mb-1 h-5 py-0.5">
 							{#if !loadedIframes.has(url)}
@@ -129,11 +141,11 @@
 
 			{#if relatedArticles.length}
 				<div class="mt-4 border-t border-black/10 pt-3">
-					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/30 uppercase">ARTICLES</p>
+					<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">ARTICLES</p>
 					{#each relatedArticles as article (article._id)}
 						<a
 							href={resolve('/articles/[slug]', { slug: article.slug })}
-							class="block py-1.5 text-[0.7rem] text-black/60 transition-opacity duration-150 hover:text-pink"
+							class="block py-1.5 text-[0.7rem] text-black/80 transition-opacity duration-150 hover:text-pink"
 						>
 							{article.title}
 						</a>

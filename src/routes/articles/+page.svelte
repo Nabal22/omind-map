@@ -14,7 +14,7 @@
 			>
 				<div class="aspect-video w-full border border-black/10 bg-black/5"></div>
 
-				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
+				<div class="mt-4 text-[0.6rem] tracking-[0.2em] text-black/50 uppercase">
 					{article.category} · {new Date(article.publishedAt).toLocaleDateString('en-US', {
 						year: 'numeric',
 						month: 'short',
@@ -28,7 +28,7 @@
 					{article.title}
 				</h2>
 
-				<p class="mt-2 text-[0.75rem] leading-relaxed text-black/50">
+				<p class="mt-2 text-[0.75rem] leading-relaxed text-black/80">
 					{article.excerpt}
 				</p>
 			</a>

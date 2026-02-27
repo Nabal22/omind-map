@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
-	import { createOutsideTapDetector, createSwipeToDismiss } from '$lib/utils/touch';
+	import { createOutsideTapDetector, createSwipeToDismiss } from '$lib/utils/touch.svelte';
 
 	interface Props {
 		selectedCountry: string | null;
@@ -53,7 +53,10 @@
 	}
 
 	// Swipe-to-dismiss
-	const swipe = createSwipeToDismiss(() => panelEl, () => onClose());
+	const swipe = createSwipeToDismiss(
+		() => panelEl,
+		() => onClose()
+	);
 </script>
 
 <svelte:document ontouchstart={outsideTap.onTouchStart} ontouchend={outsideTap.onTouchEnd} />
@@ -62,11 +65,12 @@
 	<div
 		bind:this={panelEl}
 		class="fixed right-0 left-0 z-[55] max-h-[45vh] overflow-hidden border-t border-black/10 bg-white font-mono"
-		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); transition: {swipe.dragging ? 'none' : 'transform 200ms ease'};"
+		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); transition: {swipe.dragging
+			? 'none'
+			: 'transform 200ms ease'};"
 		transition:fly={{ y: 300, duration: 200 }}
 		onkeydown={handlePanelKeydown}
 		ontouchstart={swipe.onTouchStart}
-		ontouchmove={swipe.onTouchMove}
 		ontouchend={swipe.onTouchEnd}
 		role="dialog"
 		tabindex="-1"
@@ -77,7 +81,7 @@
 
 		<div class="px-4 pb-4">
 			<div class="mb-3 flex items-center justify-between">
-				<h3 class="text-xs font-bold tracking-[0.15em] text-black/30 uppercase">
+				<h3 class="text-xs font-bold tracking-[0.15em] text-black/50 uppercase">
 					{selectedCountry}
 				</h3>
 				<button
@@ -85,7 +89,18 @@
 					onclick={onClose}
 					aria-label="Close"
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg
+					>
 				</button>
 			</div>
 

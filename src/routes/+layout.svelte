@@ -79,7 +79,9 @@
 	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 	<div
 		class="fixed overflow-hidden
-			{isExplorePage ? 'z-0 bg-white' : 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
+			{isExplorePage
+			? 'z-0 bg-white'
+			: 'z-20 cursor-pointer opacity-70 hover:scale-110 hover:opacity-100'}"
 		style="
 			transition: top 350ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 350ms cubic-bezier(0.4, 0, 0.2, 1),

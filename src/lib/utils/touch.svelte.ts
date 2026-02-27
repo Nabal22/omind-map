@@ -54,16 +54,6 @@ export function createSwipeToDismiss(
 	let dragging = $state(false);
 	let startY = 0;
 
-	function onTouchStart(e: TouchEvent) {
-		const rect = getElement()?.getBoundingClientRect();
-		if (!rect) return;
-		const touchY = e.touches[0].clientY;
-		if (touchY - rect.top > handleHeight) return;
-		startY = touchY;
-		dragging = true;
-		dragY = 0;
-	}
-
 	function onTouchMove(e: TouchEvent) {
 		if (!dragging) return;
 		const delta = e.touches[0].clientY - startY;
@@ -71,8 +61,23 @@ export function createSwipeToDismiss(
 		if (dragY > 0) e.preventDefault();
 	}
 
+	function onTouchStart(e: TouchEvent) {
+		const el = getElement();
+		const rect = el?.getBoundingClientRect();
+		if (!rect || !el) return;
+		const touchY = e.touches[0].clientY;
+		if (touchY - rect.top > handleHeight) return;
+		startY = touchY;
+		dragging = true;
+		dragY = 0;
+		// Attach touchmove as non-passive so preventDefault works
+		el.addEventListener('touchmove', onTouchMove, { passive: false });
+	}
+
 	function onTouchEnd() {
 		if (!dragging) return;
+		const el = getElement();
+		el?.removeEventListener('touchmove', onTouchMove);
 		dragging = false;
 		if (dragY > SWIPE_DISMISS_THRESHOLD) {
 			onDismiss();
@@ -88,7 +93,6 @@ export function createSwipeToDismiss(
 			return dragging;
 		},
 		onTouchStart,
-		onTouchMove,
 		onTouchEnd
 	};
 }
