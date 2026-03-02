@@ -2,6 +2,7 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import { artists, type Artist } from '$lib/data/artists';
 	import { createSwipeToDismiss } from '$lib/utils/touch.svelte';
+	import { haptic } from '$lib/utils/haptics';
 
 	interface Props {
 		open: boolean;
@@ -60,6 +61,7 @@
 	const totalResults = $derived(groupedArtists.reduce((sum, [, list]) => sum + list.length, 0));
 
 	function handleSelect(artist: Artist) {
+		haptic('medium');
 		onArtistSelect(artist);
 		onClose();
 	}
@@ -77,7 +79,10 @@
 	<button
 		class="fixed inset-0 z-[60] border-none bg-black/30 p-0 transition-opacity duration-200 sm:hidden
 			{open ? 'opacity-100' : 'pointer-events-none opacity-0'}"
-		onclick={onClose}
+		onclick={() => {
+			haptic('light');
+			onClose();
+		}}
 		aria-label="Close artist browser"
 	></button>
 
@@ -203,7 +208,10 @@
 			<h2 class="text-xs font-bold tracking-[0.15em] text-black/50 uppercase">All Artists</h2>
 			<button
 				class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
-				onclick={onClose}
+				onclick={() => {
+					haptic('light');
+					onClose();
+				}}
 				aria-label="Close"
 			>
 				<svg

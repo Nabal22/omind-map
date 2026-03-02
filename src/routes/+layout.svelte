@@ -15,6 +15,7 @@
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
+	import { haptic } from '$lib/utils/haptics';
 	import {
 		getSelectedCountry,
 		getFocusCountry,
@@ -192,7 +193,10 @@
 	{#if isExplorePage}
 		<button
 			class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
-			onclick={() => (browserOpen = true)}
+			onclick={() => {
+				haptic('light');
+				browserOpen = true;
+			}}
 			aria-label="Browse all artists"
 		>
 			<svg

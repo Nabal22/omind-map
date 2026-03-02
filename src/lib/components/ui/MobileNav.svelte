@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { haptic } from '$lib/utils/haptics';
+
 	interface Props {
 		currentPath: string;
 		isExplorePage?: boolean;
@@ -32,6 +34,7 @@
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
+			onclick={() => haptic('light')}
 			class="flex min-h-[44px] flex-1 items-center justify-center px-2 py-3 text-[0.65rem] font-medium tracking-[0.15em] uppercase focus-ring transition-opacity duration-150
 				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/80 hover:text-pink'}"
 		>

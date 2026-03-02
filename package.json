@@ -50,6 +50,7 @@
 		"@types/three": "^0.182.0",
 		"earcut": "^3.0.2",
 		"three": "^0.182.0",
-		"threlte-mcp": "^1.4.0"
+		"threlte-mcp": "^1.4.0",
+		"web-haptics": "^0.0.6"
 	}
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
+	import { haptic } from '$lib/utils/haptics';
 
 	interface Props {
 		selectedCountry: string | null;
@@ -84,7 +85,10 @@
 						i
 							? 'border-l-2 border-l-pink pl-2 text-pink'
 							: 'text-black/40'}"
-						onclick={() => onArtistSelect(artist)}
+						onclick={() => {
+							haptic('medium');
+							onArtistSelect(artist);
+						}}
 					>
 						{artist.name}
 					</button>

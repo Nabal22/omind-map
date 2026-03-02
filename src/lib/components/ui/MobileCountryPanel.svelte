@@ -2,6 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { artists, type Artist } from '$lib/data/artists';
 	import { createOutsideTapDetector, createSwipeToDismiss } from '$lib/utils/touch.svelte';
+	import { haptic } from '$lib/utils/haptics';
 
 	interface Props {
 		selectedCountry: string | null;
@@ -83,7 +84,10 @@
 				</h3>
 				<button
 					class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
-					onclick={onClose}
+					onclick={() => {
+						haptic('light');
+						onClose();
+					}}
 					aria-label="Close"
 				>
 					<svg
@@ -113,7 +117,10 @@
 									i
 										? 'border-l-2 border-l-pink pl-2'
 										: 'px-0'}"
-									onclick={() => onArtistSelect(artist)}
+									onclick={() => {
+										haptic('medium');
+										onArtistSelect(artist);
+									}}
 								>
 									<span class="block text-xs tracking-[0.05em] text-pink uppercase"
 										>{artist.name}</span

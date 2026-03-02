@@ -1,4 +1,5 @@
 import { TAP_THRESHOLD } from '$lib/config';
+import { haptic } from '$lib/utils/haptics';
 
 interface TouchState {
 	x: number;
@@ -53,6 +54,7 @@ export function createSwipeToDismiss(onDismiss: () => void) {
 	let velocity = 0;
 	let isScrolling = false;
 	let touchTarget: Node | null = null;
+	let pastThreshold = false;
 
 	const VELOCITY_THRESHOLD = 0.4;
 	const DISTANCE_THRESHOLD = 60;
@@ -80,6 +82,7 @@ export function createSwipeToDismiss(onDismiss: () => void) {
 		lastTime = performance.now();
 		velocity = 0;
 		isScrolling = false;
+		pastThreshold = false;
 		dragging = true;
 		dragY = 0;
 
@@ -113,6 +116,10 @@ export function createSwipeToDismiss(onDismiss: () => void) {
 			dragY = delta * RUBBER_BAND_FACTOR;
 		} else {
 			dragY = delta;
+			if (!pastThreshold && delta > DISTANCE_THRESHOLD) {
+				pastThreshold = true;
+				haptic('light');
+			}
 			if (e.cancelable) e.preventDefault();
 		}
 	}
@@ -131,6 +138,7 @@ export function createSwipeToDismiss(onDismiss: () => void) {
 			dragY > DISTANCE_THRESHOLD || (dragY > 15 && velocity > VELOCITY_THRESHOLD);
 
 		if (shouldDismiss) {
+			haptic('success');
 			animating = true;
 			dragY = window.innerHeight;
 			setTimeout(() => {

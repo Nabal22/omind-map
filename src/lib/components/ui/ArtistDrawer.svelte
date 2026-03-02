@@ -5,6 +5,7 @@
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
 	import { createSwipeToDismiss } from '$lib/utils/touch.svelte';
+	import { haptic } from '$lib/utils/haptics';
 
 	const loadedIframes = new SvelteSet<string>();
 
@@ -86,7 +87,10 @@
 		<!-- Close button -->
 		<button
 			class="absolute top-2 right-3 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60 sm:top-3"
-			onclick={closeArtistDrawer}
+			onclick={() => {
+				haptic('light');
+				closeArtistDrawer();
+			}}
 			aria-label="Close"
 		>
 			<svg

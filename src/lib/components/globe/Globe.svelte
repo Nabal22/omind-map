@@ -20,6 +20,7 @@
 	import { type GeoJSONData } from '$lib/data/geo';
 	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 	import { GLOBE_RADIUS } from '$lib/config';
+	import { haptic } from '$lib/utils/haptics';
 
 	interface Props {
 		onCountryClick: (countryName: string) => void;
@@ -108,6 +109,7 @@
 
 	function handleClick(name: string, event: GlobePointerEvent) {
 		if (isFrontFace(event) && countriesWithArtists.has(name)) {
+			haptic('heavy');
 			onCountryClick(name);
 		}
 	}
