@@ -6,16 +6,28 @@
 	} from '$lib/utils/globe-geometry';
 	import { artists } from '$lib/data/artists';
 	import { GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
+	import * as THREE from 'three';
 
 	// Module-level cache: survives navigation, computed only once per session.
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
 	let cachedBorderPositions: Float32Array | null = null;
 	let cachedCountries: CountryData[] | null = null;
+	let cachedGrainTexture: THREE.Texture | null = null;
+
+	function getGrainTexture(): THREE.Texture {
+		if (!cachedGrainTexture) {
+			const tex = new THREE.TextureLoader().load('/texture-grain.jpg');
+			tex.wrapS = THREE.RepeatWrapping;
+			tex.wrapT = THREE.RepeatWrapping;
+			tex.repeat.set(4, 2);
+			cachedGrainTexture = tex;
+		}
+		return cachedGrainTexture;
+	}
 </script>
 
 <script lang="ts">
 	import { T, useThrelte } from '@threlte/core';
-	import * as THREE from 'three';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { type GeoJSONData } from '$lib/data/geo';
 	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
@@ -168,9 +180,28 @@
 						geo.setAttribute('position', new THREE.BufferAttribute(polygon.vertices, 3));
 						geo.setIndex(polygon.indices);
 						geo.computeVertexNormals();
+						// Spherical UVs for grain texture mapping
+						const pos = polygon.vertices;
+						const uvs = new Float32Array((pos.length / 3) * 2);
+						for (let j = 0; j < pos.length / 3; j++) {
+							const x = pos[j * 3],
+								y = pos[j * 3 + 1],
+								z = pos[j * 3 + 2];
+							const l = Math.sqrt(x * x + y * y + z * z);
+							uvs[j * 2] = Math.atan2(x / l, z / l) / (2 * Math.PI) + 0.5;
+							uvs[j * 2 + 1] = Math.asin(Math.max(-1, Math.min(1, y / l))) / Math.PI + 0.5;
+						}
+						geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 					}}
 				/>
-				<T.MeshBasicMaterial {color} side={THREE.DoubleSide} />
+				<T.MeshBasicMaterial
+					{color}
+					side={THREE.DoubleSide}
+					oncreate={(mat) => {
+						mat.map = getGrainTexture();
+						mat.needsUpdate = true;
+					}}
+				/>
 			</T.Mesh>
 		{/each}
 	</T.Group>
