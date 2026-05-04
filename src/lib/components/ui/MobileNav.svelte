@@ -23,7 +23,7 @@
 <!-- Mobile: Top Logo (hidden on non-explore pages to avoid clash with mini globe) -->
 {#if isExplorePage}
 	<div class="pointer-events-none fixed inset-x-0 top-4 z-30 flex justify-center sm:hidden">
-		<img src="/assets/icon-512.png" alt="0mind" class="h-14 w-14" />
+		<img src="/assets/icon-512.png" alt="omind" class="h-14 w-14" />
 	</div>
 {/if}
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { artists } from '$lib/data/artists';
 	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
+	import { SITE_NAME } from '$lib/config';
 
 	let { data } = $props();
 
@@ -13,6 +14,16 @@
 		day: 'numeric'
 	});
 </script>
+
+<svelte:head>
+	<title>{article.title} — {SITE_NAME}</title>
+	<meta name="description" content={article.excerpt} />
+	<meta property="og:title" content={article.title} />
+	<meta property="og:description" content={article.excerpt} />
+	<meta property="og:type" content="article" />
+	<meta property="article:published_time" content={article.publishedAt} />
+	<meta property="article:author" content={article.author} />
+</svelte:head>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { SITE_NAME } from '$lib/config';
+
 	let { data } = $props();
 	let playlist = $derived(data.playlist);
 
@@ -8,6 +10,14 @@
 		day: 'numeric'
 	});
 </script>
+
+<svelte:head>
+	<title>{playlist.title} — {SITE_NAME}</title>
+	<meta name="description" content={playlist.description} />
+	<meta property="og:title" content={playlist.title} />
+	<meta property="og:description" content={playlist.description} />
+	<meta property="og:type" content="music.playlist" />
+</svelte:head>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">

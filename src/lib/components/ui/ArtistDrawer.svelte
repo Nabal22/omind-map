@@ -1,102 +1,52 @@
 <script lang="ts">
-	import { SvelteSet } from 'svelte/reactivity';
+	import { fade } from 'svelte/transition';
 	import { beforeNavigate } from '$app/navigation';
 	import { getSelectedArtist, closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
-	import { articles } from '$lib/data/articles';
-	import { resolve } from '$app/paths';
-	import { createSwipeToDismiss } from '$lib/utils/touch.svelte';
 	import { haptic } from '$lib/utils/haptics';
-
-	const loadedIframes = new SvelteSet<string>();
+	import ArtistDetails from './ArtistDetails.svelte';
 
 	let artist = $derived(getSelectedArtist());
 	let open = $derived(!!artist);
 
-	// Keep a snapshot of the last artist so content stays visible while animating out
+	// Snapshot the last artist so content stays visible while animating out
 	let displayArtist = $state(getSelectedArtist());
 	$effect(() => {
 		if (artist) displayArtist = artist;
 	});
 
-	let relatedArticles = $derived(
-		displayArtist ? articles.filter((a) => a.relatedArtistId === displayArtist!.id) : []
-	);
-
-	// Clear snapshot after close animation finishes
 	let mounted = $state(false);
 	$effect(() => {
-		if (!open) {
-			const timeout = setTimeout(() => {
-				displayArtist = null;
-				mounted = false;
-			}, 200);
-			return () => clearTimeout(timeout);
-		} else {
+		if (open) {
 			mounted = true;
+		} else {
+			const t = setTimeout(() => {
+				mounted = false;
+				displayArtist = null;
+			}, 200);
+			return () => clearTimeout(t);
 		}
 	});
 
-	function handleIframeLoad(url: string) {
-		loadedIframes.add(url);
-	}
-
-	beforeNavigate(() => {
-		closeArtistDrawer();
-	});
+	beforeNavigate(() => closeArtistDrawer());
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && artist) {
-			closeArtistDrawer();
-		}
+		if (e.key === 'Escape' && artist) closeArtistDrawer();
 	}
-
-	const swipe = createSwipeToDismiss(closeArtistDrawer);
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
 
-{#if mounted || open}
-	<!-- Mobile backdrop -->
-	<button
-		class="fixed inset-0 z-[70] border-none bg-black/30 p-0 transition-opacity duration-150 sm:hidden
-			{open ? 'opacity-100' : 'pointer-events-none opacity-0'}"
-		onclick={closeArtistDrawer}
-		aria-label="Close artist drawer"
-	></button>
-
-	<!-- Mobile rubber-band filler (covers gap when drawer is pulled above its anchor) -->
+{#if mounted}
+	<!-- Desktop: top-left card. Mobile sheet is handled by MobileSheet. -->
 	<div
-		class="pointer-events-none fixed right-0 bottom-0 left-0 z-[71] bg-white sm:hidden
-			{open ? '' : 'opacity-0'}"
-		style="height: {Math.max(0, -swipe.dragY)}px; transition: {swipe.dragging
-			? 'none'
-			: 'height 200ms cubic-bezier(0.25, 1, 0.5, 1)'};"
-		aria-hidden="true"
-	></div>
-
-	<!-- Drawer -->
-	<div
-		class="fixed inset-x-0 bottom-0 z-[71] touch-manipulation overscroll-contain border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10
-			{open ? '' : 'pointer-events-none'}"
-		style="transform: translateY({open ? `${swipe.dragY}px` : '100%'}); opacity: {open
-			? 1 - swipe.progress * 0.4
-			: 0}; transition: {swipe.dragging
-			? 'none'
-			: 'transform 200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 150ms ease'};"
-		onclick={(e) => e.stopPropagation()}
-		onkeydown={(e) => e.stopPropagation()}
-		use:swipe.action
+		class="fixed top-6 left-6 z-[71] hidden max-w-sm touch-manipulation border border-black/10 bg-white font-mono text-black sm:block"
+		style="opacity: {open ? 1 : 0}; transition: opacity 150ms ease;"
 		role="dialog"
 		tabindex="-1"
+		transition:fade={{ duration: 150 }}
 	>
-		<!-- Handle bar (mobile only) -->
-		<div class="flex justify-center py-2.5 sm:hidden">
-			<div class="h-1 w-10 rounded-full bg-black/15"></div>
-		</div>
-
-		<!-- Close button -->
 		<button
-			class="absolute top-2 right-3 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60 sm:top-3"
+			class="absolute top-3 right-3 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
 			onclick={() => {
 				haptic('light');
 				closeArtistDrawer();
@@ -118,78 +68,8 @@
 		</button>
 
 		{#if displayArtist}
-			<div
-				class="max-h-[70dvh] overflow-y-auto px-4 pb-safe sm:max-h-none sm:pt-4"
-				style="padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 0px))"
-			>
-				<div class="mb-3 flex items-start gap-3">
-					<div class="min-w-0 flex-1">
-						<h2 class="text-base font-bold uppercase">
-							<a
-								href={displayArtist.musicUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="text-pink no-underline focus-ring transition-opacity duration-150 hover:opacity-60"
-							>
-								{displayArtist.name}
-							</a>
-						</h2>
-						<p class="mb-2 text-[0.7rem] text-black/50">{displayArtist.country}</p>
-						<p class="text-[0.7rem] leading-relaxed text-black/80">
-							{displayArtist.description}
-						</p>
-					</div>
-					<img
-						src={displayArtist.imageUrl}
-						alt={displayArtist.name}
-						width="96"
-						height="112"
-						loading="lazy"
-						class="h-28 w-24 shrink-0 object-cover"
-						draggable="false"
-					/>
-				</div>
-
-				{#if displayArtist.soundcloudUrl?.length}
-					<div class="mt-4 border-t border-black/10 pt-3">
-						<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">TRACKS</p>
-						{#each displayArtist.soundcloudUrl as url (url)}
-							<div class="relative mb-1 h-5 py-0.5">
-								{#if !loadedIframes.has(url)}
-									<div class="absolute inset-0 flex items-center">
-										<div class="h-3 w-full animate-pulse rounded-sm bg-black/5"></div>
-									</div>
-								{/if}
-								<iframe
-									title="{displayArtist.name} on SoundCloud"
-									scrolling="no"
-									allow="autoplay"
-									width="100%"
-									height="20"
-									src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ffaefb&auto_play=false&show_user=false&show_artwork=false`}
-									class="transition-opacity duration-300 {loadedIframes.has(url)
-										? 'opacity-100'
-										: 'opacity-0'}"
-									onload={() => handleIframeLoad(url)}
-								></iframe>
-							</div>
-						{/each}
-					</div>
-				{/if}
-
-				{#if relatedArticles.length}
-					<div class="mt-4 border-t border-black/10 pt-3">
-						<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">ARTICLES</p>
-						{#each relatedArticles as article (article._id)}
-							<a
-								href={resolve('/articles/[slug]', { slug: article.slug })}
-								class="block py-1.5 text-[0.7rem] text-black/80 focus-ring transition-opacity duration-150 hover:text-pink"
-							>
-								{article.title}
-							</a>
-						{/each}
-					</div>
-				{/if}
+			<div class="max-h-[80vh] overflow-y-auto px-4 pt-4 pb-6">
+				<ArtistDetails artist={displayArtist} />
 			</div>
 		{/if}
 	</div>

@@ -6,18 +6,19 @@
 	} from '$lib/utils/globe-geometry';
 	import { artists } from '$lib/data/artists';
 	import { GLOBE_FILL_RADIUS, GLOBE_BORDER_RADIUS } from '$lib/config';
+	import type { GeoJSONData } from '$lib/data/geo';
 
 	// Module-level cache: survives navigation, computed only once per session.
 	const countriesWithArtists = new Set(artists.map((a) => a.country));
+	let cachedGeoData: GeoJSONData | null = null;
 	let cachedBorderPositions: Float32Array | null = null;
 	let cachedCountries: CountryData[] | null = null;
 </script>
 
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { T, useThrelte } from '@threlte/core';
 	import * as THREE from 'three';
-	import { createQuery } from '@tanstack/svelte-query';
-	import { type GeoJSONData } from '$lib/data/geo';
 	import { setGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 	import { GLOBE_RADIUS } from '$lib/config';
 	import { haptic } from '$lib/utils/haptics';
@@ -48,11 +49,6 @@
 	let borderPositions: Float32Array | null = $state(cachedBorderPositions);
 	let hoveredCountry: string | null = $state(null);
 
-	const geoQuery = createQuery<GeoJSONData>(() => ({
-		queryKey: ['geojson', 'countries'],
-		queryFn: () => fetch('/data/ne_110m_countries.geojson').then((r) => r.json())
-	}));
-
 	function getColor(name: string, hasArtists: boolean): number {
 		if (name === selectedCountry) return highlightPink;
 		if (name === hoveredCountry && hasArtists) return highlightPink;
@@ -60,13 +56,9 @@
 		return colorGlobeDefault;
 	}
 
-	$effect(() => {
-		const data = geoQuery.data;
-		if (!data) return;
-
+	function ingestGeoData(data: GeoJSONData) {
 		onGeoDataLoad?.(data);
 
-		// Already processed on a previous mount — restore from cache instantly.
 		if (cachedBorderPositions && cachedCountries) {
 			borderPositions = cachedBorderPositions;
 			countries = cachedCountries;
@@ -89,6 +81,17 @@
 			cachedCountries = processed.countries;
 			countries = cachedCountries;
 		});
+	}
+
+	onMount(async () => {
+		if (cachedGeoData) {
+			ingestGeoData(cachedGeoData);
+			return;
+		}
+		const res = await fetch('/data/ne_110m_countries.geojson');
+		const data = (await res.json()) as GeoJSONData;
+		cachedGeoData = data;
+		ingestGeoData(data);
 	});
 
 	interface GlobePointerEvent {

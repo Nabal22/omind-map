@@ -1,3 +1,9 @@
+// Site
+export const SITE_NAME = 'omind';
+export const SITE_DESCRIPTION =
+	'A 3D globe of underground rap, electronic, and experimental artists. Explore by country, dive into curated playlists and articles.';
+export const SITE_URL = 'https://omind.pages.dev';
+
 // Globe geometry
 export const GLOBE_RADIUS = 1.0;
 export const GLOBE_FILL_RADIUS = 1.01;

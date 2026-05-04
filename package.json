@@ -42,7 +42,6 @@
 		"*.{js,ts,svelte}": "eslint --fix"
 	},
 	"dependencies": {
-		"@tanstack/svelte-query": "^6.0.18",
 		"@threlte/core": "^8.3.1",
 		"@threlte/extras": "^9.7.1",
 		"@types/d3-geo": "^3.1.0",

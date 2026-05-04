@@ -7,11 +7,12 @@
 	import Scene from '$lib/components/globe/Scene.svelte';
 	import SceneContent from '$lib/components/globe/SceneContent.svelte';
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
-	import MobileCountryPanel from '$lib/components/ui/MobileCountryPanel.svelte';
+	import MobileSheet from '$lib/components/ui/MobileSheet.svelte';
+	import { closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { onNavigate } from '$app/navigation';
-	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
@@ -54,15 +55,6 @@
 			});
 		});
 	});
-
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				staleTime: Infinity,
-				gcTime: Infinity
-			}
-		}
-	});
 </script>
 
 <svelte:head>
@@ -76,16 +68,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 </svelte:head>
 
-<QueryClientProvider client={queryClient}>
-	<MobileNav currentPath={$page.url.pathname} {isExplorePage} />
+<MobileNav currentPath={$page.url.pathname} {isExplorePage} />
 
-	<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
-	<div
-		class="fixed touch-manipulation overflow-hidden
+<!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
+<div
+	class="fixed touch-manipulation overflow-hidden
 			{isExplorePage
-			? 'z-0 bg-white'
-			: 'z-20 cursor-pointer opacity-70 hover:opacity-100 focus:opacity-100'}"
-		style="
+		? 'z-0 bg-white'
+		: 'z-20 cursor-pointer opacity-70 hover:opacity-100 focus:opacity-100'}"
+	style="
 			transition: top 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				bottom 200ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -98,44 +89,43 @@
 			left: {isExplorePage ? '0px' : 'var(--mini-globe-left)'};
 			border-radius: {isExplorePage ? '0px' : '9999px'};
 		"
-		onclick={isExplorePage ? undefined : handleMiniGlobeClick}
-		onkeydown={isExplorePage ? undefined : (e) => e.key === 'Enter' && handleMiniGlobeClick()}
+	onclick={isExplorePage ? undefined : handleMiniGlobeClick}
+	onkeydown={isExplorePage ? undefined : (e) => e.key === 'Enter' && handleMiniGlobeClick()}
+	role="button"
+	tabindex="-1"
+	aria-label={isExplorePage ? 'Globe scene' : 'Back to explore'}
+>
+	{#if !globeLoaded}
+		<div
+			class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
+			out:fade={{ duration: 600 }}
+		>
+			<span class="animate-pulse font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
+				Loading…
+			</span>
+		</div>
+	{/if}
+
+	{#if globeLoaded && !selectedCountry && isExplorePage}
+		<div
+			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
+			in:fade={{ duration: 300, delay: 600 }}
+		>
+			<span class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
+				Tap a country to explore
+			</span>
+		</div>
+	{/if}
+
+	<!-- Globe canvas (client-only — Three.js needs window) -->
+	<div
+		class="absolute inset-0"
+		onclick={isExplorePage ? clearSelection : undefined}
+		onkeydown={isExplorePage ? (e) => e.key === 'Escape' && clearSelection() : undefined}
 		role="button"
 		tabindex="-1"
-		aria-label={isExplorePage ? 'Globe scene' : 'Back to explore'}
 	>
-		{#if !globeLoaded}
-			<div
-				class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
-				out:fade={{ duration: 600 }}
-			>
-				<span
-					class="animate-pulse font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase"
-				>
-					Loading…
-				</span>
-			</div>
-		{/if}
-
-		{#if globeLoaded && !selectedCountry && isExplorePage}
-			<div
-				class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
-				in:fade={{ duration: 300, delay: 600 }}
-			>
-				<span class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
-					Tap a country to explore
-				</span>
-			</div>
-		{/if}
-
-		<!-- Globe canvas -->
-		<div
-			class="absolute inset-0"
-			onclick={isExplorePage ? clearSelection : undefined}
-			onkeydown={isExplorePage ? (e) => e.key === 'Escape' && clearSelection() : undefined}
-			role="button"
-			tabindex="-1"
-		>
+		{#if browser}
 			<Scene>
 				<SceneContent
 					onCountryClick={selectCountry}
@@ -144,87 +134,88 @@
 					{isExplorePage}
 				/>
 			</Scene>
-		</div>
+		{/if}
+	</div>
 
-		<!-- Desktop: Artists list (hidden when artist drawer is open) -->
-		{#if isExplorePage}
-			<div class="hidden {drawerArtist ? '' : 'sm:block'}">
-				<div
-					in:fade={{ duration: 200, delay: 50 }}
-					out:fade={{ duration: 100 }}
-					onclick={(e) => e.stopPropagation()}
-					onkeydown={(e) => {
-						if (e.key === 'Escape') setCountryFilter(null);
-					}}
-					role="presentation"
-				>
-					<ArtistsList
-						{selectedCountry}
-						onArtistSelect={(artist) => {
-							selectArtist(artist);
-							setFocusCountry(artist.country);
-						}}
-						onClose={clearSelection}
-					/>
-				</div>
-			</div>
-
-			<!-- Mobile: Country Panel -->
-			<div class="sm:hidden">
-				<MobileCountryPanel
+	<!-- Desktop: Artists list (hidden when artist drawer is open) -->
+	{#if isExplorePage}
+		<div class="hidden {drawerArtist ? '' : 'sm:block'}">
+			<div
+				in:fade={{ duration: 200, delay: 50 }}
+				out:fade={{ duration: 100 }}
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => {
+					if (e.key === 'Escape') setCountryFilter(null);
+				}}
+				role="presentation"
+			>
+				<ArtistsList
 					{selectedCountry}
-					onClose={clearSelection}
 					onArtistSelect={(artist) => {
-						if (artist) selectArtist(artist);
+						selectArtist(artist);
+						setFocusCountry(artist.country);
 					}}
+					onClose={clearSelection}
 				/>
 			</div>
-		{/if}
-	</div>
+		</div>
 
-	<!-- Page content — hidden on explore page, padded to clear mini globe -->
-	<div class="relative z-10" class:hidden={isExplorePage}>
-		{@render children()}
-	</div>
-
-	<ArtistDrawer />
-
-	<!-- Browse all artists button (explore page only, hidden when country selected) -->
-	{#if isExplorePage}
-		{#if !selectedCountry}
-			<button
-				class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
-				onclick={() => {
-					haptic('light');
-					browserOpen = true;
-				}}
-				aria-label="Browse all artists"
-				transition:fade={{ duration: 150 }}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="18"
-					height="18"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<circle cx="11" cy="11" r="8" />
-					<line x1="21" y1="21" x2="16.65" y2="16.65" />
-				</svg>
-			</button>
-		{/if}
-
-		<ArtistBrowser
-			open={browserOpen}
-			onClose={() => (browserOpen = false)}
+		<!-- Mobile: unified bottom sheet (country list + artist details with detents) -->
+		<MobileSheet
+			{selectedCountry}
+			selectedArtist={drawerArtist}
+			onCloseCountry={clearSelection}
+			onCloseArtist={closeArtistDrawer}
 			onArtistSelect={(artist) => {
 				selectArtist(artist);
 				setFocusCountry(artist.country);
 			}}
 		/>
 	{/if}
-</QueryClientProvider>
+</div>
+
+<!-- Page content — hidden on explore page, padded to clear mini globe -->
+<div class="relative z-10" class:hidden={isExplorePage}>
+	{@render children()}
+</div>
+
+<ArtistDrawer />
+
+<!-- Browse all artists button (explore page only, hidden when country selected) -->
+{#if isExplorePage}
+	{#if !selectedCountry}
+		<button
+			class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
+			onclick={() => {
+				haptic('light');
+				browserOpen = true;
+			}}
+			aria-label="Browse all artists"
+			transition:fade={{ duration: 150 }}
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<circle cx="11" cy="11" r="8" />
+				<line x1="21" y1="21" x2="16.65" y2="16.65" />
+			</svg>
+		</button>
+	{/if}
+
+	<ArtistBrowser
+		open={browserOpen}
+		onClose={() => (browserOpen = false)}
+		onArtistSelect={(artist) => {
+			selectArtist(artist);
+			setFocusCountry(artist.country);
+		}}
+	/>
+{/if}

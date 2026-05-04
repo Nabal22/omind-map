@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { playlists } from '$lib/data/playlists';
+	import { SITE_NAME } from '$lib/config';
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
@@ -7,6 +8,16 @@
 		day: 'numeric'
 	});
 </script>
+
+<svelte:head>
+	<title>Playlists — {SITE_NAME}</title>
+	<meta
+		name="description"
+		content="Curated playlists across rage, drain gang, experimental electronic, and UK drill."
+	/>
+	<meta property="og:title" content="Playlists — {SITE_NAME}" />
+	<meta property="og:type" content="website" />
+</svelte:head>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">

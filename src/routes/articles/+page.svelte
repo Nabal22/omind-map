@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
+	import { SITE_NAME } from '$lib/config';
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
@@ -8,6 +9,16 @@
 		day: 'numeric'
 	});
 </script>
+
+<svelte:head>
+	<title>Articles — {SITE_NAME}</title>
+	<meta
+		name="description"
+		content="Features, interviews, and reviews on underground rap and experimental electronic artists."
+	/>
+	<meta property="og:title" content="Articles — {SITE_NAME}" />
+	<meta property="og:type" content="website" />
+</svelte:head>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">

@@ -1,3 +1,7 @@
-# allow crawling everything by default
+# Site is in pre-launch — block all crawlers.
+# When ready to launch, replace with:
+#   User-agent: *
+#   Allow: /
+#   Sitemap: https://<your-domain>/sitemap.xml
 User-agent: *
-Disallow:
+Disallow: /
