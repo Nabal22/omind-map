@@ -189,31 +189,34 @@
 
 	<ArtistDrawer />
 
-	<!-- Browse all artists button (explore page only) -->
+	<!-- Browse all artists button (explore page only, hidden when country selected) -->
 	{#if isExplorePage}
-		<button
-			class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
-			onclick={() => {
-				haptic('light');
-				browserOpen = true;
-			}}
-			aria-label="Browse all artists"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
+		{#if !selectedCountry}
+			<button
+				class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
+				onclick={() => {
+					haptic('light');
+					browserOpen = true;
+				}}
+				aria-label="Browse all artists"
+				transition:fade={{ duration: 150 }}
 			>
-				<circle cx="11" cy="11" r="8" />
-				<line x1="21" y1="21" x2="16.65" y2="16.65" />
-			</svg>
-		</button>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<circle cx="11" cy="11" r="8" />
+					<line x1="21" y1="21" x2="16.65" y2="16.65" />
+				</svg>
+			</button>
+		{/if}
 
 		<ArtistBrowser
 			open={browserOpen}
