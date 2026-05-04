@@ -34,6 +34,14 @@ export function selectArtist(artist: Artist): void {
 	openArtistDrawer(artist);
 }
 
+/** Page-level: focus globe on an artist's country and open the drawer.
+ * Used by /artists/[id] when synchronising URL → state. */
+export function focusOnArtist(artist: Artist): void {
+	selectedCountry = artist.country;
+	focusCountry = artist.country;
+	openArtistDrawer(artist);
+}
+
 /** Focus camera on country without changing filter */
 export function setFocusCountry(country: string | null): void {
 	focusCountry = country;

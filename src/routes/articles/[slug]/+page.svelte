@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { artists } from '$lib/data/artists';
-	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { SITE_NAME } from '$lib/config';
 
 	let { data } = $props();
@@ -75,12 +74,12 @@
 			{#if relatedArtist}
 				<div class="mt-16 border-t border-black/10 pt-8">
 					<div class="text-[0.6rem] tracking-[0.2em] text-black/50 uppercase">RELATED ARTIST</div>
-					<button
-						class="mt-2 cursor-pointer border-none bg-transparent p-0 font-mono text-sm text-pink uppercase focus-ring transition-opacity duration-150 hover:opacity-70"
-						onclick={() => openArtistDrawer(relatedArtist)}
+					<a
+						href="/artists/{relatedArtist.id}"
+						class="mt-2 inline-block font-mono text-sm text-pink uppercase no-underline focus-ring transition-opacity duration-150 hover:opacity-70"
 					>
 						{relatedArtist.name}
-					</button>
+					</a>
 				</div>
 			{/if}
 

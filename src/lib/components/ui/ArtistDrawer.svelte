@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { beforeNavigate } from '$app/navigation';
 	import { getSelectedArtist, closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { haptic } from '$lib/utils/haptics';
 	import ArtistDetails from './ArtistDetails.svelte';
+
+	interface Props {
+		onClose?: () => void;
+	}
+
+	let { onClose = closeArtistDrawer }: Props = $props();
 
 	let artist = $derived(getSelectedArtist());
 	let open = $derived(!!artist);
@@ -27,10 +32,8 @@
 		}
 	});
 
-	beforeNavigate(() => closeArtistDrawer());
-
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape' && artist) closeArtistDrawer();
+		if (e.key === 'Escape' && artist) onClose();
 	}
 </script>
 
@@ -49,7 +52,7 @@
 			class="absolute top-3 right-3 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
 			onclick={() => {
 				haptic('light');
-				closeArtistDrawer();
+				onClose();
 			}}
 			aria-label="Close"
 		>
