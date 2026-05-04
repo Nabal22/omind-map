@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A rap media mobile-first site with a 3D globe showing artist locations worldwide, articles, and playlists — built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
+A rap media mobile-first site with a 3D globe showing artist locations worldwide,built with SvelteKit 2, Svelte 5, TypeScript, Threlte (Three.js), and Tailwind CSS v4. Uses Bun as the package manager. Deployed on Cloudflare.
 
 ## Commands
 
