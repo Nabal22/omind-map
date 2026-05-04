@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { T, useTask, useThrelte } from '@threlte/core';
-	import { OrbitControls, interactivity } from '@threlte/extras';
+	import { OrbitControls, PerfMonitor, interactivity } from '@threlte/extras';
 	import * as THREE from 'three';
 	import Globe from './Globe.svelte';
 	import GlobeAnchor from './GlobeAnchor.svelte';
@@ -23,9 +23,16 @@
 		selectedCountry: string | null;
 		focusCountry: string | null;
 		isExplorePage: boolean;
+		showPerf?: boolean;
 	}
 
-	let { onCountryClick, selectedCountry, focusCountry, isExplorePage }: Props = $props();
+	let {
+		onCountryClick,
+		selectedCountry,
+		focusCountry,
+		isExplorePage,
+		showPerf = false
+	}: Props = $props();
 
 	const { camera, scene } = useThrelte();
 
@@ -118,6 +125,10 @@
 		geoData = data;
 	}
 </script>
+
+{#if showPerf}
+	<PerfMonitor anchorX="left" anchorY="top" logsPerSecond={4} memory />
+{/if}
 
 <T.PerspectiveCamera
 	makeDefault

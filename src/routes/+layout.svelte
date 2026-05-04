@@ -9,6 +9,7 @@
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
 	import MobileSheet from '$lib/components/ui/MobileSheet.svelte';
 	import { closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
@@ -36,6 +37,12 @@
 	const drawerArtist = $derived(getSelectedArtist());
 	const selectedCountry = $derived(getSelectedCountry());
 	const focusCountry = $derived(getFocusCountry());
+
+	// Reading searchParams during prerender SSR is forbidden — defer to client.
+	let showFps = $state(import.meta.env.DEV);
+	onMount(() => {
+		if (new URLSearchParams(window.location.search).has('fps')) showFps = true;
+	});
 
 	function handleMiniGlobeClick() {
 		goto('/');
@@ -132,6 +139,7 @@
 					{selectedCountry}
 					{focusCountry}
 					{isExplorePage}
+					showPerf={showFps}
 				/>
 			</Scene>
 		{/if}
@@ -159,18 +167,6 @@
 				/>
 			</div>
 		</div>
-
-		<!-- Mobile: unified bottom sheet (country list + artist details with detents) -->
-		<MobileSheet
-			{selectedCountry}
-			selectedArtist={drawerArtist}
-			onCloseCountry={clearSelection}
-			onCloseArtist={closeArtistDrawer}
-			onArtistSelect={(artist) => {
-				selectArtist(artist);
-				setFocusCountry(artist.country);
-			}}
-		/>
 	{/if}
 </div>
 
@@ -178,6 +174,19 @@
 <div class="relative z-10" class:hidden={isExplorePage}>
 	{@render children()}
 </div>
+
+<!-- Mobile: unified bottom sheet (rendered on every page so artist links from
+     /articles/[slug] still pop a sheet on mobile) -->
+<MobileSheet
+	{selectedCountry}
+	selectedArtist={drawerArtist}
+	onCloseCountry={clearSelection}
+	onCloseArtist={closeArtistDrawer}
+	onArtistSelect={(artist) => {
+		selectArtist(artist);
+		setFocusCountry(artist.country);
+	}}
+/>
 
 <ArtistDrawer />
 
