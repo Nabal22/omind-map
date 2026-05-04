@@ -61,6 +61,15 @@
 
 {#if selectedCountry}
 	<div
+		class="pointer-events-none fixed right-0 left-0 z-[55] bg-white"
+		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); height: {Math.max(
+			0,
+			-swipe.dragY
+		)}px; transition: {swipe.dragging ? 'none' : 'height 300ms cubic-bezier(0.25, 1, 0.5, 1)'};"
+		aria-hidden="true"
+	></div>
+
+	<div
 		bind:this={panelEl}
 		class="fixed right-0 left-0 z-[55] max-h-[45vh] touch-manipulation overflow-hidden overscroll-contain border-t border-black/10 bg-white font-mono"
 		style="bottom: calc(44px + env(safe-area-inset-bottom, 0px)); transform: translateY({swipe.dragY}px); opacity: {1 -

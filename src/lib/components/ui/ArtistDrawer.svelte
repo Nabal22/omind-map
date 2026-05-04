@@ -64,6 +64,16 @@
 		aria-label="Close artist drawer"
 	></button>
 
+	<!-- Mobile rubber-band filler (covers gap when drawer is pulled above its anchor) -->
+	<div
+		class="pointer-events-none fixed right-0 bottom-0 left-0 z-[71] bg-white sm:hidden
+			{open ? '' : 'opacity-0'}"
+		style="height: {Math.max(0, -swipe.dragY)}px; transition: {swipe.dragging
+			? 'none'
+			: 'height 200ms cubic-bezier(0.25, 1, 0.5, 1)'};"
+		aria-hidden="true"
+	></div>
+
 	<!-- Drawer -->
 	<div
 		class="fixed inset-x-0 bottom-0 z-[71] touch-manipulation overscroll-contain border-t border-black/10 bg-white font-mono text-black sm:inset-auto sm:top-6 sm:left-6 sm:max-w-sm sm:border sm:border-black/10
