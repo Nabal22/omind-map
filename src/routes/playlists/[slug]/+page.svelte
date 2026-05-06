@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { SITE_NAME } from '$lib/config';
+	import { SITE_NAME, SITE_URL, OG_IMAGE } from '$lib/config';
+	import JsonLd from '$lib/components/seo/JsonLd.svelte';
 
 	let { data } = $props();
 	let playlist = $derived(data.playlist);
@@ -9,6 +10,36 @@
 		month: 'short',
 		day: 'numeric'
 	});
+
+	const playlistJsonLd = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'MusicPlaylist',
+		name: playlist.title,
+		description: playlist.description,
+		url: `${SITE_URL}/playlists/${playlist.slug}`,
+		numTracks: playlist.tracks.length,
+		track: playlist.tracks.map((t) => ({
+			'@type': 'MusicRecording',
+			name: t.title,
+			byArtist: { '@type': 'MusicGroup', name: t.artist },
+			duration: t.duration
+		}))
+	});
+
+	const breadcrumbJsonLd = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+			{ '@type': 'ListItem', position: 2, name: 'Playlists', item: `${SITE_URL}/playlists` },
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: playlist.title,
+				item: `${SITE_URL}/playlists/${playlist.slug}`
+			}
+		]
+	});
 </script>
 
 <svelte:head>
@@ -17,7 +48,11 @@
 	<meta property="og:title" content={playlist.title} />
 	<meta property="og:description" content={playlist.description} />
 	<meta property="og:type" content="music.playlist" />
+	<meta property="og:image" content="{SITE_URL}{OG_IMAGE}" />
 </svelte:head>
+
+<JsonLd data={playlistJsonLd} />
+<JsonLd data={breadcrumbJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">

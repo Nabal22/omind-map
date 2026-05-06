@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { artists } from '$lib/data/artists';
-	import { SITE_NAME } from '$lib/config';
+	import { SITE_NAME, SITE_URL, OG_IMAGE } from '$lib/config';
+	import JsonLd from '$lib/components/seo/JsonLd.svelte';
 
 	let { data } = $props();
 
@@ -12,6 +13,37 @@
 		month: 'short',
 		day: 'numeric'
 	});
+
+	const articleJsonLd = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: article.title,
+		description: article.excerpt,
+		datePublished: article.publishedAt,
+		author: { '@type': 'Person', name: article.author },
+		publisher: {
+			'@type': 'Organization',
+			name: SITE_NAME,
+			logo: { '@type': 'ImageObject', url: `${SITE_URL}${OG_IMAGE}` }
+		},
+		mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/articles/${article.slug}` },
+		image: `${SITE_URL}${OG_IMAGE}`
+	});
+
+	const breadcrumbJsonLd = $derived({
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+			{ '@type': 'ListItem', position: 2, name: 'Articles', item: `${SITE_URL}/articles` },
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: article.title,
+				item: `${SITE_URL}/articles/${article.slug}`
+			}
+		]
+	});
 </script>
 
 <svelte:head>
@@ -20,9 +52,13 @@
 	<meta property="og:title" content={article.title} />
 	<meta property="og:description" content={article.excerpt} />
 	<meta property="og:type" content="article" />
+	<meta property="og:image" content="{SITE_URL}{OG_IMAGE}" />
 	<meta property="article:published_time" content={article.publishedAt} />
 	<meta property="article:author" content={article.author} />
 </svelte:head>
+
+<JsonLd data={articleJsonLd} />
+<JsonLd data={breadcrumbJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">

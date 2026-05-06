@@ -1,24 +1,41 @@
 <script lang="ts">
 	import { articles } from '$lib/data/articles';
 	import { resolve } from '$app/paths';
-	import { SITE_NAME } from '$lib/config';
+	import { SITE_NAME, SITE_URL, OG_IMAGE } from '$lib/config';
+	import JsonLd from '$lib/components/seo/JsonLd.svelte';
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric'
 	});
+
+	const description =
+		'Features, interviews, and reviews on underground rap and experimental electronic artists.';
+
+	const itemListJsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Articles',
+		itemListElement: articles.map((a, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			url: `${SITE_URL}/articles/${a.slug}`,
+			name: a.title
+		}))
+	};
 </script>
 
 <svelte:head>
 	<title>Articles — {SITE_NAME}</title>
-	<meta
-		name="description"
-		content="Features, interviews, and reviews on underground rap and experimental electronic artists."
-	/>
+	<meta name="description" content={description} />
 	<meta property="og:title" content="Articles — {SITE_NAME}" />
+	<meta property="og:description" content={description} />
 	<meta property="og:type" content="website" />
+	<meta property="og:image" content="{SITE_URL}{OG_IMAGE}" />
 </svelte:head>
+
+<JsonLd data={itemListJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">

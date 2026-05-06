@@ -1,23 +1,40 @@
 <script lang="ts">
 	import { playlists } from '$lib/data/playlists';
-	import { SITE_NAME } from '$lib/config';
+	import { SITE_NAME, SITE_URL, OG_IMAGE } from '$lib/config';
+	import JsonLd from '$lib/components/seo/JsonLd.svelte';
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric'
 	});
+
+	const description =
+		'Curated playlists across rage, drain gang, experimental electronic, and UK drill.';
+
+	const itemListJsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Playlists',
+		itemListElement: playlists.map((p, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			url: `${SITE_URL}/playlists/${p.slug}`,
+			name: p.title
+		}))
+	};
 </script>
 
 <svelte:head>
 	<title>Playlists — {SITE_NAME}</title>
-	<meta
-		name="description"
-		content="Curated playlists across rage, drain gang, experimental electronic, and UK drill."
-	/>
+	<meta name="description" content={description} />
 	<meta property="og:title" content="Playlists — {SITE_NAME}" />
+	<meta property="og:description" content={description} />
 	<meta property="og:type" content="website" />
+	<meta property="og:image" content="{SITE_URL}{OG_IMAGE}" />
 </svelte:head>
+
+<JsonLd data={itemListJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
 	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.png';
+	import { SITE_URL } from '$lib/config';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
 	import ArtistBrowser from '$lib/components/ui/ArtistBrowser.svelte';
@@ -10,7 +10,7 @@
 	import MobileSheet from '$lib/components/ui/MobileSheet.svelte';
 	import { closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { onNavigate } from '$app/navigation';
@@ -29,8 +29,8 @@
 
 	let { children } = $props();
 
-	const isExplorePage = $derived($page.url.pathname === '/');
-	const isArtistPage = $derived($page.url.pathname.startsWith('/artists/'));
+	const isExplorePage = $derived(page.url.pathname === '/');
+	const isArtistPage = $derived(page.url.pathname.startsWith('/artists/'));
 	const showsFullscreenGlobe = $derived(isExplorePage || isArtistPage);
 	let browserOpen = $state(false);
 	const globeLoaded = $derived(isGlobeLoaded());
@@ -100,17 +100,11 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} type="image/png" />
-
-	<link rel="apple-touch-icon" href={favicon} />
-
-	<link rel="manifest" href="/site.webmanifest" />
-
-	<meta name="theme-color" content="#ffffff" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<link rel="canonical" href="{SITE_URL}{page.url.pathname}" />
+	<meta property="og:url" content="{SITE_URL}{page.url.pathname}" />
 </svelte:head>
 
-<MobileNav currentPath={$page.url.pathname} {isExplorePage} />
+<MobileNav currentPath={page.url.pathname} {isExplorePage} />
 
 <!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 <div
@@ -204,10 +198,9 @@
 	{/if}
 </div>
 
-<!-- Page content. On / the page is empty (globe is rendered above). On
-     /artists/[id] the page renders sr-only SEO content (invisible). On other
-     routes (/articles, /playlists) it shows normally. -->
-<div class="relative z-10" class:hidden={isExplorePage}>
+<!-- Page content. On / and /artists/[id] the page renders sr-only SEO content
+     (invisible to users; crawlable). On other routes it shows normally. -->
+<div class="relative z-10">
 	{@render children()}
 </div>
 

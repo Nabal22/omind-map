@@ -6,7 +6,7 @@ import { SITE_URL } from '$lib/config';
 export const prerender = true;
 
 export const GET = async () => {
-	const staticUrls = ['/', '/articles', '/playlists'];
+	const staticUrls = ['/', '/articles', '/playlists', '/artists'];
 
 	const articleUrls = articles.map((a) => ({
 		loc: `/articles/${a.slug}`,
