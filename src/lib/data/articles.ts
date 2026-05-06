@@ -21,7 +21,7 @@ export const articles: Article[] = [
 		_id: 'article-001',
 		slug: 'playboi-carti-whole-lotta-red',
 		title: 'Playboi Carti and the Architecture of Whole Lotta Red',
-		author: 'omind',
+		author: 'Omind',
 		publishedAt: '2025-12-15',
 		category: 'feature',
 		coverImageUrl: 'music.jpeg',
@@ -59,7 +59,7 @@ export const articles: Article[] = [
 		_id: 'article-002',
 		slug: 'yeat-interview-twizzy-rich',
 		title: 'Yeat: The Twizzy Rich Interview',
-		author: 'omind',
+		author: 'Omind',
 		publishedAt: '2026-01-22',
 		category: 'interview',
 		coverImageUrl: '',
@@ -72,7 +72,7 @@ export const articles: Article[] = [
 			},
 			{
 				_type: 'paragraph',
-				text: "omind: You've become synonymous with rage music. But when you started, did you have a name for what you were doing?"
+				text: "Omind: You've become synonymous with rage music. But when you started, did you have a name for what you were doing?"
 			},
 			{
 				_type: 'paragraph',
@@ -84,7 +84,7 @@ export const articles: Article[] = [
 			},
 			{
 				_type: 'paragraph',
-				text: 'omind: Your output is insane. 2093, AftërLyfe, 2 Alivë — all within a short window. How do you maintain that pace?'
+				text: 'Omind: Your output is insane. 2093, AftërLyfe, 2 Alivë — all within a short window. How do you maintain that pace?'
 			},
 			{
 				_type: 'paragraph',
@@ -96,7 +96,7 @@ export const articles: Article[] = [
 			},
 			{
 				_type: 'paragraph',
-				text: "omind: You've said before that you don't listen to your own albums after they drop. Is that still true?"
+				text: "Omind: You've said before that you don't listen to your own albums after they drop. Is that still true?"
 			},
 			{
 				_type: 'paragraph',
@@ -108,7 +108,7 @@ export const articles: Article[] = [
 			},
 			{
 				_type: 'paragraph',
-				text: "omind: Anything you can tell us about what's coming?"
+				text: "Omind: Anything you can tell us about what's coming?"
 			},
 			{
 				_type: 'paragraph',

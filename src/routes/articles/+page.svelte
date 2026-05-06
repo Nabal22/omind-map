@@ -11,7 +11,7 @@
 	});
 
 	const description =
-		'Features, interviews, and reviews on underground rap and experimental electronic artists.';
+		'Features, interviews, and reviews on underground rap and experimental artists.';
 
 	const itemListJsonLd = {
 		'@context': 'https://schema.org',

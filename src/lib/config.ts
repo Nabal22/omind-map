@@ -1,10 +1,14 @@
 // Site
-export const SITE_NAME = 'omind';
+export const SITE_NAME = 'Omind';
+export const SITE_TAGLINE = 'Just a french guy talking about worldwide hip-hop and more';
 export const SITE_DESCRIPTION =
-	'A 3D globe of underground rap, electronic, and experimental artists. Explore by country, dive into curated playlists and articles.';
+	'A french take on worldwide hip-hop and more. Explore underground rap and experimental artists, watch the Who The F Is video series, dive into interviews.';
 export const SITE_URL = 'https://omind.pages.dev';
 export const OG_IMAGE = '/assets/images/logo-0mind-removed-bg.png';
-export const TWITTER_HANDLE = '@omind';
+
+// Social — fill in real handles when ready
+export const SOCIAL_INSTAGRAM = 'https://www.instagram.com/omind_0';
+export const SOCIAL_TIKTOK = 'https://www.tiktok.com/@omind__';
 
 // Globe geometry
 export const GLOBE_RADIUS = 1.0;

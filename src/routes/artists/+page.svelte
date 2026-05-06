@@ -5,7 +5,7 @@
 	let { data } = $props();
 
 	const description =
-		'Underground rap, electronic, and experimental artists from around the world. Browse by name or country.';
+		'Underground rap and experimental artists from around the world. Browse by name or country.';
 
 	const itemListJsonLd = $derived({
 		'@context': 'https://schema.org',
