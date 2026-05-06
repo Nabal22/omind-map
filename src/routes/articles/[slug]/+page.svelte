@@ -1,12 +1,20 @@
 <script lang="ts">
-	import { artists } from '$lib/data/artists';
+	import { artists, type Artist } from '$lib/data/artists';
 	import { SITE_NAME, SITE_URL, OG_IMAGE } from '$lib/config';
 	import JsonLd from '$lib/components/seo/JsonLd.svelte';
+	import { openArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 
 	let { data } = $props();
 
 	let article = $derived(data.article);
 	let relatedArtist = $derived(artists.find((a) => a.id === article.relatedArtistId));
+
+	function handleArtistClick(e: MouseEvent, artist: Artist) {
+		// Let modifier-clicks (cmd, ctrl, shift, middle) follow href to /artists/[id].
+		if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+		e.preventDefault();
+		openArtistDrawer(artist);
+	}
 
 	const dateFormatter = new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
@@ -112,6 +120,8 @@
 					<div class="text-[0.6rem] tracking-[0.2em] text-black/50 uppercase">RELATED ARTIST</div>
 					<a
 						href="/artists/{relatedArtist.id}"
+						data-sveltekit-preload-data="off"
+						onclick={(e) => handleArtistClick(e, relatedArtist!)}
 						class="mt-2 inline-block font-mono text-sm text-pink uppercase no-underline focus-ring transition-opacity duration-150 hover:opacity-70"
 					>
 						{relatedArtist.name}
