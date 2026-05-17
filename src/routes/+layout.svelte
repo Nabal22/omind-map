@@ -3,7 +3,7 @@
 	import { SITE_URL } from '$lib/config';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
-	import ArtistBrowser from '$lib/components/ui/ArtistBrowser.svelte';
+	import SearchOverlay from '$lib/components/ui/SearchOverlay.svelte';
 	import Scene from '$lib/components/globe/Scene.svelte';
 	import SceneContent from '$lib/components/globe/SceneContent.svelte';
 	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
@@ -17,7 +17,7 @@
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
-	import { haptic } from '$lib/utils/haptics';
+	import { openSearch, resetSearch } from '$lib/stores/search.svelte';
 	import {
 		getSelectedCountry,
 		getFocusCountry,
@@ -32,7 +32,6 @@
 	const isExplorePage = $derived(page.url.pathname === '/');
 	const isArtistPage = $derived(page.url.pathname.startsWith('/artists/'));
 	const showsFullscreenGlobe = $derived(isExplorePage || isArtistPage);
-	let browserOpen = $state(false);
 	const globeLoaded = $derived(isGlobeLoaded());
 	const drawerArtist = $derived(getSelectedArtist());
 	const selectedCountry = $derived(getSelectedCountry());
@@ -89,6 +88,8 @@
 			resetSelection();
 		}
 
+		resetSearch();
+
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
@@ -104,14 +105,15 @@
 	<meta property="og:url" content="{SITE_URL}{page.url.pathname}" />
 </svelte:head>
 
-<MobileNav currentPath={page.url.pathname} {isExplorePage} />
+<MobileNav currentPath={page.url.pathname} onSearchClick={openSearch} />
+<SearchOverlay />
 
 <!-- Globe scene — always mounted, animates between fullscreen and mini corner -->
 <div
 	class="fixed touch-manipulation overflow-hidden
 			{showsFullscreenGlobe
 		? 'z-0 bg-white'
-		: 'z-20 cursor-pointer opacity-70 hover:opacity-100 focus:opacity-100'}"
+		: 'z-[80] cursor-pointer opacity-80 hover:opacity-100 focus:opacity-100'}"
 	style="
 			transition: top 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				right 200ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -119,9 +121,9 @@
 				left 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				border-radius 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				transform 200ms ease;
-			top: {showsFullscreenGlobe ? '0px' : '1rem'};
+			top: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-top)'};
 			right: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-right)'};
-			bottom: {showsFullscreenGlobe ? '0px' : 'calc(100dvh - 1rem - 5rem)'};
+			bottom: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-bottom)'};
 			left: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-left)'};
 			border-radius: {showsFullscreenGlobe ? '0px' : '9999px'};
 		"
@@ -144,7 +146,7 @@
 
 	{#if globeLoaded && !selectedCountry && isExplorePage}
 		<div
-			class="pointer-events-none absolute right-0 bottom-16 left-0 z-30 flex justify-center sm:hidden"
+			class="pointer-events-none absolute right-0 bottom-6 left-0 z-30 flex justify-center sm:hidden"
 			in:fade={{ duration: 300, delay: 600 }}
 		>
 			<span class="px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-black/30 uppercase">
@@ -215,39 +217,3 @@
 />
 
 <ArtistDrawer onClose={handleCloseArtist} />
-
-<!-- Browse all artists button (explore page only, hidden when country selected) -->
-{#if isExplorePage}
-	{#if !selectedCountry}
-		<button
-			class="fixed bottom-20 left-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/50 shadow-sm backdrop-blur-sm transition-all duration-150 hover:text-pink sm:bottom-6"
-			onclick={() => {
-				haptic('light');
-				browserOpen = true;
-			}}
-			aria-label="Browse all artists"
-			transition:fade={{ duration: 150 }}
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<circle cx="11" cy="11" r="8" />
-				<line x1="21" y1="21" x2="16.65" y2="16.65" />
-			</svg>
-		</button>
-	{/if}
-
-	<ArtistBrowser
-		open={browserOpen}
-		onClose={() => (browserOpen = false)}
-		onArtistSelect={(artist) => navigateToArtist(artist.id)}
-	/>
-{/if}

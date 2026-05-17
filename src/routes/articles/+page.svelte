@@ -38,7 +38,7 @@
 <JsonLd data={itemListJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-2xl px-6 pt-8 pb-nav-safe">
+	<div class="mx-auto max-w-2xl px-6 pt-nav-safe pb-nav-safe sm:pt-8">
 		<h1 class="text-2xl font-bold tracking-[0.2em] text-pretty uppercase sm:text-3xl">ARTICLES</h1>
 
 		{#each articles as article (article._id)}

@@ -69,7 +69,7 @@
 <JsonLd data={breadcrumbJsonLd} />
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-xl px-6 pt-10 pb-nav-safe">
+	<div class="mx-auto max-w-xl px-6 pt-nav-safe pb-nav-safe sm:pt-10">
 		<nav
 			class="mb-8 flex min-w-0 items-center gap-2 text-[0.65rem] tracking-[0.15em] uppercase"
 			aria-label="Breadcrumb"

@@ -23,7 +23,11 @@
 }
 
 @utility pb-nav-safe {
-	padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pt-nav-safe {
+	padding-top: calc(3.5rem + 2rem + env(safe-area-inset-top, 0px));
 }
 
 @utility focus-ring {
@@ -55,14 +59,18 @@
 }
 
 :root {
-	--mini-globe-right: 1rem;
-	--mini-globe-left: calc(100vw - 1rem - 5rem);
+	--mini-globe-right: 0.75rem;
+	--mini-globe-left: calc(100vw - 0.75rem - 3rem);
+	--mini-globe-top: 0.25rem;
+	--mini-globe-bottom: calc(100dvh - 0.25rem - 3rem);
 }
 
 @media (min-width: 640px) {
 	:root {
 		--mini-globe-right: calc(100vw - 1rem - 5rem);
 		--mini-globe-left: 1rem;
+		--mini-globe-top: 1rem;
+		--mini-globe-bottom: calc(100dvh - 1rem - 5rem);
 	}
 }
 

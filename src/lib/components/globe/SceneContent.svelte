@@ -124,6 +124,9 @@
 	function handleGeoDataLoad(data: GeoJSONData) {
 		geoData = data;
 	}
+
+	// temp showperf false
+	showPerf = false;
 </script>
 
 {#if showPerf}
@@ -132,13 +135,13 @@
 
 <T.PerspectiveCamera
 	makeDefault
-	position={[0, 0, CAMERA_DISTANCE]}
+	position={[0, CAMERA_DISTANCE * 0.5, CAMERA_DISTANCE * 0.866]}
 	fov={isMobile ? MOBILE_FOV : DESKTOP_FOV}
 >
 	<OrbitControls
 		enableDamping
 		dampingFactor={0.12}
-		rotateSpeed={1.2}
+		rotateSpeed={1.5}
 		enableZoom
 		minDistance={isMobile ? MOBILE_MIN_ZOOM : DESKTOP_MIN_ZOOM}
 		maxDistance={isMobile ? MOBILE_MAX_ZOOM : DESKTOP_MAX_ZOOM}
