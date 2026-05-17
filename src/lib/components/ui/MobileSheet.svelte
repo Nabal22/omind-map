@@ -7,13 +7,20 @@
 	interface Props {
 		selectedCountry: string | null;
 		selectedArtist: Artist | null;
+		showBackButton?: boolean;
 		onCloseCountry: () => void;
 		onCloseArtist: () => void;
 		onArtistSelect: (artist: Artist) => void;
 	}
 
-	let { selectedCountry, selectedArtist, onCloseCountry, onCloseArtist, onArtistSelect }: Props =
-		$props();
+	let {
+		selectedCountry,
+		selectedArtist,
+		showBackButton = false,
+		onCloseCountry,
+		onCloseArtist,
+		onArtistSelect
+	}: Props = $props();
 
 	type State = 'closed' | 'country' | 'artist';
 	type Detent = 'medium' | 'large';
@@ -389,12 +396,12 @@
 		tabindex="-1"
 	>
 		<!-- Handle -->
-		<div class="flex shrink-0 justify-center py-2.5">
+		<div class="flex shrink-0 justify-center py-2.5 pb-0">
 			<div class="h-1 w-10 rounded-full bg-black/15"></div>
 		</div>
 
 		<!-- Header: back-to-country button on artist (only if country context exists), country name on country state -->
-		<div class="relative flex shrink-0 items-center justify-between gap-2 px-4 pb-2">
+		<div class="relative flex shrink-0 items-center justify-between gap-2 px-4 pt-3 pb-2">
 			<div class="relative h-7 min-w-0 flex-1">
 				{#if selectedCountry}
 					<h3
@@ -406,32 +413,33 @@
 					>
 						{selectedCountry}
 					</h3>
-					<button
-						class="absolute inset-y-0 left-0 flex cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[0.65rem] tracking-[0.15em] text-black/50 uppercase focus-ring transition-colors duration-150 hover:text-pink"
-						style="transform: translateX({100 *
-							(1 -
-								navProgress)}%); opacity: {navProgress}; transition: {navTransition}; pointer-events: {isArtistView
-							? 'auto'
-							: 'none'};"
-						onclick={handleBack}
-						aria-label="Back to country list"
-						tabindex={isArtistView ? 0 : -1}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="14"
-							height="14"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+					{#if showBackButton}
+						<button
+							class="absolute inset-y-0 left-0 flex cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[0.65rem] tracking-[0.15em] text-black/50 uppercase focus-ring transition-colors duration-150 hover:text-pink"
+							style="transform: translateX({100 *
+								(1 -
+									navProgress)}%); opacity: {navProgress}; transition: {navTransition}; pointer-events: {isArtistView
+								? 'auto'
+								: 'none'};"
+							onclick={handleBack}
+							aria-label="Back to country list"
+							tabindex={isArtistView ? 0 : -1}
 						>
-							<polyline points="15 18 9 12 15 6"></polyline>
-						</svg>
-						<span class="truncate">{selectedCountry}</span>
-					</button>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<polyline points="15 18 9 12 15 6"></polyline>
+							</svg>
+						</button>
+					{/if}
 				{/if}
 			</div>
 

@@ -60,9 +60,11 @@
 	}
 
 	function handleCloseArtist() {
-		// Shallow nav: pop URL back so / shows again. The pathname-watch $effect
-		// closes the drawer once URL changes.
+		// Shallow nav: close drawer synchronously so the sheet transitions
+		// immediately, and pop URL in parallel. The pathname-watch $effect is
+		// only a safety net for browser-back; one click here should suffice.
 		if (page.state.shallow) {
+			closeArtistDrawer();
 			history.back();
 			return;
 		}
@@ -251,6 +253,7 @@
 <MobileSheet
 	{selectedCountry}
 	selectedArtist={drawerArtist}
+	showBackButton={page.state.shallow ?? false}
 	onCloseCountry={clearSelection}
 	onCloseArtist={handleCloseArtist}
 	onArtistSelect={(artist) => navigateToArtist(artist.id)}
