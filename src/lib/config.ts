@@ -9,6 +9,8 @@ export const OG_IMAGE = '/assets/images/logo-0mind-removed-bg.png';
 // Social — fill in real handles when ready
 export const SOCIAL_INSTAGRAM = 'https://www.instagram.com/omind_0';
 export const SOCIAL_TIKTOK = 'https://www.tiktok.com/@omind__';
+export const SOCIAL_SOUNDCLOUD = 'https://soundcloud.com/omind-980831217';
+export const SOCIAL_EMAIL = 'omindcontact0@gmail.com';
 
 // Globe geometry
 export const GLOBE_RADIUS = 1.0;
