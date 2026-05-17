@@ -6,6 +6,18 @@
 	import GlobeAnchor from './GlobeAnchor.svelte';
 	import { findCountryFeature } from '$lib/utils/globe-geometry';
 	import { getCountryCentroid, latLngToVector3, type GeoJSONData } from '$lib/data/geo';
+
+	const CONTINENT_POINTS: { lat: number; lng: number }[] = [
+		{ lat: 5, lng: 20 },
+		{ lat: 35, lng: 100 },
+		{ lat: 50, lng: 10 },
+		{ lat: 40, lng: -95 },
+		{ lat: -15, lng: -60 },
+		{ lat: -25, lng: 135 }
+	];
+
+	const startPoint = CONTINENT_POINTS[Math.floor(Math.random() * CONTINENT_POINTS.length)];
+	const startVec = latLngToVector3(startPoint.lat, startPoint.lng, CAMERA_DISTANCE);
 	import {
 		CAMERA_DISTANCE,
 		ZOOM_DISTANCE,
@@ -135,7 +147,7 @@
 
 <T.PerspectiveCamera
 	makeDefault
-	position={[0, CAMERA_DISTANCE * 0.5, CAMERA_DISTANCE * 0.866]}
+	position={[startVec.x, startVec.y, startVec.z]}
 	fov={isMobile ? MOBILE_FOV : DESKTOP_FOV}
 >
 	<OrbitControls
@@ -147,7 +159,7 @@
 		maxDistance={isMobile ? MOBILE_MAX_ZOOM : DESKTOP_MAX_ZOOM}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
-		autoRotateSpeed={0.7}
+		autoRotateSpeed={isExplorePage ? 1.5 : 2}
 	/>
 </T.PerspectiveCamera>
 

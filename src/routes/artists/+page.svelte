@@ -4,8 +4,7 @@
 
 	let { data } = $props();
 
-	const description =
-		'Underground rap and experimental artists from around the world. Browse by name or country.';
+	const description = 'Omind curated artist selection.';
 
 	const itemListJsonLd = $derived({
 		'@context': 'https://schema.org',
@@ -46,8 +45,8 @@
 						href="/artists/{artist.id}"
 						class="group flex items-baseline justify-between gap-4 py-4 focus-ring transition-opacity duration-150 hover:opacity-70"
 					>
-						<span class="text-base font-bold uppercase">{artist.name}</span>
-						<span class="text-[0.6rem] tracking-[0.2em] text-black/50 uppercase"
+						<span class="text-base font-medium">{artist.name}</span>
+						<span class="text-[0.6rem] tracking-[0.1em] text-black/50 uppercase"
 							>{artist.country}</span
 						>
 					</a>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { haptic } from '$lib/utils/haptics';
+	import { SOCIAL_INSTAGRAM, SOCIAL_TIKTOK } from '$lib/config';
 	import { fade, fly } from 'svelte/transition';
 
 	interface Props {
@@ -13,6 +14,7 @@
 
 	const navItems = [
 		{ path: '/', label: 'EXPLORE' },
+		{ path: '/artists', label: 'ARTISTS' },
 		{ path: '/articles', label: 'ARTICLES' },
 		{ path: '/wtfis', label: 'WTFIS' }
 	];
@@ -131,14 +133,14 @@
 {#if menuOpen}
 	<button
 		type="button"
-		class="fixed inset-0 z-[70] bg-black/30 sm:hidden"
+		class="fixed inset-0 z-[70] cursor-default bg-transparent sm:hidden"
 		onclick={closeMenu}
 		aria-label="Close menu"
 		transition:fade={{ duration: 150 }}
 	></button>
 
 	<aside
-		class="fixed inset-y-0 left-0 z-[71] flex w-[calc(100%-4.5rem)] max-w-sm flex-col bg-white sm:hidden"
+		class="fixed inset-y-0 left-0 z-[71] flex w-[calc(100%-4.5rem)] max-w-sm flex-col border-r border-black/30 bg-white sm:hidden"
 		transition:fly={{ x: -400, duration: 220, opacity: 1 }}
 	>
 		<div class="flex h-14 items-center justify-end gap-1 border-b border-black/30 px-4">
@@ -177,7 +179,7 @@
 			{/each}
 		</nav>
 
-		<footer class="mt-auto p-4 pb-2">
+		<footer class="mt-auto flex items-center justify-between gap-4 p-4 pb-2">
 			<a
 				href="https://nabal.fr"
 				target="_blank"
@@ -186,6 +188,55 @@
 			>
 				Made by <span class="font-semibold text-pink underline underline-offset-2">nabal</span>
 			</a>
+
+			<div class="flex items-center gap-1">
+				<a
+					href={SOCIAL_INSTAGRAM}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="Instagram"
+					class="flex h-9 w-9 items-center justify-center text-black focus-ring transition-colors hover:text-pink"
+					onclick={() => haptic('light')}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-linecap="square"
+					>
+						<rect x="3" y="3" width="18" height="18" rx="4" />
+						<circle cx="12" cy="12" r="4" />
+						<circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+					</svg>
+				</a>
+				<a
+					href={SOCIAL_TIKTOK}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="TikTok"
+					class="flex h-9 w-9 items-center justify-center text-black focus-ring transition-colors hover:text-pink"
+					onclick={() => haptic('light')}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.5"
+						stroke-linecap="square"
+						stroke-linejoin="miter"
+					>
+						<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5" />
+						<path d="M14 4c0 2.5 2 4.5 4.5 4.5" />
+					</svg>
+				</a>
+			</div>
 		</footer>
 	</aside>
 {/if}
