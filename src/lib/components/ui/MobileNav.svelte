@@ -15,7 +15,7 @@
 	const navItems = [
 		{ path: '/artists', label: 'ARTISTS' },
 		{ path: '/articles', label: 'ARTICLES' },
-		{ path: '/wtfis', label: 'WTFIS' },
+		{ path: '/wtfis', label: 'WHO THE FUCK IS' },
 		{ path: '/playlists', label: 'PLAYLISTS & RADIO' }
 	];
 
@@ -186,7 +186,9 @@
 				rel="noopener noreferrer"
 				class="font-mono text-[0.6rem] tracking-[0.2em] text-black/50 uppercase focus-ring transition-colors hover:text-pink"
 			>
-				Made by <span class="font-semibold text-pink underline underline-offset-2">nabal</span>
+				Made by <span class="font-semibold text-pink lowercase underline underline-offset-2"
+					>nabal</span
+				>
 			</a>
 
 			<div class="flex items-center gap-1">
@@ -321,12 +323,18 @@
 	</aside>
 {/if}
 
-<!-- Desktop: Horizontal Nav (unchanged) -->
-<nav class="fixed top-6 right-6 z-50 hidden items-center gap-6 font-mono sm:flex">
+<!-- Desktop: Vertical right-edge nav rail -->
+<nav
+	class="fixed top-0 right-0 z-50 hidden h-dvh w-56 flex-col items-center justify-center gap-6 bg-white/70 px-4 font-mono backdrop-blur-sm sm:flex"
+>
+	<a href="/" aria-label="Omind home" class="absolute top-6 focus-ring">
+		<img src="/assets/icon-192.png" alt="Omind" class="h-9 w-9" />
+	</a>
+
 	{#each navItems as item (item.path)}
 		<a
 			href={item.path}
-			class="text-[0.65rem] tracking-[0.2em] uppercase focus-ring transition-opacity duration-150
+			class="text-center text-sm tracking-[0.15em] uppercase focus-ring transition-opacity duration-150
 				{isActive(item.path, currentPath) ? 'text-pink' : 'text-black/40 hover:text-pink'}"
 		>
 			{item.label}

@@ -164,7 +164,7 @@
 				border-radius 200ms cubic-bezier(0.4, 0, 0.2, 1),
 				transform 200ms ease;
 			top: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-top)'};
-			right: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-right)'};
+			right: {showsFullscreenGlobe ? 'var(--globe-right)' : 'var(--mini-globe-right)'};
 			bottom: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-bottom)'};
 			left: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-left)'};
 			border-radius: {showsFullscreenGlobe ? '0px' : '9999px'};
