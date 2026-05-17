@@ -157,6 +157,8 @@
 		enableZoom
 		minDistance={isMobile ? MOBILE_MIN_ZOOM : DESKTOP_MIN_ZOOM}
 		maxDistance={isMobile ? MOBILE_MAX_ZOOM : DESKTOP_MAX_ZOOM}
+		minPolarAngle={Math.PI * 0.2}
+		maxPolarAngle={Math.PI * 0.8}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
 		autoRotateSpeed={isExplorePage ? 1.5 : 2}

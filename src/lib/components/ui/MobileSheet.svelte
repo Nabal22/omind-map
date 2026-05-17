@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { beforeNavigate } from '$app/navigation';
 	import { artists, type Artist } from '$lib/data/artists';
 	import { haptic } from '$lib/utils/haptics';
@@ -23,6 +22,7 @@
 		selectedArtist ? 'artist' : selectedCountry ? 'country' : 'closed'
 	);
 	const open = $derived(sheetState !== 'closed');
+	const isArtistView = $derived(sheetState === 'artist');
 
 	// Detent heights (vh / dvh)
 	const MEDIUM_VH = 45;
@@ -41,9 +41,11 @@
 		prevState = next;
 	});
 
-	// Keep an artist snapshot for clean exit animation
+	// Keep an artist snapshot for clean exit animation.
+	// $effect.pre runs before DOM paint so the artist panel content is present
+	// in the same render where navProgress flips and triggers the slide-in.
 	let displayArtist = $state<Artist | null>(null);
-	$effect(() => {
+	$effect.pre(() => {
 		if (selectedArtist) displayArtist = selectedArtist;
 	});
 	$effect(() => {
@@ -79,6 +81,24 @@
 	const HORIZONTAL_DISMISS_PX = 80;
 	const VELOCITY_THRESHOLD = 0.5;
 	const DIRECTION_LOCK_PX = 8;
+
+	// 0 = country view fully visible, 1 = artist view fully visible.
+	// Accounts for in-progress horizontal back-drag so panels move with finger.
+	const navProgress = $derived.by(() => {
+		if (typeof window === 'undefined') return isArtistView ? 1 : 0;
+		const base = isArtistView ? 1 : 0;
+		if (!isArtistView) return base;
+		const w = window.innerWidth || 1;
+		return Math.max(0, Math.min(1, base - dragX / w));
+	});
+
+	const navTransition = $derived(
+		dragging
+			? 'none'
+			: animating
+				? 'transform 280ms cubic-bezier(0.25, 1, 0.5, 1), opacity 280ms ease'
+				: 'transform 300ms cubic-bezier(0.25, 1, 0.5, 1), opacity 200ms ease'
+	);
 
 	function vh(): number {
 		return window.innerHeight;
@@ -336,14 +356,12 @@
 	<!-- Backdrop only when viewing artist details: tap to go back to country list -->
 	{#if sheetState === 'artist'}
 		<button
-			class="fixed inset-0 z-[55] border-none bg-black/30 p-0 transition-opacity duration-200 sm:hidden"
-			style="opacity: {open ? 1 - dismissProgress * 0.5 : 0};"
+			class="fixed inset-0 z-[55] border-none bg-transparent p-0 sm:hidden"
 			onclick={() => {
 				haptic('light');
 				onCloseArtist();
 			}}
 			aria-label="Back to country list"
-			transition:fade={{ duration: 200 }}
 		></button>
 	{/if}
 
@@ -358,7 +376,7 @@
 
 	<!-- Sheet -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-[57] flex touch-manipulation flex-col overscroll-contain border-t border-black/10 bg-white font-mono text-black sm:hidden"
+		class="fixed inset-x-0 bottom-0 z-[57] flex touch-manipulation flex-col overscroll-contain border-t border-black/20 bg-white font-mono text-black sm:hidden"
 		style="height: {LARGE_DVH}dvh; transform: translateY({translateY}); opacity: {1 -
 			dismissProgress * 0.3}; transition: {dragging
 			? 'none'
@@ -376,38 +394,49 @@
 		</div>
 
 		<!-- Header: back-to-country button on artist (only if country context exists), country name on country state -->
-		<div class="relative flex shrink-0 items-center justify-between px-4 pb-2">
-			{#if sheetState === 'artist' && selectedCountry}
-				<button
-					class="flex h-7 cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[0.65rem] tracking-[0.15em] text-black/50 uppercase focus-ring transition-colors duration-150 hover:text-pink"
-					onclick={handleBack}
-					aria-label="Back to country list"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
+		<div class="relative flex shrink-0 items-center justify-between gap-2 px-4 pb-2">
+			<div class="relative h-7 min-w-0 flex-1">
+				{#if selectedCountry}
+					<h3
+						class="absolute inset-y-0 left-0 flex items-center text-xs font-bold tracking-[0.15em] text-black/50 uppercase"
+						style="transform: translateX({-30 * navProgress}%); opacity: {1 -
+							navProgress}; transition: {navTransition}; pointer-events: {isArtistView
+							? 'none'
+							: 'auto'};"
 					>
-						<polyline points="15 18 9 12 15 6"></polyline>
-					</svg>
-					<span>{selectedCountry}</span>
-				</button>
-			{:else if sheetState === 'country' && selectedCountry}
-				<h3 class="text-xs font-bold tracking-[0.15em] text-black/50 uppercase">
-					{selectedCountry}
-				</h3>
-			{:else}
-				<span></span>
-			{/if}
+						{selectedCountry}
+					</h3>
+					<button
+						class="absolute inset-y-0 left-0 flex cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[0.65rem] tracking-[0.15em] text-black/50 uppercase focus-ring transition-colors duration-150 hover:text-pink"
+						style="transform: translateX({100 *
+							(1 -
+								navProgress)}%); opacity: {navProgress}; transition: {navTransition}; pointer-events: {isArtistView
+							? 'auto'
+							: 'none'};"
+						onclick={handleBack}
+						aria-label="Back to country list"
+						tabindex={isArtistView ? 0 : -1}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polyline points="15 18 9 12 15 6"></polyline>
+						</svg>
+						<span class="truncate">{selectedCountry}</span>
+					</button>
+				{/if}
+			</div>
 
 			<button
-				class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
+				class="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-transparent text-black/30 transition-colors duration-150 hover:text-black/60"
 				onclick={handleClose}
 				aria-label="Close"
 			>
@@ -426,24 +455,18 @@
 			</button>
 		</div>
 
-		<!-- Content area: scrollable -->
-		<div class="flex-1 overflow-y-auto px-4 pb-safe">
-			{#if sheetState === 'artist' && displayArtist}
+		<!-- Content area: stacked panels for iOS-style horizontal navigation -->
+		<div class="relative flex-1 overflow-hidden">
+			<!-- Country list panel -->
+			{#if selectedCountry}
 				<div
-					in:fade={{ duration: 150 }}
-					style="transform: translateX({dragX}px); opacity: {Math.max(
-						0,
-						1 - dragX / 250
-					)}; transition: {dragging || animating
-						? dragging
-							? 'none'
-							: 'transform 280ms cubic-bezier(0.25, 1, 0.5, 1), opacity 280ms ease'
-						: 'transform 200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 200ms ease'};"
+					class="absolute inset-0 overflow-y-auto px-4 pb-safe"
+					style="transform: translateX({-30 * navProgress}%); opacity: {1 -
+						0.4 * navProgress}; transition: {navTransition}; pointer-events: {isArtistView
+						? 'none'
+						: 'auto'};"
+					aria-hidden={isArtistView}
 				>
-					<ArtistDetails artist={displayArtist} />
-				</div>
-			{:else if sheetState === 'country'}
-				<div in:fade={{ duration: 150 }}>
 					{#if countryArtists.length === 0}
 						<p class="py-4 text-center text-[0.7rem] text-black/30">No artists yet</p>
 					{:else}
@@ -470,6 +493,20 @@
 					{/if}
 				</div>
 			{/if}
+
+			<!-- Artist detail panel: wrapper stays mounted so transform can transition smoothly -->
+			<div
+				class="absolute inset-0 overflow-y-auto bg-white px-4 pb-safe"
+				style="transform: translateX({100 *
+					(1 - navProgress)}%); transition: {navTransition}; pointer-events: {isArtistView
+					? 'auto'
+					: 'none'};"
+				aria-hidden={!isArtistView}
+			>
+				{#if displayArtist}
+					<ArtistDetails artist={displayArtist} />
+				{/if}
+			</div>
 		</div>
 	</div>
 {/if}

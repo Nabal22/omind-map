@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import { SITE_URL } from '$lib/config';
+	import { SITE_URL, SITE_NAME } from '$lib/config';
 	import MobileNav from '$lib/components/ui/MobileNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
 	import SearchOverlay from '$lib/components/ui/SearchOverlay.svelte';
@@ -12,19 +12,21 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
+	import { goto, pushState } from '$app/navigation';
 	import { onNavigate } from '$app/navigation';
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 	import { openSearch, resetSearch } from '$lib/stores/search.svelte';
+	import { artists } from '$lib/data/artists';
 	import {
 		getSelectedCountry,
 		getFocusCountry,
 		selectCountry,
 		setCountryFilter,
 		clearSelection,
-		resetSelection
+		resetSelection,
+		focusOnArtist
 	} from '$lib/stores/explore.svelte';
 
 	let { children } = $props();
@@ -43,16 +45,44 @@
 	}
 
 	function navigateToArtist(artistId: string) {
+		// In globe context: shallow nav. URL updates to /artists/[id] without
+		// unmounting the current page, so the globe stays put and the sheet
+		// owns the visual transition.
+		if (isGlobeContext(page.url.pathname)) {
+			const artist = artists.find((a) => a.id === artistId);
+			if (artist) {
+				pushState(`/artists/${artistId}`, { shallow: true });
+				focusOnArtist(artist);
+				return;
+			}
+		}
 		goto(`/artists/${artistId}`);
 	}
 
 	function handleCloseArtist() {
-		// On artist URL, "close" means navigate back to /. The page's effect cleanup
-		// handles closeArtistDrawer; selectedCountry is preserved so the country list
-		// reappears at /.
+		// Shallow nav: pop URL back so / shows again. The pathname-watch $effect
+		// closes the drawer once URL changes.
+		if (page.state.shallow) {
+			history.back();
+			return;
+		}
+		// On real /artists/[id] route, navigating back unmounts the page; its
+		// effect cleanup closes the drawer. selectedCountry is preserved.
 		if (isArtistPage) goto('/');
 		else closeArtistDrawer();
 	}
+
+	// Close drawer when URL pops back from a shallow /artists/[id] (browser back
+	// button or history.back from handleCloseArtist). Doesn't affect drawers
+	// opened without URL change (e.g. from /articles/[slug]).
+	let prevIsArtistUrl = false;
+	$effect(() => {
+		const onArtist = page.url.pathname.startsWith('/artists/');
+		if (prevIsArtistUrl && !onArtist && drawerArtist) {
+			closeArtistDrawer();
+		}
+		prevIsArtistUrl = onArtist;
+	});
 
 	function handleGlobeCountryClick(name: string) {
 		selectCountry(name);
@@ -90,6 +120,11 @@
 
 		resetSearch();
 
+		// Skip view-transition crossfade for in-context nav (/ ↔ /artists/[id]) —
+		// the bottom sheet animates between country list and artist details
+		// internally; the browser-level crossfade only adds a flicker.
+		if (fromGlobe && toGlobe) return;
+
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
@@ -103,6 +138,11 @@
 <svelte:head>
 	<link rel="canonical" href="{SITE_URL}{page.url.pathname}" />
 	<meta property="og:url" content="{SITE_URL}{page.url.pathname}" />
+	{#if page.state.shallow && drawerArtist}
+		<title>{drawerArtist.name} — {SITE_NAME}</title>
+		<meta property="og:title" content={drawerArtist.name} />
+		<meta property="og:description" content={drawerArtist.description} />
+	{/if}
 </svelte:head>
 
 <MobileNav currentPath={page.url.pathname} onSearchClick={openSearch} />
