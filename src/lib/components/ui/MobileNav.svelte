@@ -325,7 +325,7 @@
 
 <!-- Desktop: Vertical right-edge nav rail -->
 <nav
-	class="fixed top-0 right-0 z-50 hidden h-dvh w-56 flex-col items-center justify-center gap-6 bg-white/70 px-4 font-mono backdrop-blur-sm sm:flex"
+	class="fixed top-0 right-0 z-50 hidden h-dvh w-64 flex-col items-center justify-center gap-6 bg-white/70 px-4 font-mono backdrop-blur-sm sm:flex"
 >
 	<a href="/" aria-label="Omind home" class="absolute top-6 focus-ring">
 		<img src="/assets/icon-192.png" alt="Omind" class="h-9 w-9" />

@@ -73,13 +73,13 @@
 
 @media (min-width: 640px) {
 	:root {
-		--mini-globe-size: 10rem;
+		--mini-globe-size: 16rem;
 		--mini-globe-right: calc(100vw - 1.5rem - var(--mini-globe-size));
 		--mini-globe-left: 1.5rem;
 		--mini-globe-top: calc(50dvh - var(--mini-globe-size) / 2);
 		--mini-globe-bottom: calc(50dvh - var(--mini-globe-size) / 2);
 
-		--globe-right: 14rem;
+		--globe-right: 16rem;
 	}
 }
 

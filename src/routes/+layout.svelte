@@ -107,6 +107,20 @@
 		if (new URLSearchParams(window.location.search).has('fps')) showFps = true;
 	});
 
+	// Show pink atmosphere only after the globe finishes shrinking into the
+	// navbar / mini mode. Hide immediately when expanding back to fullscreen.
+	let showAtmosphere = $state(false);
+	$effect(() => {
+		if (showsFullscreenGlobe) {
+			showAtmosphere = false;
+		} else {
+			const t = setTimeout(() => {
+				showAtmosphere = true;
+			}, 220);
+			return () => clearTimeout(t);
+		}
+	});
+
 	function handleMiniGlobeClick() {
 		goto('/');
 	}
@@ -219,6 +233,7 @@
 					{focusCountry}
 					isExplorePage={showsFullscreenGlobe}
 					showPerf={showFps}
+					{showAtmosphere}
 				/>
 			</Scene>
 		{/if}

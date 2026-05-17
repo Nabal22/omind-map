@@ -27,9 +27,10 @@
 		onCountryClick: (countryName: string) => void;
 		selectedCountry: string | null;
 		onGeoDataLoad?: (data: GeoJSONData) => void;
+		showAtmosphere?: boolean;
 	}
 
-	let { onCountryClick, selectedCountry, onGeoDataLoad }: Props = $props();
+	let { onCountryClick, selectedCountry, onGeoDataLoad, showAtmosphere = false }: Props = $props();
 
 	const { camera } = useThrelte();
 
@@ -136,6 +137,39 @@
 		};
 	});
 </script>
+
+<!-- Pink atmosphere — halo starts right at the sphere surface, fades outward.
+     BackSide rendering of slightly-larger sphere is the canonical atmosphere
+     trick: only the ring outside the main globe's silhouette stays visible
+     because the rest of the back hemisphere is occluded by the globe itself.
+     Only shown in mini-globe mode (navbar), not on the fullscreen explore view. -->
+{#if showAtmosphere}
+	<T.Mesh renderOrder={-1} frustumCulled={false}>
+		<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
+		<T.ShaderMaterial
+			uniforms={{ glowColor: { value: new THREE.Color(colorPink) } }}
+			vertexShader={`
+			varying vec3 vNormal;
+			void main() {
+				vNormal = normalize(normalMatrix * normal);
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`}
+			fragmentShader={`
+			uniform vec3 glowColor;
+			varying vec3 vNormal;
+			void main() {
+				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
+				gl_FragColor = vec4(glowColor, 1.0) * intensity;
+			}
+		`}
+			side={THREE.BackSide}
+			transparent
+			depthWrite={false}
+			blending={THREE.AdditiveBlending}
+		/>
+	</T.Mesh>
+{/if}
 
 <!-- Globe sphere (same color as background = invisible ocean) -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
