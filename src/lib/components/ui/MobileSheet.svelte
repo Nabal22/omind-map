@@ -352,8 +352,10 @@
 
 	function handleClose() {
 		haptic('light');
+		// X always closes the whole sheet (artist + country). Back chevron is
+		// the artist-only escape hatch.
 		if (sheetState === 'artist') onCloseArtist();
-		else onCloseCountry();
+		onCloseCountry();
 	}
 </script>
 
@@ -405,7 +407,7 @@
 			<div class="relative h-7 min-w-0 flex-1">
 				{#if selectedCountry}
 					<h3
-						class="absolute inset-y-0 left-0 flex items-center text-xs font-bold tracking-[0.15em] text-black/50 uppercase"
+						class="absolute inset-y-0 left-0 flex items-center text-xs font-semibold tracking-[0.15em] text-black/50 uppercase"
 						style="transform: translateX({-30 * navProgress}%); opacity: {1 -
 							navProgress}; transition: {navTransition}; pointer-events: {isArtistView
 							? 'none'
