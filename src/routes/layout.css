@@ -59,12 +59,12 @@
 }
 
 :root {
-	/* Mini globe — non-/ pages. Vertically centered, right-edge on mobile. */
-	--mini-globe-size: 5rem;
+	/* Mini globe — non-/ pages. Mobile: top-right corner. */
+	--mini-globe-size: 3.5rem;
 	--mini-globe-right: 0.5rem;
 	--mini-globe-left: calc(100vw - 0.5rem - var(--mini-globe-size));
-	--mini-globe-top: calc(50dvh - var(--mini-globe-size) / 2);
-	--mini-globe-bottom: calc(50dvh - var(--mini-globe-size) / 2);
+	--mini-globe-top: 0;
+	--mini-globe-bottom: calc(100dvh - var(--mini-globe-size));
 
 	/* Globe canvas right inset when in fullscreen mode. Mobile: flush to edge.
 	   Desktop: leave room for the vertical nav rail. */

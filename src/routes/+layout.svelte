@@ -127,6 +127,10 @@
 		// internally; the browser-level crossfade only adds a flicker.
 		if (fromGlobe && toGlobe) return;
 
+		// Skip view-transition on mobile — the mini-globe + sheet animations
+		// conflict with the document-level crossfade, producing a weird flicker.
+		if (window.matchMedia('(max-width: 639px)').matches) return;
+
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
