@@ -68,56 +68,62 @@
 	></button>
 
 	<div
-		class="fixed inset-x-0 top-14 z-[76] border-b border-black/10 bg-white sm:hidden"
+		class="fixed inset-x-0 top-14 z-[76] border-b border-black/30 bg-white sm:hidden"
 		transition:fly={{ y: -10, duration: 180 }}
 	>
-		<form onsubmit={handleSubmit} class="flex h-12 items-center gap-2 px-4">
-			<span class="flex h-10 w-10 shrink-0 items-center justify-center text-black/50">
+		<form onsubmit={handleSubmit} class="flex h-12 items-center px-4">
+			<div class="relative flex h-10 min-w-0 flex-1 items-center">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="20"
-					height="20"
+					width="18"
+					height="18"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
 					stroke-width="1.5"
 					stroke-linecap="square"
+					class="pointer-events-none absolute left-0 text-black/50"
 				>
 					<circle cx="10.5" cy="10.5" r="6.5" />
 					<line x1="15.5" y1="15.5" x2="20" y2="20" />
 				</svg>
-			</span>
-			<input
-				bind:this={inputEl}
-				value={query}
-				oninput={(e) => setSearchQuery(e.currentTarget.value)}
-				type="search"
-				placeholder="Search artists, articles, WTFIS..."
-				class="h-10 min-w-0 flex-1 border-none bg-transparent font-mono text-sm leading-none text-black outline-none placeholder:text-black/30"
-				autocomplete="off"
-			/>
-			{#if query}
-				<button
-					type="button"
-					onclick={() => setSearchQuery('')}
-					aria-label="Clear"
-					class="flex h-10 w-10 shrink-0 items-center justify-center text-black/40 hover:text-black"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="square"
+				<!-- svelte-ignore a11y_autofocus -->
+				<input
+					bind:this={inputEl}
+					value={query}
+					oninput={(e) => setSearchQuery(e.currentTarget.value)}
+					type="search"
+					placeholder="Search artists, articles, WTFIS..."
+					class="h-10 w-full border-none bg-transparent pr-8 pl-7 font-mono text-base leading-none text-black outline-none placeholder:text-black/30"
+					autocomplete="off"
+					autocorrect="off"
+					autocapitalize="off"
+					spellcheck="false"
+					autofocus
+				/>
+				{#if query}
+					<button
+						type="button"
+						onclick={() => setSearchQuery('')}
+						aria-label="Clear"
+						class="absolute right-0 flex h-10 w-8 items-center justify-center text-black/40 hover:text-black"
 					>
-						<line x1="18" y1="6" x2="6" y2="18" />
-						<line x1="6" y1="6" x2="18" y2="18" />
-					</svg>
-				</button>
-			{/if}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="square"
+						>
+							<line x1="18" y1="6" x2="6" y2="18" />
+							<line x1="6" y1="6" x2="18" y2="18" />
+						</svg>
+					</button>
+				{/if}
+			</div>
 		</form>
 
 		{#if query}
