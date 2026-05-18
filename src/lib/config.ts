@@ -18,7 +18,7 @@ export const GLOBE_FILL_RADIUS = 1.01;
 export const GLOBE_BORDER_RADIUS = 1.011;
 
 // Camera
-export const CAMERA_DISTANCE = 2.5;
+export const CAMERA_DISTANCE = 3.2;
 export const ZOOM_DISTANCE = 1.8;
 export const CAMERA_ANIM_DURATION = 0.5;
 export const MOBILE_FOV = 80;
