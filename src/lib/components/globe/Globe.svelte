@@ -39,6 +39,12 @@
 		interactive = true
 	}: Props = $props();
 
+	let atmosphereMaterial = $state<THREE.ShaderMaterial | undefined>(undefined);
+	$effect(() => {
+		const u = atmosphereMaterial?.uniforms?.uOpacity;
+		if (u) u.value = atmosphereOpacity;
+	});
+
 	const { camera } = useThrelte();
 
 	const RADIUS = GLOBE_RADIUS;
@@ -152,23 +158,22 @@
      trick: only the ring outside the main globe's silhouette stays visible
      because the rest of the back hemisphere is occluded by the globe itself.
      Opacity tweened from layout so the halo fades with the shrink/expand. -->
-{#if atmosphereOpacity > 0}
-	<T.Mesh renderOrder={-1} frustumCulled={false}>
-		<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
-		<T.ShaderMaterial
-			uniforms={{
-				glowColor: { value: new THREE.Color(colorPink) },
-				uOpacity: { value: atmosphereOpacity }
-			}}
-			uniforms-uOpacity-value={atmosphereOpacity}
-			vertexShader={`
+<T.Mesh renderOrder={-1} frustumCulled={false} visible={atmosphereOpacity > 0}>
+	<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
+	<T.ShaderMaterial
+		bind:ref={atmosphereMaterial}
+		uniforms={{
+			glowColor: { value: new THREE.Color(colorPink) },
+			uOpacity: { value: atmosphereOpacity }
+		}}
+		vertexShader={`
 			varying vec3 vNormal;
 			void main() {
 				vNormal = normalize(normalMatrix * normal);
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 			}
 		`}
-			fragmentShader={`
+		fragmentShader={`
 			uniform vec3 glowColor;
 			uniform float uOpacity;
 			varying vec3 vNormal;
@@ -177,13 +182,12 @@
 				gl_FragColor = vec4(glowColor, 1.0) * intensity * uOpacity;
 			}
 		`}
-			side={THREE.BackSide}
-			transparent
-			depthWrite={false}
-			blending={THREE.AdditiveBlending}
-		/>
-	</T.Mesh>
-{/if}
+		side={THREE.BackSide}
+		transparent
+		depthWrite={false}
+		blending={THREE.AdditiveBlending}
+	/>
+</T.Mesh>
 
 <!-- Globe sphere (same color as background = invisible ocean) -->
 <T.Mesh renderOrder={0} frustumCulled={false}>
