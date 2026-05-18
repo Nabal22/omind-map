@@ -28,9 +28,16 @@
 		selectedCountry: string | null;
 		onGeoDataLoad?: (data: GeoJSONData) => void;
 		atmosphereOpacity?: number;
+		interactive?: boolean;
 	}
 
-	let { onCountryClick, selectedCountry, onGeoDataLoad, atmosphereOpacity = 0 }: Props = $props();
+	let {
+		onCountryClick,
+		selectedCountry,
+		onGeoDataLoad,
+		atmosphereOpacity = 0,
+		interactive = true
+	}: Props = $props();
 
 	let atmosphereMaterial: THREE.ShaderMaterial | null = $state(null);
 	$effect(() => {
@@ -119,6 +126,7 @@
 	}
 
 	function handleClick(name: string, event: GlobePointerEvent) {
+		if (!interactive) return;
 		if (isFrontFace(event) && countriesWithArtists.has(name)) {
 			haptic('heavy');
 			onCountryClick(name);
@@ -126,6 +134,7 @@
 	}
 
 	function handlePointerEnter(name: string) {
+		if (!interactive) return;
 		hoveredCountry = name;
 		if (countriesWithArtists.has(name)) {
 			document.body.style.cursor = 'pointer';
