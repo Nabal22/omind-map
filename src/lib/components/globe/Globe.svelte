@@ -50,6 +50,7 @@
 
 	const colorPink = cssVar('--color-pink');
 	const highlightPink = cssVar('--color-pink-highlight');
+	const selectedPink = cssVar('--color-pink-selected');
 	const colorGlobeDefault = cssVar('--color-globe-default');
 
 	// Pre-built shader material so we can mutate uOpacity directly each tick.
@@ -92,7 +93,7 @@
 	let hoveredCountry: string | null = $state(null);
 
 	function getColor(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return highlightPink;
+		if (name === selectedCountry) return selectedPink;
 		if (name === hoveredCountry && hasArtists) return highlightPink;
 		if (hasArtists) return colorPink;
 		return colorGlobeDefault;

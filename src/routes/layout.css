@@ -9,8 +9,9 @@
 }
 
 @theme {
-	--color-pink: #ffaefb;
+	--color-pink: #ffd0fc;
 	--color-pink-highlight: #fe91f9;
+	--color-pink-selected: #e066d9;
 	--color-black: #000000;
 	--color-gray: #666666;
 	--color-white: #ffffff;
