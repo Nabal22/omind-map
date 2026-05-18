@@ -110,7 +110,7 @@
 	});
 
 	// Pink atmosphere fades in/out in sync with the globe shrink/expand.
-	const atmosphereOpacity = new Tween(0, { duration: 280, easing: cubicOut });
+	const atmosphereOpacity = new Tween(0, { duration: 380, easing: cubicOut });
 	$effect(() => {
 		atmosphereOpacity.target = showsFullscreenGlobe ? 0 : 1;
 	});
@@ -170,11 +170,11 @@
 		: 'z-[80] cursor-pointer opacity-80 hover:opacity-100 focus:opacity-100'}"
 	style="
 			transition:
-				top 280ms cubic-bezier(0.32, 0.72, 0, 1),
-				right 280ms cubic-bezier(0.32, 0.72, 0, 1),
-				bottom 280ms cubic-bezier(0.32, 0.72, 0, 1),
-				left 280ms cubic-bezier(0.32, 0.72, 0, 1),
-				border-radius 280ms cubic-bezier(0.32, 0.72, 0, 1);
+				top 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				right 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				bottom 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				left 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				border-radius 380ms cubic-bezier(0.32, 0.72, 0, 1);
 			will-change: top, right, bottom, left, border-radius;
 			top: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-top)'};
 			right: {showsFullscreenGlobe ? 'var(--globe-right)' : 'var(--mini-globe-right)'};

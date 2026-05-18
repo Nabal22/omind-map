@@ -39,13 +39,6 @@
 		interactive = true
 	}: Props = $props();
 
-	let atmosphereMaterial: THREE.ShaderMaterial | null = $state(null);
-	$effect(() => {
-		if (atmosphereMaterial?.uniforms?.uOpacity) {
-			atmosphereMaterial.uniforms.uOpacity.value = atmosphereOpacity;
-		}
-	});
-
 	const { camera } = useThrelte();
 
 	const RADIUS = GLOBE_RADIUS;
@@ -163,13 +156,11 @@
 	<T.Mesh renderOrder={-1} frustumCulled={false}>
 		<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
 		<T.ShaderMaterial
-			oncreate={(m: THREE.ShaderMaterial) => {
-				atmosphereMaterial = m;
-			}}
 			uniforms={{
 				glowColor: { value: new THREE.Color(colorPink) },
 				uOpacity: { value: atmosphereOpacity }
 			}}
+			uniforms-uOpacity-value={atmosphereOpacity}
 			vertexShader={`
 			varying vec3 vNormal;
 			void main() {
