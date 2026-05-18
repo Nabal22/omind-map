@@ -21,6 +21,7 @@
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 	import { openSearch, resetSearch } from '$lib/stores/search.svelte';
 	import { artists } from '$lib/data/artists';
+	import { haptic } from '$lib/utils/haptics';
 	import {
 		getSelectedCountry,
 		getFocusCountry,
@@ -116,6 +117,7 @@
 	});
 
 	function handleMiniGlobeClick() {
+		haptic('light');
 		goto('/');
 	}
 
