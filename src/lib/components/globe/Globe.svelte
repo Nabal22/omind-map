@@ -39,12 +39,6 @@
 		interactive = true
 	}: Props = $props();
 
-	let atmosphereMaterial = $state<THREE.ShaderMaterial | undefined>(undefined);
-	$effect(() => {
-		const u = atmosphereMaterial?.uniforms?.uOpacity;
-		if (u) u.value = atmosphereOpacity;
-	});
-
 	const { camera } = useThrelte();
 
 	const RADIUS = GLOBE_RADIUS;
@@ -57,6 +51,40 @@
 	const colorPink = cssVar('--color-pink');
 	const highlightPink = cssVar('--color-pink-highlight');
 	const colorGlobeDefault = cssVar('--color-globe-default');
+
+	// Pre-built shader material so we can mutate uOpacity directly each tick.
+	// Threlte's reactive uniforms don't reliably push through, so we own the
+	// instance and Threlte just slots it into the mesh.
+	const atmosphereMaterial = new THREE.ShaderMaterial({
+		uniforms: {
+			glowColor: { value: new THREE.Color(colorPink) },
+			uOpacity: { value: 0 }
+		},
+		vertexShader: `
+			varying vec3 vNormal;
+			void main() {
+				vNormal = normalize(normalMatrix * normal);
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`,
+		fragmentShader: `
+			uniform vec3 glowColor;
+			uniform float uOpacity;
+			varying vec3 vNormal;
+			void main() {
+				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
+				gl_FragColor = vec4(glowColor, 1.0) * intensity * uOpacity;
+			}
+		`,
+		side: THREE.BackSide,
+		transparent: true,
+		depthWrite: false,
+		blending: THREE.AdditiveBlending
+	});
+
+	$effect(() => {
+		atmosphereMaterial.uniforms.uOpacity.value = atmosphereOpacity;
+	});
 
 	// Initialise from module-level cache if already computed.
 	let countries: CountryData[] = $state(cachedCountries ?? []);
@@ -157,36 +185,10 @@
      BackSide rendering of slightly-larger sphere is the canonical atmosphere
      trick: only the ring outside the main globe's silhouette stays visible
      because the rest of the back hemisphere is occluded by the globe itself.
-     Opacity tweened from layout so the halo fades with the shrink/expand. -->
+     uOpacity is tweened from the layout so the halo fades with the shrink. -->
 <T.Mesh renderOrder={-1} frustumCulled={false} visible={atmosphereOpacity > 0}>
 	<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
-	<T.ShaderMaterial
-		bind:ref={atmosphereMaterial}
-		uniforms={{
-			glowColor: { value: new THREE.Color(colorPink) },
-			uOpacity: { value: atmosphereOpacity }
-		}}
-		vertexShader={`
-			varying vec3 vNormal;
-			void main() {
-				vNormal = normalize(normalMatrix * normal);
-				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-			}
-		`}
-		fragmentShader={`
-			uniform vec3 glowColor;
-			uniform float uOpacity;
-			varying vec3 vNormal;
-			void main() {
-				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
-				gl_FragColor = vec4(glowColor, 1.0) * intensity * uOpacity;
-			}
-		`}
-		side={THREE.BackSide}
-		transparent
-		depthWrite={false}
-		blending={THREE.AdditiveBlending}
-	/>
+	<T is={atmosphereMaterial} attach="material" />
 </T.Mesh>
 
 <!-- Globe sphere (same color as background = invisible ocean) -->
