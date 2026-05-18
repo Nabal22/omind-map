@@ -27,10 +27,17 @@
 		onCountryClick: (countryName: string) => void;
 		selectedCountry: string | null;
 		onGeoDataLoad?: (data: GeoJSONData) => void;
-		showAtmosphere?: boolean;
+		atmosphereOpacity?: number;
+		interactive?: boolean;
 	}
 
-	let { onCountryClick, selectedCountry, onGeoDataLoad, showAtmosphere = false }: Props = $props();
+	let {
+		onCountryClick,
+		selectedCountry,
+		onGeoDataLoad,
+		atmosphereOpacity = 0,
+		interactive = true
+	}: Props = $props();
 
 	const { camera } = useThrelte();
 
@@ -43,7 +50,42 @@
 
 	const colorPink = cssVar('--color-pink');
 	const highlightPink = cssVar('--color-pink-highlight');
+	const selectedPink = cssVar('--color-pink-selected');
 	const colorGlobeDefault = cssVar('--color-globe-default');
+
+	// Pre-built shader material so we can mutate uOpacity directly each tick.
+	// Threlte's reactive uniforms don't reliably push through, so we own the
+	// instance and Threlte just slots it into the mesh.
+	const atmosphereMaterial = new THREE.ShaderMaterial({
+		uniforms: {
+			glowColor: { value: new THREE.Color(colorPink) },
+			uOpacity: { value: 0 }
+		},
+		vertexShader: `
+			varying vec3 vNormal;
+			void main() {
+				vNormal = normalize(normalMatrix * normal);
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`,
+		fragmentShader: `
+			uniform vec3 glowColor;
+			uniform float uOpacity;
+			varying vec3 vNormal;
+			void main() {
+				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
+				gl_FragColor = vec4(glowColor, 1.0) * intensity * uOpacity;
+			}
+		`,
+		side: THREE.BackSide,
+		transparent: true,
+		depthWrite: false,
+		blending: THREE.AdditiveBlending
+	});
+
+	$effect(() => {
+		atmosphereMaterial.uniforms.uOpacity.value = atmosphereOpacity;
+	});
 
 	// Initialise from module-level cache if already computed.
 	let countries: CountryData[] = $state(cachedCountries ?? []);
@@ -51,7 +93,7 @@
 	let hoveredCountry: string | null = $state(null);
 
 	function getColor(name: string, hasArtists: boolean): number {
-		if (name === selectedCountry) return highlightPink;
+		if (name === selectedCountry) return selectedPink;
 		if (name === hoveredCountry && hasArtists) return highlightPink;
 		if (hasArtists) return colorPink;
 		return colorGlobeDefault;
@@ -112,6 +154,7 @@
 	}
 
 	function handleClick(name: string, event: GlobePointerEvent) {
+		if (!interactive) return;
 		if (isFrontFace(event) && countriesWithArtists.has(name)) {
 			haptic('heavy');
 			onCountryClick(name);
@@ -119,6 +162,7 @@
 	}
 
 	function handlePointerEnter(name: string) {
+		if (!interactive) return;
 		hoveredCountry = name;
 		if (countriesWithArtists.has(name)) {
 			document.body.style.cursor = 'pointer';
@@ -142,34 +186,11 @@
      BackSide rendering of slightly-larger sphere is the canonical atmosphere
      trick: only the ring outside the main globe's silhouette stays visible
      because the rest of the back hemisphere is occluded by the globe itself.
-     Only shown in mini-globe mode (navbar), not on the fullscreen explore view. -->
-{#if showAtmosphere}
-	<T.Mesh renderOrder={-1} frustumCulled={false}>
-		<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
-		<T.ShaderMaterial
-			uniforms={{ glowColor: { value: new THREE.Color(colorPink) } }}
-			vertexShader={`
-			varying vec3 vNormal;
-			void main() {
-				vNormal = normalize(normalMatrix * normal);
-				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-			}
-		`}
-			fragmentShader={`
-			uniform vec3 glowColor;
-			varying vec3 vNormal;
-			void main() {
-				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
-				gl_FragColor = vec4(glowColor, 1.0) * intensity;
-			}
-		`}
-			side={THREE.BackSide}
-			transparent
-			depthWrite={false}
-			blending={THREE.AdditiveBlending}
-		/>
-	</T.Mesh>
-{/if}
+     uOpacity is tweened from the layout so the halo fades with the shrink. -->
+<T.Mesh renderOrder={-1} frustumCulled={false} visible={atmosphereOpacity > 0}>
+	<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
+	<T is={atmosphereMaterial} attach="material" />
+</T.Mesh>
 
 <!-- Globe sphere (same color as background = invisible ocean) -->
 <T.Mesh renderOrder={0} frustumCulled={false}>

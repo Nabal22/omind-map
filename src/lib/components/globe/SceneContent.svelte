@@ -36,7 +36,7 @@
 		focusCountry: string | null;
 		isExplorePage: boolean;
 		showPerf?: boolean;
-		showAtmosphere?: boolean;
+		atmosphereOpacity?: number;
 	}
 
 	let {
@@ -45,7 +45,7 @@
 		focusCountry,
 		isExplorePage,
 		showPerf = false,
-		showAtmosphere = false
+		atmosphereOpacity = 0
 	}: Props = $props();
 
 	const { camera, scene } = useThrelte();
@@ -171,6 +171,12 @@
 <T.DirectionalLight position={[5, 3, 5]} intensity={1.6} color="#fff8e8" />
 <T.DirectionalLight position={[-3, -1, -3]} intensity={0.06} color="#3355aa" />
 
-<Globe {onCountryClick} {selectedCountry} {showAtmosphere} onGeoDataLoad={handleGeoDataLoad} />
+<Globe
+	{onCountryClick}
+	{selectedCountry}
+	{atmosphereOpacity}
+	interactive={isExplorePage}
+	onGeoDataLoad={handleGeoDataLoad}
+/>
 
 <GlobeAnchor {selectedCountry} {geoData} />

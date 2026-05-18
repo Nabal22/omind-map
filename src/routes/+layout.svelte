@@ -16,9 +16,12 @@
 	import { onNavigate } from '$app/navigation';
 	import { getSelectedArtist } from '$lib/stores/artist-drawer.svelte';
 	import { fade } from 'svelte/transition';
+	import { Tween } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
 	import { isGlobeLoaded } from '$lib/stores/globe-overlay.svelte';
 	import { openSearch, resetSearch } from '$lib/stores/search.svelte';
 	import { artists } from '$lib/data/artists';
+	import { haptic } from '$lib/utils/haptics';
 	import {
 		getSelectedCountry,
 		getFocusCountry,
@@ -107,21 +110,14 @@
 		if (new URLSearchParams(window.location.search).has('fps')) showFps = true;
 	});
 
-	// Show pink atmosphere only after the globe finishes shrinking into the
-	// navbar / mini mode. Hide immediately when expanding back to fullscreen.
-	let showAtmosphere = $state(false);
+	// Pink atmosphere fades in/out in sync with the globe shrink/expand.
+	const atmosphereOpacity = new Tween(0, { duration: 380, easing: cubicOut });
 	$effect(() => {
-		if (showsFullscreenGlobe) {
-			showAtmosphere = false;
-		} else {
-			const t = setTimeout(() => {
-				showAtmosphere = true;
-			}, 220);
-			return () => clearTimeout(t);
-		}
+		atmosphereOpacity.target = showsFullscreenGlobe ? 0 : 1;
 	});
 
 	function handleMiniGlobeClick() {
+		haptic('light');
 		goto('/');
 	}
 
@@ -175,12 +171,13 @@
 		? 'z-0 bg-white'
 		: 'z-[80] cursor-pointer opacity-80 hover:opacity-100 focus:opacity-100'}"
 	style="
-			transition: top 200ms cubic-bezier(0.4, 0, 0.2, 1),
-				right 200ms cubic-bezier(0.4, 0, 0.2, 1),
-				bottom 200ms cubic-bezier(0.4, 0, 0.2, 1),
-				left 200ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 200ms cubic-bezier(0.4, 0, 0.2, 1),
-				transform 200ms ease;
+			transition:
+				top 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				right 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				bottom 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				left 380ms cubic-bezier(0.32, 0.72, 0, 1),
+				border-radius 380ms cubic-bezier(0.32, 0.72, 0, 1);
+			will-change: top, right, bottom, left, border-radius;
 			top: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-top)'};
 			right: {showsFullscreenGlobe ? 'var(--globe-right)' : 'var(--mini-globe-right)'};
 			bottom: {showsFullscreenGlobe ? '0px' : 'var(--mini-globe-bottom)'};
@@ -233,7 +230,7 @@
 					{focusCountry}
 					isExplorePage={showsFullscreenGlobe}
 					showPerf={showFps}
-					{showAtmosphere}
+					atmosphereOpacity={atmosphereOpacity.current}
 				/>
 			</Scene>
 		{/if}
