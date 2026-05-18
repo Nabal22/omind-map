@@ -27,10 +27,17 @@
 		onCountryClick: (countryName: string) => void;
 		selectedCountry: string | null;
 		onGeoDataLoad?: (data: GeoJSONData) => void;
-		showAtmosphere?: boolean;
+		atmosphereOpacity?: number;
 	}
 
-	let { onCountryClick, selectedCountry, onGeoDataLoad, showAtmosphere = false }: Props = $props();
+	let { onCountryClick, selectedCountry, onGeoDataLoad, atmosphereOpacity = 0 }: Props = $props();
+
+	let atmosphereMaterial: THREE.ShaderMaterial | null = $state(null);
+	$effect(() => {
+		if (atmosphereMaterial?.uniforms?.uOpacity) {
+			atmosphereMaterial.uniforms.uOpacity.value = atmosphereOpacity;
+		}
+	});
 
 	const { camera } = useThrelte();
 
@@ -142,12 +149,18 @@
      BackSide rendering of slightly-larger sphere is the canonical atmosphere
      trick: only the ring outside the main globe's silhouette stays visible
      because the rest of the back hemisphere is occluded by the globe itself.
-     Only shown in mini-globe mode (navbar), not on the fullscreen explore view. -->
-{#if showAtmosphere}
+     Opacity tweened from layout so the halo fades with the shrink/expand. -->
+{#if atmosphereOpacity > 0}
 	<T.Mesh renderOrder={-1} frustumCulled={false}>
 		<T.SphereGeometry args={[RADIUS * 1.4, 64, 64]} />
 		<T.ShaderMaterial
-			uniforms={{ glowColor: { value: new THREE.Color(colorPink) } }}
+			oncreate={(m: THREE.ShaderMaterial) => {
+				atmosphereMaterial = m;
+			}}
+			uniforms={{
+				glowColor: { value: new THREE.Color(colorPink) },
+				uOpacity: { value: atmosphereOpacity }
+			}}
 			vertexShader={`
 			varying vec3 vNormal;
 			void main() {
@@ -157,10 +170,11 @@
 		`}
 			fragmentShader={`
 			uniform vec3 glowColor;
+			uniform float uOpacity;
 			varying vec3 vNormal;
 			void main() {
 				float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2) * 0.75;
-				gl_FragColor = vec4(glowColor, 1.0) * intensity;
+				gl_FragColor = vec4(glowColor, 1.0) * intensity * uOpacity;
 			}
 		`}
 			side={THREE.BackSide}
