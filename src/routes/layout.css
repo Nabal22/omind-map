@@ -29,6 +29,9 @@
 
 @utility pt-nav-safe {
 	padding-top: calc(3.5rem + 2rem + env(safe-area-inset-top, 0px));
+	@media (min-width: 640px) {
+		padding-top: 2rem;
+	}
 }
 
 @utility focus-ring {
@@ -80,7 +83,7 @@
 		--mini-globe-top: calc(50dvh - var(--mini-globe-size) / 2);
 		--mini-globe-bottom: calc(50dvh - var(--mini-globe-size) / 2);
 
-		--globe-right: 16rem;
+		--globe-right: 0px;
 	}
 }
 

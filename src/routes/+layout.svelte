@@ -1,7 +1,8 @@
 <script lang="ts">
 	import './layout.css';
 	import { SITE_URL, SITE_NAME } from '$lib/config';
-	import MobileNav from '$lib/components/ui/MobileNav.svelte';
+	import StarNav from '$lib/components/ui/StarNav.svelte';
+	import InnerPageNav from '$lib/components/ui/InnerPageNav.svelte';
 	import ArtistDrawer from '$lib/components/ui/ArtistDrawer.svelte';
 	import SearchOverlay from '$lib/components/ui/SearchOverlay.svelte';
 	import Scene from '$lib/components/globe/Scene.svelte';
@@ -161,7 +162,14 @@
 	{/if}
 </svelte:head>
 
-<MobileNav currentPath={page.url.pathname} onSearchClick={openSearch} />
+<StarNav
+	currentPath={page.url.pathname}
+	onSearchClick={openSearch}
+	hidden={!isExplorePage || !!drawerArtist || !!selectedCountry}
+/>
+{#if !showsFullscreenGlobe}
+	<InnerPageNav currentPath={page.url.pathname} onSearchClick={openSearch} />
+{/if}
 <SearchOverlay />
 
 <!-- Globe scene — always mounted, animates between fullscreen and mini corner -->

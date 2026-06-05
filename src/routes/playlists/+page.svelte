@@ -92,7 +92,7 @@
 {/snippet}
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-5xl px-4 pt-nav-safe pb-nav-safe sm:px-6 sm:pt-8">
+	<div class="mx-auto max-w-5xl px-4 pt-nav-safe pb-nav-safe sm:px-6">
 		<div class="mb-8 max-w-2xl">
 			<h1 class="text-2xl font-bold tracking-[0.2em] text-pretty uppercase sm:text-3xl">
 				PLAYLISTS &amp; RADIO
