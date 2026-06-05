@@ -7,7 +7,6 @@
 	import SearchOverlay from '$lib/components/ui/SearchOverlay.svelte';
 	import Scene from '$lib/components/globe/Scene.svelte';
 	import SceneContent from '$lib/components/globe/SceneContent.svelte';
-	import ArtistsList from '$lib/components/ui/ArtistsList.svelte';
 	import MobileSheet from '$lib/components/ui/MobileSheet.svelte';
 	import { closeArtistDrawer } from '$lib/stores/artist-drawer.svelte';
 	import { onMount } from 'svelte';
@@ -27,7 +26,6 @@
 		getSelectedCountry,
 		getFocusCountry,
 		selectCountry,
-		setCountryFilter,
 		clearSelection,
 		resetSelection,
 		focusOnArtist
@@ -243,27 +241,6 @@
 			</Scene>
 		{/if}
 	</div>
-
-	<!-- Desktop: Artists list (hidden when artist drawer is open) -->
-	{#if showsFullscreenGlobe}
-		<div class="hidden {drawerArtist ? '' : 'sm:block'}">
-			<div
-				in:fade={{ duration: 200, delay: 50 }}
-				out:fade={{ duration: 100 }}
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => {
-					if (e.key === 'Escape') setCountryFilter(null);
-				}}
-				role="presentation"
-			>
-				<ArtistsList
-					{selectedCountry}
-					onArtistSelect={(artist) => navigateToArtist(artist.id)}
-					onClose={clearSelection}
-				/>
-			</div>
-		</div>
-	{/if}
 </div>
 
 <!-- Page content. On / and /artists/[id] the page renders sr-only SEO content
