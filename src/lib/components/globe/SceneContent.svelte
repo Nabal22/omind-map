@@ -163,7 +163,7 @@
 		maxPolarAngle={Math.PI * 0.8}
 		enablePan={false}
 		autoRotate={!focusCountry && !animating}
-		autoRotateSpeed={isExplorePage ? 1.5 : 2}
+		autoRotateSpeed={isExplorePage ? 0.4 : 0.6}
 	/>
 </T.PerspectiveCamera>
 
