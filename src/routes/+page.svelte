@@ -87,7 +87,6 @@
 
 	<h2>Sections</h2>
 	<ul>
-		<li><a href="/articles">Articles</a></li>
 		<li><a href="/wtfis">Who The F Is</a></li>
 		<li><a href="/artists">Artists</a></li>
 	</ul>

@@ -1,147 +1,181 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto, replaceState } from '$app/navigation';
-	import { searchAll, type SearchResult } from '$lib/utils/search';
+	import { searchArtists, listCountries } from '$lib/utils/search';
+	import { CONTINENTS, getContinent, type Continent } from '$lib/utils/continents';
 	import { SITE_NAME } from '$lib/config';
 	import { haptic } from '$lib/utils/haptics';
 
 	let query = $state(page.url.searchParams.get('q') ?? '');
+	let continent = $state<Continent | null>(
+		(page.url.searchParams.get('continent') as Continent | null) ?? null
+	);
+	let country = $state<string | null>(page.url.searchParams.get('country'));
 
 	$effect(() => {
-		const current = page.url.searchParams.get('q') ?? '';
-		if (current !== query) query = current;
+		const q = page.url.searchParams.get('q') ?? '';
+		if (q !== query) query = q;
 	});
 
-	const results = $derived(searchAll(query));
+	const results = $derived(searchArtists(query, { country, continent }));
 
-	const grouped = $derived.by(() => {
-		const groups: Record<SearchResult['kind'], SearchResult[]> = {
-			artist: [],
-			article: [],
-			wtfis: []
-		};
-		for (const r of results) groups[r.kind].push(r);
-		return groups;
+	const countries = $derived.by(() => {
+		const all = listCountries();
+		if (continent) return all.filter((c) => getContinent(c) === continent);
+		return all;
 	});
 
-	function updateUrl(value: string) {
+	function updateUrl() {
 		const url = new URL(page.url);
-		if (value) url.searchParams.set('q', value);
+		if (query) url.searchParams.set('q', query);
 		else url.searchParams.delete('q');
+		if (continent) url.searchParams.set('continent', continent);
+		else url.searchParams.delete('continent');
+		if (country) url.searchParams.set('country', country);
+		else url.searchParams.delete('country');
 		replaceState(url, page.state);
 	}
 
 	function handleInput(e: Event) {
-		const value = (e.currentTarget as HTMLInputElement).value;
-		query = value;
-		updateUrl(value);
+		query = (e.currentTarget as HTMLInputElement).value;
+		updateUrl();
+	}
+
+	function toggleContinent(c: Continent) {
+		haptic('light');
+		continent = continent === c ? null : c;
+		if (continent) country = null;
+		updateUrl();
+	}
+
+	function selectCountry(c: string) {
+		haptic('light');
+		country = country === c ? null : c;
+		updateUrl();
+	}
+
+	function clearAll() {
+		query = '';
+		continent = null;
+		country = null;
+		updateUrl();
 	}
 
 	function handleResultClick(href: string) {
-		haptic('light');
-		if (href.startsWith('/')) goto(href);
-		else window.open(href, '_blank', 'noopener,noreferrer');
-	}
-
-	function kindLabel(kind: SearchResult['kind']): string {
-		if (kind === 'artist') return 'Artists';
-		if (kind === 'article') return 'Articles';
-		return 'WTFIS';
+		haptic('medium');
+		goto(href);
 	}
 </script>
 
 <svelte:head>
-	<title>Search — {SITE_NAME}</title>
-	<meta name="description" content="Search artists, articles, and WTFIS on {SITE_NAME}." />
+	<title>Search Artists — {SITE_NAME}</title>
+	<meta
+		name="description"
+		content="Search artists on {SITE_NAME} by name, country, or continent."
+	/>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
 <div class="h-dvh w-screen overflow-y-auto bg-white font-mono text-black">
-	<div class="mx-auto max-w-2xl px-6 pt-nav-safe pb-nav-safe">
-		<h1 class="text-2xl font-bold tracking-[0.2em] text-pretty uppercase sm:text-3xl">SEARCH</h1>
+	<div class="mx-auto max-w-3xl px-6 pt-nav-safe pb-nav-safe">
+		<div class="flex items-center gap-3">
+			<img src="/assets/star.png" alt="" aria-hidden="true" class="h-8 w-8 sm:h-10 sm:w-10" />
+			<h1 class="text-2xl font-light tracking-tight text-pretty sm:text-4xl">Artists</h1>
+		</div>
 
-		<div class="mt-6 flex items-center gap-3 border-b border-black/40 pb-2">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.5"
-				stroke-linecap="square"
-				class="shrink-0 text-black/50"
-			>
-				<circle cx="10.5" cy="10.5" r="6.5" />
-				<line x1="15.5" y1="15.5" x2="20" y2="20" />
-			</svg>
+		<div class="mt-6 flex items-center gap-3 border-b-2 border-black pb-2">
 			<input
 				value={query}
 				oninput={handleInput}
 				type="search"
-				placeholder="Search artists, articles, WTFIS..."
-				class="flex-1 border-none bg-transparent font-mono text-base text-black outline-none placeholder:text-black/30"
+				placeholder="Type an artist name..."
+				class="flex-1 border-none bg-transparent font-mono text-lg text-black outline-none placeholder:text-black/30 sm:text-2xl"
 				autocomplete="off"
 			/>
 		</div>
 
-		{#if !query}
-			<p class="mt-8 text-[0.75rem] text-black/50">Type to search across the site.</p>
-		{:else if results.length === 0}
-			<p class="mt-8 text-[0.75rem] text-black/50">No results for &ldquo;{query}&rdquo;.</p>
-		{:else}
-			<p class="mt-6 text-[0.6rem] tracking-[0.2em] text-black/50 uppercase">
-				{results.length} result{results.length === 1 ? '' : 's'}
-			</p>
+		<div class="mt-5">
+			<p class="mb-2 text-[0.6rem] tracking-[0.2em] text-black/40 uppercase">Continent</p>
+			<div class="flex flex-wrap gap-2">
+				{#each CONTINENTS as c (c)}
+					<button
+						type="button"
+						onclick={() => toggleContinent(c)}
+						class="rounded-full border px-3 py-1.5 text-xs tracking-wide focus-ring transition-colors sm:text-sm {continent ===
+						c
+							? 'border-pink bg-pink/20 text-black'
+							: 'border-black/20 text-black/70 hover:border-pink hover:text-pink-highlight'}"
+					>
+						{c}
+					</button>
+				{/each}
+			</div>
+		</div>
 
-			{#each ['artist', 'article', 'wtfis'] as kind (kind)}
-				{@const list = grouped[kind as SearchResult['kind']]}
-				{#if list.length > 0}
-					<section class="mt-8">
-						<h2 class="text-[0.65rem] font-bold tracking-[0.2em] text-black/40 uppercase">
-							{kindLabel(kind as SearchResult['kind'])} · {list.length}
-						</h2>
-						<ul class="mt-3 border-t border-black/10">
-							{#each list as result (`${result.kind}-${result.id}`)}
-								<li>
-									<button
-										type="button"
-										onclick={() => handleResultClick(result.href)}
-										class="flex w-full items-center justify-between gap-3 border-b border-black/10 py-3 text-left transition-opacity hover:opacity-60"
-									>
-										<div class="min-w-0 flex-1">
-											<div
-												class="truncate text-sm font-semibold tracking-[0.05em] text-black uppercase"
-											>
-												{result.title}
-											</div>
-											<div
-												class="mt-0.5 truncate text-[0.6rem] tracking-[0.15em] text-black/50 uppercase"
-											>
-												{result.subtitle}
-											</div>
-										</div>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="14"
-											height="14"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="1.5"
-											stroke-linecap="square"
-											class="shrink-0 text-black/40"
-										>
-											<line x1="5" y1="12" x2="19" y2="12" />
-											<polyline points="13 6 19 12 13 18" />
-										</svg>
-									</button>
-								</li>
-							{/each}
-						</ul>
-					</section>
+		<div class="mt-4">
+			<div class="mb-2 flex items-center justify-between">
+				<p class="text-[0.6rem] tracking-[0.2em] text-black/40 uppercase">Country</p>
+				{#if query || continent || country}
+					<button
+						type="button"
+						onclick={clearAll}
+						class="text-[0.6rem] tracking-[0.15em] text-pink-highlight uppercase focus-ring transition-colors hover:text-pink"
+					>
+						Clear all
+					</button>
 				{/if}
-			{/each}
+			</div>
+			<div class="flex flex-wrap gap-2">
+				{#each countries as c (c)}
+					<button
+						type="button"
+						onclick={() => selectCountry(c)}
+						class="rounded-full border px-3 py-1 text-xs tracking-wide focus-ring transition-colors {country ===
+						c
+							? 'border-pink bg-pink/20 text-black'
+							: 'border-black/15 text-black/60 hover:border-pink hover:text-pink-highlight'}"
+					>
+						{c}
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<p class="mt-6 text-[0.6rem] tracking-[0.2em] text-black/50 uppercase">
+			{results.length} artist{results.length === 1 ? '' : 's'}
+		</p>
+
+		{#if results.length === 0}
+			<p class="mt-6 text-[0.75rem] text-black/50">No artists match these filters.</p>
+		{:else}
+			<ul class="mt-3 divide-y divide-black/10 border-t border-b border-black/10">
+				{#each results as result (result.id)}
+					<li>
+						<button
+							type="button"
+							onclick={() => handleResultClick(result.href)}
+							class="group flex w-full items-center gap-3 py-3 text-left focus-ring transition-colors hover:bg-pink/10 sm:gap-4 sm:py-4"
+						>
+							<img
+								src="/assets/star.png"
+								alt=""
+								aria-hidden="true"
+								class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-125 sm:h-6 sm:w-6"
+							/>
+							<div class="min-w-0 flex-1">
+								<div class="truncate text-base font-medium text-black sm:text-lg">
+									{result.title}
+								</div>
+								<div
+									class="mt-0.5 truncate text-[0.6rem] tracking-[0.15em] text-black/50 uppercase"
+								>
+									{result.subtitle}
+								</div>
+							</div>
+						</button>
+					</li>
+				{/each}
+			</ul>
 		{/if}
 	</div>
 </div>

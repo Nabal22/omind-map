@@ -1,16 +1,17 @@
 import { artists, type Artist } from '$lib/data/artists';
-import { articles, type Article } from '$lib/data/articles';
-import { wtfis, type WtfisEntry } from '$lib/data/wtfis';
-
-export type SearchKind = 'artist' | 'article' | 'wtfis';
+import { getContinent, type Continent } from '$lib/utils/continents';
 
 export interface SearchResult {
-	kind: SearchKind;
 	id: string;
 	title: string;
 	subtitle: string;
 	href: string;
 	score: number;
+}
+
+export interface SearchFilters {
+	country?: string | null;
+	continent?: Continent | null;
 }
 
 function scoreMatch(haystack: string, needle: string): number {
@@ -34,7 +35,6 @@ function bestScore(needle: string, fields: { value: string; weight: number }[]):
 
 function artistResult(a: Artist, score: number): SearchResult {
 	return {
-		kind: 'artist',
 		id: a.id,
 		title: a.name,
 		subtitle: a.country,
@@ -43,35 +43,22 @@ function artistResult(a: Artist, score: number): SearchResult {
 	};
 }
 
-function articleResult(a: Article, score: number): SearchResult {
-	return {
-		kind: 'article',
-		id: a._id,
-		title: a.title,
-		subtitle: a.category.toUpperCase(),
-		href: `/articles/${a.slug}`,
-		score
-	};
+function applyFilters(a: Artist, filters: SearchFilters): boolean {
+	if (filters.country && a.country !== filters.country) return false;
+	if (filters.continent && getContinent(a.country) !== filters.continent) return false;
+	return true;
 }
 
-function wtfisResult(w: WtfisEntry, score: number): SearchResult {
-	return {
-		kind: 'wtfis',
-		id: w.slug,
-		title: `Who The F Is ${w.artist}`,
-		subtitle: 'WTFIS',
-		href: w.instagramUrl ?? w.tiktokUrl ?? '/wtfis',
-		score
-	};
-}
-
-export function searchAll(query: string): SearchResult[] {
+export function searchArtists(query: string, filters: SearchFilters = {}): SearchResult[] {
 	const q = query.trim();
-	if (!q) return [];
+	const filtered = artists.filter((a) => applyFilters(a, filters));
+
+	if (!q) {
+		return filtered.map((a) => artistResult(a, 1)).sort((x, y) => x.title.localeCompare(y.title));
+	}
 
 	const results: SearchResult[] = [];
-
-	for (const a of artists) {
+	for (const a of filtered) {
 		const score = bestScore(q, [
 			{ value: a.name, weight: 1 },
 			{ value: a.country, weight: 0.6 },
@@ -79,26 +66,12 @@ export function searchAll(query: string): SearchResult[] {
 		]);
 		if (score > 0) results.push(artistResult(a, score));
 	}
-
-	for (const a of articles) {
-		const bodyText = a.body.map((b) => b.text).join(' ');
-		const score = bestScore(q, [
-			{ value: a.title, weight: 1 },
-			{ value: a.excerpt, weight: 0.7 },
-			{ value: bodyText, weight: 0.3 },
-			{ value: a.category, weight: 0.5 }
-		]);
-		if (score > 0) results.push(articleResult(a, score));
-	}
-
-	for (const w of wtfis) {
-		const score = bestScore(q, [
-			{ value: w.artist, weight: 1 },
-			{ value: w.slug, weight: 0.6 }
-		]);
-		if (score > 0) results.push(wtfisResult(w, score));
-	}
-
-	results.sort((a, b) => b.score - a.score);
+	results.sort((x, y) => y.score - x.score);
 	return results;
+}
+
+export function listCountries(): string[] {
+	const set = new Set<string>();
+	for (const a of artists) set.add(a.country);
+	return Array.from(set).sort();
 }

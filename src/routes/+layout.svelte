@@ -76,8 +76,7 @@
 	}
 
 	// Close drawer when URL pops back from a shallow /artists/[id] (browser back
-	// button or history.back from handleCloseArtist). Doesn't affect drawers
-	// opened without URL change (e.g. from /articles/[slug]).
+	// button or history.back from handleCloseArtist).
 	let prevIsArtistUrl = false;
 	$effect(() => {
 		const onArtist = page.url.pathname.startsWith('/artists/');
@@ -245,8 +244,7 @@
 	{@render children()}
 </div>
 
-<!-- Mobile: unified bottom sheet (rendered on every page so artist links from
-     /articles/[slug] still pop a sheet on mobile) -->
+<!-- Mobile: unified bottom sheet (rendered on every page so artist links pop a sheet) -->
 <MobileSheet
 	{selectedCountry}
 	selectedArtist={drawerArtist}

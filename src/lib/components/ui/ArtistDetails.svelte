@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { SvelteSet } from 'svelte/reactivity';
-	import { articles } from '$lib/data/articles';
-	import { resolve } from '$app/paths';
+	import { wtfis } from '$lib/data/wtfis';
 	import type { Artist } from '$lib/data/artists';
 
 	interface Props {
@@ -11,10 +10,16 @@
 	let { artist }: Props = $props();
 
 	const loadedIframes = new SvelteSet<string>();
-	const relatedArticles = $derived(articles.filter((a) => a.relatedArtistId === artist.id));
+	const relatedWtfis = $derived(
+		wtfis.filter((w) => w.artist.toLowerCase() === artist.name.toLowerCase())
+	);
 
 	function handleIframeLoad(url: string) {
 		loadedIframes.add(url);
+	}
+
+	function wtfisHref(entry: { instagramUrl?: string; tiktokUrl?: string }): string {
+		return entry.instagramUrl ?? entry.tiktokUrl ?? '#';
 	}
 </script>
 
@@ -74,17 +79,22 @@
 		</div>
 	{/if}
 
-	{#if relatedArticles.length}
+	{#if relatedWtfis.length}
 		<div class="mt-4 border-t border-black/10 pt-3">
-			<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">ARTICLES</p>
-			{#each relatedArticles as article (article._id)}
-				<a
-					href={resolve('/articles/[slug]', { slug: article.slug })}
-					class="block py-1.5 text-[0.7rem] text-black/80 focus-ring transition-opacity duration-150 hover:text-pink"
-				>
-					{article.title}
-				</a>
-			{/each}
+			<p class="mb-2 text-[0.6rem] tracking-[0.15em] text-black/50 uppercase">WTFIS</p>
+			<div class="flex flex-wrap gap-2">
+				{#each relatedWtfis as entry (entry.slug)}
+					<a
+						href={wtfisHref(entry)}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group flex items-center gap-2 rounded-md border border-black/10 px-2 py-1.5 text-[0.7rem] text-black/80 focus-ring transition-colors hover:border-pink hover:text-pink-highlight"
+					>
+						<img src="/assets/star.png" alt="" aria-hidden="true" class="h-4 w-4 shrink-0" />
+						<span>Who the f*** is {entry.artist}?</span>
+					</a>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
